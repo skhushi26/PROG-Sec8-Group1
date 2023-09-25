@@ -110,3 +110,28 @@ exports.getVerifiedUser = async (req, res) => {
     res.send(responseBuilder(error, null, "Something went in activating user", 500));
   }
 };
+
+exports.login = async (req, res) => {
+  let token = "";
+  try {
+    const { email, password } = req.body;
+    const userData = await User.findOne({ email });
+    if (!userData) {
+      res.send(responseBuilder(null, null, "User not found!", 400));
+    } else {
+      const isPasswordMatch = await bcrypt.compare(password, userData.password);
+      if (isPasswordMatch) {
+        token = await jwt.sign({ id: userData._id, role: userData.role }, "wehvsLoginSecretKey", {
+          expiresIn: "9h",
+        });
+        res.send(
+          responseBuilder(null, { ...userData.toJSON(), token }, "User logged in successfully", 200)
+        );
+      } else {
+        res.send(responseBuilder(null, null, "Invalid credentails", 400));
+      }
+    }
+  } catch (error) {
+    res.send(responseBuilder(error, null, "Something went wrong in logging in", 500));
+  }
+};
