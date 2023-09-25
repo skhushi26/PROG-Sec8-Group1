@@ -1,7 +1,6 @@
 const express = require("express");
 
 const userController = require("../controllers/userController");
-const { registerValidation } = require("../payloads/userValidation");
 const { userRegistrationSchema } = require("../payloads/userValidation");
 const router = express.Router();
 
