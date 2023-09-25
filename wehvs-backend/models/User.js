@@ -27,6 +27,10 @@ const UserSchema = new mongoose.Schema(
       type: Date,
       default: null,
     },
+    role: {
+      type: String,
+      default: "User",
+    },
     is_active: {
       type: Boolean,
       default: false,

@@ -15,12 +15,12 @@ exports.registerUser = async (req, res) => {
       password,
       mobile_no,
       date_of_birth,
+      role,
       address,
       city,
       province,
       zip_code,
     } = req.body;
-    console.log("req.body", req.body);
     const isEmailExists = await User.findOne({ email });
 
     if (!isEmailExists) {
@@ -40,6 +40,7 @@ exports.registerUser = async (req, res) => {
         password: passwordHash,
         mobile_no,
         date_of_birth,
+        role,
         address_id: addressData._id,
       });
 
