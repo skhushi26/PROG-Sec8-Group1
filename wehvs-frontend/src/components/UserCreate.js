@@ -3,7 +3,7 @@ import { Form } from "react-bootstrap";
 import withRouter from "./Router/withRouter";
 import { Link } from "react-router-dom";
 
-class EmployeeCreate extends Component {
+class UserCreate extends Component {
   constructor() {
     super();
     this.state = {
@@ -390,4 +390,4 @@ class EmployeeCreate extends Component {
   }
 }
 
-export default withRouter(EmployeeCreate);
+export default withRouter(UserCreate);

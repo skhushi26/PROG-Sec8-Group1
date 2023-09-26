@@ -357,4 +357,4 @@ class Login extends Component {
   }
 }
 
-export default withRouter(EmployeeCreate);
+export default withRouter(UserCreate);
