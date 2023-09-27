@@ -34,8 +34,8 @@ const Navbar = () => {
                                     </nav>
                                 </div>          
                                 <div className="header-btn d-none f-right d-lg-block">
-                                    <a href="/user/create" className="button button-contactForm boxed-btn btn-login mr-3">Register</a>
-                                    <a href="#" className="button button-contactForm boxed-btn btn-login">Login</a>
+                                    <a href="/register" className="button button-contactForm boxed-btn btn-login mr-3">Register</a>
+                                    <a href="/login" className="button button-contactForm boxed-btn btn-login">Login</a>
                                 </div>
                             </div>
                         </div>
