@@ -205,19 +205,19 @@ class UserLogin extends Component {
     return (
       <div>
       {/* CONTENT */}
-      <div className="row">
-                    <div className="col-12">
-                        <h2 className="contact-title">Login</h2>
-                    </div>
-                    <div className="col-lg-8">
+      <div className="row d-flex justify-content-center">
+                    <div className="col-lg-8 mt-5">
                         <form className="form-contact contact_form" action="contact_process.php" method="post" id="contactForm">
                             <div className="row">
-                                <div className="col-sm-6">
+                            <div className="col-12">
+                                <h2 className="contact-title">Login</h2>
+                              </div>
+                                <div className="col-sm-10 m-auto">
                                     <div className="form-group">
                                         <input className="form-control valid" name="email" id="email" type="email"   placeholder="Email"/>
                                     </div>
                                 </div>
-                                <div className="col-12">
+                                <div className="col-sm-10 m-auto">
                                     <div className="form-group">
                                         <input className="form-control" name="password" id="password" type="password" placeholder="Password"/>
                                     </div>
