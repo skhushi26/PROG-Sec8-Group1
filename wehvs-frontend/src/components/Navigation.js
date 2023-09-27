@@ -21,21 +21,55 @@ const Navbar = () => {
                                             <li><a href="index.html">Dashboard</a></li>
                                             <li><a href="job_listing.html">Find a Job </a></li>
                                             <li><a href="about.html">About</a></li>
-                                            {/* <li><a href="#">Page</a>
+                                            <li><a href="contact.html">Contact</a></li>
+                                          
+                                            {/* <li><a href="" className="button button-contactForm boxed-btn btn-login mr-3 pr-3 pr-3">Register</a>
                                                 <ul className="submenu">
-                                                    <li><a href="blog.html">Blog</a></li>
-                                                    <li><a href="single-blog.html">Blog Details</a></li>
-                                                    <li><a href="elements.html">Elements</a></li>
-                                                    <li><a href="job_details.html">job Details</a></li>
+                                                    <li><a href="/userregister">Register as User</a></li>
+                                                    <li><a href="/employerregister">Register as Employer</a></li>
                                                 </ul>
                                             </li> */}
-                                            <li><a href="contact.html">Contact</a></li>
+                                            
                                         </ul>
                                     </nav>
                                 </div>          
                                 <div className="header-btn d-none f-right d-lg-block">
-                                    <a href="/register" className="button button-contactForm boxed-btn btn-login mr-3">Register</a>
-                                    <a href="/login" className="button button-contactForm boxed-btn btn-login">Login</a>
+                                            {/* <li><a href="" className="button button-contactForm boxed-btn btn-login mr-3 dropbtn">Register</a>
+                                                <ul className="dropdown-content">
+                                                    <li><a href="/userregister">Register as User</a></li>
+                                                    <li><a href="/employerregister">Register as Employer</a></li>
+                                                </ul>
+                                            </li> */}
+
+
+                                <div class="dropdown">
+                                  <button class="dropbtn mr-3">REGISTER</button>
+                                  <div class="dropdown-content">
+                                    <a href="/userregister">Register as User</a>
+                                    <a href="/employerregister">Register as Employer</a>
+                                  </div>
+                                </div>
+
+
+                                            {/* <div className="dropdown">
+                                              <button className="dropbtn">Register</button>
+                                              <div className="dropdown-content">
+                                                <a href="/userregister">Register as User</a>
+                                                <a href="/employerregister">Register as Employer</a>
+                                              </div>
+                                            </div>
+ */}
+
+{/* 
+                                        <li><a href="#">Register</a>
+                                                <ul className="submenu">
+                                                    <li><a href="/userregister">Register as User</a></li>
+                                                    <li><a href="/employerregister">Register as Employer</a></li>
+                                                </ul>
+                                            </li> */}
+
+                                    {/* <a href="/userregister" className="button button-contactForm boxed-btn btn-login mr-3">Register</a> */}
+                                    <a href="/employerregister" className="button button-contactForm boxed-btn btn-login">Login</a>
                                 </div>
                             </div>
                         </div>
