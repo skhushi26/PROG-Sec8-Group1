@@ -10,7 +10,7 @@ const Navbar = () => {
                     <div className="row align-items-center">
                         <div className="col-lg-3 col-md-2">
                             <div className="logo">
-                                <a href="index.html"><img src="/images/logo/wehvs-logo-1.jpeg" width="220px" alt=""/></a>
+                                <a href="index.html"><img src="/images/logo/wehvs-logo-1.jpeg" width="220px" alt="WEHVS Home Logo"/></a>
                             </div>  
                         </div>
                         <div className="col-lg-9 col-md-9">
