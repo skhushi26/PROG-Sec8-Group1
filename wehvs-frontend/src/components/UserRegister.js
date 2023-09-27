@@ -82,60 +82,45 @@ class UserRegister extends Component {
                                     <label htmlFor="contactNumber">Contact Number</label>
                                     <input className="form-control valid" name="contactNumber" id="contactNumber" type="text"  placeholder="Contact Number"/>
                                 </div>
-                                <div className="col-sm-6  mt-4">
+                                <div className="col-sm-6 mt-4">
                                     <label htmlFor="dateOfBirth">Date of Birth</label>
                                     <input className="form-control" name="dateOfBirth" id="dateOfBirth" type="date" placeholder="Select Date of Birth"/>
                                 </div>
-                                
-                                <div className="col-12 mt-5">
-                                    <h6>Address</h6>
+                                <div className="col-12 mt-6 contact-info">
+                                    <h5>Contact Information</h5>
                                 </div>
                                 
-                                <div className="input-group-icon mt-10">
-								<div className="icon"><i className="fa fa-thumb-tack" aria-hidden="true"></i></div>
-								    <input type="text" name="address" placeholder="Address" required className="single-input"/>
-							    </div>
-							    
 
-                                {/* Country Dropdown */}
-                                <div className="col-sm-6 mt-4">
-                                <div className="icon"><i className="fa fa-globe" aria-hidden="true"></i></div>
-                                <select
-                                    value={selectedCountry ? selectedCountry.value : ''}
-                                    onChange={(e) => this.handleCountryChange({ value: e.target.value })}
-                                >
-                                    <option value="" disabled>Select Country</option>
-                                    {countries.map((country) => (
-                                        <option key={country.value} value={country.value}>
-                                            {country.label}
-                                        </option>
-                                    ))}
-                                </select>
+                                <div className="col-sm-6  mt-4">
+                                    <label htmlFor="address">Address</label>
+                                    <input className="form-control valid" name="address" id="address" type="text"  placeholder="Address"/>
                                 </div>
 
 
-                                        {/* City Dropdown */}
-                                        <div className="col-sm-6 mt-4">
-                                        <div className="icon"><i className="fa fa-plane" aria-hidden="true"></i></div>
-                                        <select
-                                            value={selectedCity ? selectedCity.value : ''}
-                                            onChange={(e) => this.handleCityChange({ value: e.target.value })}
-                                            disabled={!selectedCountry}
-                                        >
-                                            <option value="" disabled>Select City</option>
-                                            {cities
-                                            .filter((city) => city.country === (selectedCountry ? selectedCountry.value : ''))
-                                            .map((city) => (
-                                                <option key={city.value} value={city.value}>
-                                                {city.label}
-                                                </option>
-                                            ))}
-                                        </select>
-                                        </div>
-       
+                                <div className="col-sm-6  mt-4">
+                                    <label htmlFor="country">Country</label>
+                                    <input className="form-control valid" name="country" id="country" type="text"  placeholder="Country"/>
+                                </div>
+
+                                <div className="col-sm-6  mt-4">
+                                    <label htmlFor="city">City</label>
+                                    <input className="form-control valid" name="city" id="city" type="text"  placeholder="City"/>
+                                </div>
+
+                                
+                                <div className="col-sm-6  mt-4">
+                                    <label htmlFor="province">Province</label>
+                                    <input className="form-control valid" name="province" id="province" type="text"  placeholder="Province"/>
+                                </div>
+
+                                <div className="col-sm-6  mt-4">
+                                    <label htmlFor="zipCode">Zip Code</label>
+                                    <input className="form-control valid" name="zipCode" id="zipCode" type="text"  placeholder="Zip Code"/>
+                                </div>
+
                             </div>
-                            <div className="form-group mt-3">
-                                <button type="submit" className="button button-contactForm boxed-btn">Send</button>
+                            <div className="col-12 form-group mt-5">
+                                <button type="submit" className="button button-contactForm button-submit boxed-btn">Send</button>
                             </div>
                         </form>
                     </div>

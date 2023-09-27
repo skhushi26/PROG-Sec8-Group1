@@ -75,8 +75,8 @@ class EmployerRegister extends Component {
                                 </div>
                                 
 
-                                <div className="col-12 mt-6">
-                                    <h5>Address</h5>
+                                <div className="col-12 mt-6 contact-info">
+                                    <h5>Contact Information</h5>
                                 </div>
                                 
 
@@ -107,8 +107,8 @@ class EmployerRegister extends Component {
                                     <input className="form-control valid" name="zipCode" id="zipCode" type="text"  placeholder="Zip Code"/>
                                 </div>
 
-                            <div className="col-12 form-group mt-3">
-                                <button type="submit" className="button button-contactForm boxed-btn">Send</button>
+                            <div className="col-12 form-group mt-5">
+                                <button type="submit" className="button button-contactForm button-submit boxed-btn">Send</button>
                             </div>
                             </div>
                         </form>

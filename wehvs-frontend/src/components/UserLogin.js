@@ -214,17 +214,19 @@ class UserLogin extends Component {
                               </div>
                                 <div className="col-sm-10 m-auto">
                                     <div className="form-group">
+                                    <label htmlFor="email">Email</label>
                                         <input className="form-control valid" name="email" id="email" type="email"   placeholder="Email"/>
                                     </div>
                                 </div>
                                 <div className="col-sm-10 m-auto">
                                     <div className="form-group">
+                                        <label htmlFor="password">Password</label>
                                         <input className="form-control" name="password" id="password" type="password" placeholder="Password"/>
                                     </div>
                                 </div>
                             </div>
-                            <div className="form-group mt-3">
-                                <button type="submit" className="button button-contactForm boxed-btn">Login</button>
+                            <div className="col-12 form-group mt-2 mb-2">
+                                <button type="submit" className="button button-contactForm button-login boxed-btn">Login</button>
                             </div>
                         </form>
                     </div>

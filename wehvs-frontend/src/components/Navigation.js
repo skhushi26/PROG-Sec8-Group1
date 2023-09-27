@@ -42,9 +42,9 @@ const Navbar = () => {
                                             </li> */}
 
 
-                                <div class="dropdown">
-                                  <button class="dropbtn mr-3">REGISTER</button>
-                                  <div class="dropdown-content">
+                                <div className="dropdown">
+                                  <button className="dropbtn mr-3">REGISTER</button>
+                                  <div className="dropdown-content">
                                     <a href="/userregister">Register as User</a>
                                     <a href="/employerregister">Register as Employer</a>
                                   </div>
