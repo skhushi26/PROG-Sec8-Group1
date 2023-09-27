@@ -8,8 +8,8 @@ export default function Routing() {
   return (
     <>
       <Routes>
-        <Route path="/" element={<Navbar />}>
-          <Route path="/employee/create" element={<UserCreate />} />
+        <Route path="/" element={<Navbar/>}>
+          <Route path="/user/create" element={<UserCreate/>} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
