@@ -365,19 +365,19 @@ class UserCreate extends Component {
                        <div className="col-xl-3 col-lg-3 col-md-4 col-sm-5">
                         <div className="footer-tittle-bottom">
                             <span>5000+</span>
-                            <p>Talented Hunter</p>
+                            <p>Verified Employers</p>
                         </div>
                        </div>
                        <div className="col-xl-3 col-lg-3 col-md-4 col-sm-5">
                             <div className="footer-tittle-bottom">
-                                <span>451</span>
-                                <p>Talented Hunter</p>
+                                <span>3000+</span>
+                                <p>Talented Workers</p>
                             </div>
                        </div>
                        <div className="col-xl-3 col-lg-3 col-md-4 col-sm-5">
                             <div className="footer-tittle-bottom">
-                                <span>568</span>
-                                <p>Talented Hunter</p>
+                                <span>500+</span>
+                                <p>Skilled Jobs</p>
                             </div>
                        </div>
                </div>
