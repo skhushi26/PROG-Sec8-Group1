@@ -90,3 +90,8 @@
 .contact-info{
     margin-top: 8%;
 }
+
+.header-area .main-menu ul li a {
+  font-family: "Muli",sans-serif;
+  text-decoration: none;
+}
