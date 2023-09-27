@@ -229,6 +229,10 @@ class UserLogin extends Component {
                             <div className="col-12 form-group mt-2 mb-2">
                                 <button type="submit" className="button button-contactForm button-login boxed-btn">Login</button>
                             </div>
+                            <div className="mt-4">
+                              <p className="mb-0">Don't have an account yet? Sign Up here!</p>
+                              <p className="mt-0"><a href="/employerregister">Register as Employer</a> | <a href="/userregister">Register as User</a></p>
+                            </div>
                         </form>
                     </div>
                 </div>
