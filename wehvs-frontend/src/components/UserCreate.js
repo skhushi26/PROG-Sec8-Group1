@@ -90,7 +90,7 @@ class UserCreate extends Component {
                              <div className="footer-tittle">
                                  <h4>About Us</h4>
                                  <div className="footer-pera">
-                                     <p>Heaven frucvitful doesn't cover lesser dvsays appear creeping seasons so behold.</p>
+                                     <p>WEHVS focus on enabling everyone to leverage their work experience and skills anywhere in the world.</p>
                                 </div>
                              </div>
                          </div>
@@ -103,11 +103,11 @@ class UserCreate extends Component {
                                 <h4>Contact Info</h4>
                                 <ul>
                                     <li>
-                                    <p>Address :Your address goes
-                                        here, your demo address.</p>
+                                    <p>60 Frederick St
+                                    Kitchener, ON.</p>
                                     </li>
                                     <li><a href="#">Phone : +8880 44338899</a></li>
-                                    <li><a href="#">Email : info@colorlib.com</a></li>
+                                    <li><a href="#">Email : info@wehvs.com</a></li>
                                 </ul>
                             </div>
 
@@ -116,13 +116,12 @@ class UserCreate extends Component {
                     <div className="col-xl-3 col-lg-3 col-md-4 col-sm-5">
                         <div className="single-footer-caption mb-50">
                             <div className="footer-tittle">
-                                <h4>Important Link</h4>
+                                <h4>IMPORTANT LINKS</h4>
                                 <ul>
-                                    <li><a href="#"> View Project</a></li>
                                     <li><a href="#">Contact Us</a></li>
-                                    <li><a href="#">Testimonial</a></li>
-                                    <li><a href="#">Proparties</a></li>
-                                    <li><a href="#">Support</a></li>
+                                    <li><a href="#">Careers</a></li>
+                                    <li><a href="#">Login/ Register</a></li>
+                                    <li><a href="#">Press Releases</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -132,7 +131,7 @@ class UserCreate extends Component {
                             <div className="footer-tittle">
                                 <h4>Newsletter</h4>
                                 <div className="footer-pera footer-pera2">
-                                 <p>Heaven fruitful doesn't over lesser in days. Appear creeping.</p>
+                                 <p>Get timely updates from WEHVS, and discover other tools and publications</p>
                              </div>
                              <div className="footer-form" >
                                  <div id="mc_embed_signup">
@@ -161,19 +160,19 @@ class UserCreate extends Component {
                        <div className="col-xl-3 col-lg-3 col-md-4 col-sm-5">
                         <div className="footer-tittle-bottom">
                             <span>5000+</span>
-                            <p>Talented Hunter</p>
+                            <p>Verified Employers</p>
                         </div>
                        </div>
                        <div className="col-xl-3 col-lg-3 col-md-4 col-sm-5">
                             <div className="footer-tittle-bottom">
-                                <span>451</span>
-                                <p>Talented Hunter</p>
+                                <span>3000+</span>
+                                <p>Talented Workers</p>
                             </div>
                        </div>
                        <div className="col-xl-3 col-lg-3 col-md-4 col-sm-5">
                             <div className="footer-tittle-bottom">
-                                <span>568</span>
-                                <p>Talented Hunter</p>
+                                <span>500+</span>
+                                <p>Skilled Jobs</p>
                             </div>
                        </div>
                </div>
