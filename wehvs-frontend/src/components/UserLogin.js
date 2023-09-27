@@ -212,7 +212,8 @@ class UserLogin extends Component {
                             <div className="col-12">
                                 <h2 className="contact-title">Login</h2>
                               </div>
-                                <div className="col-sm-10 m-auto">
+                                <div className="col-sm-10 m-auto
+                                ">
                                     <div className="form-group">
                                     <label htmlFor="email">Email</label>
                                         <input className="form-control valid" name="email" id="email" type="email"   placeholder="Email"/>
@@ -303,12 +304,7 @@ class UserLogin extends Component {
                         </div>
                     </div>
                 </div>
-               <div className="row footer-wejed justify-content-between">
-                       <div className="col-xl-3 col-lg-3 col-md-4 col-sm-6">
-                          <div className="footer-logo mb-20">
-                            <a href="index.html"><img src="assets/img/logo/logo2_footer.png" alt=""/></a>
-                          </div>
-                       </div>
+               <div className="row footer-wejed d-flex justify-content-around">
                        <div className="col-xl-3 col-lg-3 col-md-4 col-sm-5">
                         <div className="footer-tittle-bottom">
                             <span>5000+</span>
