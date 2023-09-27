@@ -69,7 +69,7 @@ const Navbar = () => {
                                             </li> */}
 
                                     {/* <a href="/userregister" className="button button-contactForm boxed-btn btn-login mr-3">Register</a> */}
-                                    <a href="/employerregister" className="button button-contactForm boxed-btn btn-login">Login</a>
+                                    <a href="/login" className="button button-contactForm boxed-btn btn-login">Login</a>
                                 </div>
                             </div>
                         </div>
