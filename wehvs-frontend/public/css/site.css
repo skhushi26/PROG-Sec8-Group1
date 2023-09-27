@@ -99,3 +99,13 @@
   text-decoration: none;
   font-size: 17px;
 }
+.single-footer-caption p {
+  color: white;
+}
+
+.footer-padding {
+  padding-top: 110px;
+}
+.footer-wejed {
+  padding-top: 0px;
+}
