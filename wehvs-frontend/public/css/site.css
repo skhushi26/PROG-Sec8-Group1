@@ -45,10 +45,13 @@
   }
 
   .dropbtn:hover {
-    text-decoration: underline;
+    text-decoration: none;
     padding: 8px 15px;
     width: 200px;
     height:50px;
+  }
+  .btn-login:hover{
+    text-decoration: none;
   }
     
   .dropdown {
@@ -94,4 +97,5 @@
 .header-area .main-menu ul li a {
   font-family: "Muli",sans-serif;
   text-decoration: none;
+  font-size: 17px;
 }
