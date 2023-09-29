@@ -5,7 +5,6 @@ const User = require("../models/User");
 const Address = require("../models/Address");
 const responseBuilder = require("../utils/response");
 const sendMailHandler = require("../utils/sendMailHandler");
-import axios from 'axios';
 
 exports.registerUser = async (req, res) => {
   try {
@@ -137,12 +136,3 @@ exports.login = async (req, res) => {
   }
 };
 
-
-exports.fetchCountries = async () => {
-  try {
-    const response = await axios.get('https://restcountries.com/v3.1/all');
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching countries:', error);
-  }
-};
