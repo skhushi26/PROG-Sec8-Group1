@@ -17,15 +17,7 @@ const ContactSchema = new mongoose.Schema(
     faxNumber: {
       type: String,
       default: ""
-    },
-    employerId: {
-      type: mongoose.Types.ObjectId,
-      default: "",
-    },
-    userId: {
-      type: mongoose.Types.ObjectId,
-      default: "",
-    },
+    }
   },
   { timestamps: true }
 );

@@ -1,16 +1,14 @@
-const fs = require("fs");
+const mongoose = require('mongoose');
 const Employers = require("../models/Employers");
 const Address = require("../models/Address");
 const Contacts = require("../models/Contacts");
-const LoginCredentials = require("../models/LoginCredentials");
+const responseBuilder = require("../utils/response");
 
 exports.updateEmployer = async (req, res) => {
   try {
-    const employerId = req.params.id; 
+    const id = req.params.id; 
 
     const {
-      email,
-      password,
       companyName,
       foundedDate,
       licenseNumber,
@@ -25,26 +23,29 @@ exports.updateEmployer = async (req, res) => {
       faxNumber,
     } = req.body;
 
+    console.log(`req.body: ${req.body}`);
+    
     // Check if the employer with the given ID exists
-    const existingEmployer = await Employer.findById(employerId);
+    const employerId = new mongoose.Types.ObjectId(id);
+    const existingEmployer = await Employers.findById(employerId);
 
     if (!existingEmployer) {
-      return res.status(404).send("Employer not found");
+      res.send(responseBuilder(null, null, "Employer not found", 404));
     }
 
     // Update the employer's basic information
-    existingEmployer.email = email;
-    existingEmployer.password = password;
     existingEmployer.companyName = companyName;
-    existingEmployer.foundedDate = foundedDate;
+    existingEmployer.foundedDate =  foundedDate;
     existingEmployer.licenseNumber = licenseNumber;
     existingEmployer.description = description;
 
     // Save the updated employer
-    await existingEmployer.save();
+    await existingEmployer.save(); 
+
 
     // Update the address associated with the employer
-    const addressData = await Address.findById(existingEmployer.addressId);
+    const addressId = new mongoose.Types.ObjectId(existingEmployer.addressId);
+    const addressData = await Address.findById(addressId);
     if (addressData) {
       addressData.address = address;
       addressData.city = city;
@@ -54,7 +55,8 @@ exports.updateEmployer = async (req, res) => {
     }
 
     // Update the contact information associated with the employer
-    const contactData = await Contacts.findOne({ employerId: employerId });
+    const contactId = new mongoose.Types.ObjectId(existingEmployer.contactId);
+    const contactData = await Contacts.findById(contactId);
     if (contactData) {
       contactData.contactNumber = contactNumber;
       contactData.contactEmail = contactEmail;
@@ -64,9 +66,10 @@ exports.updateEmployer = async (req, res) => {
     }
 
     // Respond with a success message
-    res.status(200).send("Employer updated successfully");
+    res.send(responseBuilder(null, null, "Employer has been updated succesfully!", 200));
+
   } catch (error) {
     console.error(error);
-    res.status(500).send("Something went wrong in updating the employer");
+    res.send(responseBuilder(error, null, "Something went wrong in updating the employer", 500));
   }
 };
