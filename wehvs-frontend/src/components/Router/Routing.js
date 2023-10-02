@@ -7,6 +7,7 @@ import Navbar from "../Navigation";
 import FooterMenu from "../Footer";
 import NotFound from "../NotFound";
 import UserProfile from "../UserProfile";
+import EmployerProfile from "../EmployerProfile";
 
 export default function Routing() {
   return (
@@ -17,6 +18,7 @@ export default function Routing() {
           <Route path="/employer/register" element={<EmployerRegister/>} />
           <Route path="/user/profile" element={<UserProfile/>} />
           <Route path="/login" element={<UserLogin />} />
+          <Route path="/employer/profile" element={<EmployerProfile />} />
           <Route path="*" element={<NotFound />} />
         </Route>
         {/* <Route path="/" element={<FooterMenu />} /> */}
