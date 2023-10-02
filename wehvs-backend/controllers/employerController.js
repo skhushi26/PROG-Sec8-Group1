@@ -73,3 +73,25 @@ exports.updateEmployer = async (req, res) => {
     res.send(responseBuilder(error, null, "Something went wrong in updating the employer", 500));
   }
 };
+
+
+
+// exports.getEmployer =  async (req, res) => {
+//   try {
+//     const id = req.params.id;
+
+//     // Check if the employee with the given ID exists
+//     const employee = await Employee.findById(id);
+
+//     if (!employee) {
+//       res.send(responseBuilder(null, null, "Employer not found", 404));
+//     }
+
+//     // Respond with the employee data
+//     // res.status(200).json(employee);
+//     res.send(responseBuilder(null, employee, "", 200));
+
+//   } catch (error) {
+//     res.send(responseBuilder(error, null, "Something went wrong while fetching the employer", 500));
+//   }
+// };

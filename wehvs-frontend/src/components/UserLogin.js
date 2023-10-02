@@ -231,7 +231,7 @@ class UserLogin extends Component {
                             </div>
                             <div className="mt-4">
                               <p className="mb-0">Don't have an account yet? Sign Up here!</p>
-                              <p className="mt-0"><a href="/employerregister">Register as Employer</a> | <a href="/userregister">Register as User</a></p>
+                              <p className="mt-0"><a href="/employer/register">Register as Employer</a> | <a href="/user/register">Register as User</a></p>
                             </div>
                         </form>
                     </div>
