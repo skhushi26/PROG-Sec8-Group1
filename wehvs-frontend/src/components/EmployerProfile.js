@@ -113,15 +113,14 @@ class EmployerProfile extends Component {
                             <div className="col-md-6"><label className="labels">License Number</label><input type="text" className="form-control" value=""></input></div>
                         </div>
                         <div className="row mt-3">
-                            <div className="col-md-12"><label className="labels">Mobile Number</label><input type="text" className="form-control" value=""></input></div>
-                            <div className="col-md-12"><label className="labels">Email ID</label><input type="text" className="form-control" value=""></input></div>
-                            <div className="col-md-12"><label className="labels">Contact Number</label><input type="text" className="form-control" value=""></input></div>
-                            <div className="col-md-12"><label className="labels">Founded Date</label><input type="text" className="form-control" value=""></input></div>
-                            <div className="col-md-12"><label className="labels">Description</label><input type="text" className="form-control" value=""></input></div>
-                            <div className="col-md-12"><label className="labels">Address</label><input type="text" className="form-control" value=""></input></div>
-                            <div className="col-md-12"><label className="labels">Country</label><input type="text" className="form-control" value=""></input></div>
-                            <div className="col-md-12"><label className="labels">City</label><input type="text" className="form-control" value=""></input></div>
-                            <div className="col-md-12"><label className="labels">Province</label><input type="text" className="form-control" value=""></input></div>
+                            <div className="col-md-6"><label className="labels">Email ID</label><input type="text" className="form-control" value=""></input></div>
+                            <div className="col-md-6"><label className="labels">Contact Number</label><input type="phone" className="form-control" value=""></input></div>
+                            <div className="col-md-12"><label className="labels">Founded Date</label><input type="date" className="form-control" value=""></input></div>
+                            <div className="col-md-12"><label className="labels">Description</label><textarea className="form-control" value=""></textarea> </div>
+                            <div className="col-md-6"><label className="labels">Address</label><input type="text" className="form-control" value=""></input></div>
+                            <div className="col-md-6"><label className="labels">Country</label><input type="text" className="form-control" value=""></input></div>
+                            <div className="col-md-6"><label className="labels">City</label><input type="text" className="form-control" value=""></input></div>
+                            <div className="col-md-6"><label className="labels">Province</label><input type="text" className="form-control" value=""></input></div>
                             <div className="col-md-12"><label className="labels">Zip Code</label><input type="text" className="form-control" value=""></input></div>
                             
                         </div>
@@ -145,5 +144,4 @@ class EmployerProfile extends Component {
     );
   }
 }
-
 export default withRouter(EmployerProfile);
