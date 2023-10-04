@@ -1,8 +1,100 @@
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const fs = require("fs");
 const mongoose = require('mongoose');
-const Employers = require("../models/Employers");
+const Employer = require("../models/Employer");
 const Address = require("../models/Address");
-const Contacts = require("../models/Contacts");
+const Contact = require("../models/Contact");
 const responseBuilder = require("../utils/response");
+const sendMailHandler = require("../utils/sendMailHandler");
+
+exports.registerEmployer = async (req, res) => {
+  try {
+    const {
+      email,
+      password,
+      companyName,
+      foundedDate,
+      licenseNumber,
+      description,
+      address,
+      city,
+      province,
+      zipCode,
+      telephone,
+      contactEmail,
+      mobileNumber,
+    } = req.body;
+
+    const isEmailExists = await Employer.findOne({ email });
+
+    if (!isEmailExists) {
+      const passwordHash = await bcrypt.hash(password, 10);
+
+      const addressData = await Address.create({
+        address,
+        city,
+        province,
+        zipCode,
+      });
+
+      const contactData = await Contact.create({
+        telephone,
+        contactEmail,
+        mobileNumber,
+      });
+
+      const employerData = await Employer.create({
+        email,
+        password: passwordHash,
+        companyName,
+        foundedDate,
+        licenseNumber,
+        description,
+        addressId: addressData._id,
+        contactId: contactData._id,
+      });
+
+      const addressDetails = await addressData.toJSON();
+      const employerDetails = await employerData.toJSON();
+      const contactDetails = await contactData.toJSON();
+
+      const mergedData = {
+        ...addressDetails,
+        ...employerDetails,
+        ...contactDetails,
+      };
+
+      delete mergedData.addressId;
+      delete mergedData.contactId;
+
+      let newHtml = "";
+      fs.readFile("views/email.html", { encoding: "utf-8" }, (err, html) => {
+        if (err) {
+          console.log("err in sending mail", err);
+        } else {
+          let token = jwt.sign({ email: employerData.email }, "wehvssecretkey", { expiresIn: 600 });
+          newHtml = html.replace("{{{link}}}}", `http://${req.get("host")}/employer/verify/${token}`);
+          sendMailHandler("wehvs2023@gmail.com", employerData.email, "Email Verification", newHtml);
+        }
+      });
+
+      res.send(
+        responseBuilder(
+          null,
+          mergedData,
+          "Employer registered successfully!Email has been sent to your registered email id for verification.",
+          200
+        )
+      );
+    } else {
+      res.send(responseBuilder(null, null, "Employer already exists!", 400));
+    }
+  } catch (error) {
+    console.log(error);
+    res.send(responseBuilder(error, null, "Something went wrong in registering employer!", 500));
+  }
+};
 
 exports.updateEmployer = async (req, res) => {
   try {
@@ -17,10 +109,9 @@ exports.updateEmployer = async (req, res) => {
       city,
       province,
       zipCode,
-      contactNumber,
+      telephone,
       contactEmail,
       mobileNumber,
-      faxNumber,
     } = req.body;
 
     console.log(`req.body: ${req.body}`);
@@ -58,10 +149,9 @@ exports.updateEmployer = async (req, res) => {
     const contactId = new mongoose.Types.ObjectId(existingEmployer.contactId);
     const contactData = await Contacts.findById(contactId);
     if (contactData) {
-      contactData.contactNumber = contactNumber;
+      contactData.telephone = telephone;
       contactData.contactEmail = contactEmail;
       contactData.mobileNumber = mobileNumber;
-      contactData.faxNumber = faxNumber;
       await contactData.save();
     }
 

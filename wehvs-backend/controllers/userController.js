@@ -135,4 +135,3 @@ exports.login = async (req, res) => {
     res.send(responseBuilder(error, null, "Something went wrong in logging in", 500));
   }
 };
-

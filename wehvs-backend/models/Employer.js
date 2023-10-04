@@ -47,4 +47,4 @@ const EmployerSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("employers", EmployerSchema);
+module.exports = mongoose.model("employer", EmployerSchema);

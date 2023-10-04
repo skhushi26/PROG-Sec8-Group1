@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const ContactSchema = new mongoose.Schema(
   {
-    contactNumber: {
+    telephone: {
       type: String,
       required: true
     },
@@ -14,12 +14,8 @@ const ContactSchema = new mongoose.Schema(
       type: String,
       default: ""
     },
-    faxNumber: {
-      type: String,
-      default: ""
-    }
   },
   { timestamps: true }
 );
 
-module.exports = mongoose.model("contacts", ContactSchema);
+module.exports = mongoose.model("contact", ContactSchema);
