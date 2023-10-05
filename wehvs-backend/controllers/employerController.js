@@ -1,13 +1,15 @@
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 const fs = require("fs");
-const Employers = require("../models/Employers");
+const mongoose = require("mongoose");
+const Employer = require("../models/Employer");
 const Address = require("../models/Address");
-const Contacts = require("../models/Contacts");
-const LoginCredentials = require("../models/LoginCredentials");
+const Contact = require("../models/Contact");
+const responseBuilder = require("../utils/response");
+const sendMailHandler = require("../utils/sendMailHandler");
 
-exports.updateEmployer = async (req, res) => {
+exports.registerEmployer = async (req, res) => {
   try {
-    const employerId = req.params.id;
-
     const {
       email,
       password,
@@ -19,22 +21,113 @@ exports.updateEmployer = async (req, res) => {
       city,
       province,
       zipCode,
-      contactNumber,
+      telephone,
       contactEmail,
       mobileNumber,
-      faxNumber,
     } = req.body;
 
+    const isEmailExists = await Employer.findOne({ email });
+
+    if (!isEmailExists) {
+      const passwordHash = await bcrypt.hash(password, 10);
+
+      const addressData = await Address.create({
+        address,
+        city,
+        province,
+        zipCode,
+      });
+
+      const contactData = await Contact.create({
+        telephone,
+        contactEmail,
+        mobileNumber,
+      });
+
+      const employerData = await Employer.create({
+        email,
+        password: passwordHash,
+        companyName,
+        foundedDate,
+        licenseNumber,
+        description,
+        addressId: addressData._id,
+        contactId: contactData._id,
+      });
+
+      const addressDetails = await addressData.toJSON();
+      const employerDetails = await employerData.toJSON();
+      const contactDetails = await contactData.toJSON();
+
+      const mergedData = {
+        ...addressDetails,
+        ...employerDetails,
+        ...contactDetails,
+      };
+
+      delete mergedData.addressId;
+      delete mergedData.contactId;
+
+      let newHtml = "";
+      fs.readFile("views/email.html", { encoding: "utf-8" }, (err, html) => {
+        if (err) {
+          console.log("err in sending mail", err);
+        } else {
+          let token = jwt.sign({ email: employerData.email }, "wehvssecretkey", { expiresIn: 600 });
+          newHtml = html.replace(
+            "{{{link}}}}",
+            `http://${req.get("host")}/employer/verify/${token}`
+          );
+          sendMailHandler("wehvs2023@gmail.com", employerData.email, "Email Verification", newHtml);
+        }
+      });
+
+      res.send(
+        responseBuilder(
+          null,
+          mergedData,
+          "Employer registered successfully!Email has been sent to your registered email id for verification.",
+          200
+        )
+      );
+    } else {
+      res.send(responseBuilder(null, null, "Employer already exists!", 400));
+    }
+  } catch (error) {
+    console.log(error);
+    res.send(responseBuilder(error, null, "Something went wrong in registering employer!", 500));
+  }
+};
+
+exports.updateEmployer = async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    const {
+      companyName,
+      foundedDate,
+      licenseNumber,
+      description,
+      address,
+      city,
+      province,
+      zipCode,
+      telephone,
+      contactEmail,
+      mobileNumber,
+    } = req.body;
+
+    console.log(`req.body: ${req.body}`);
+
     // Check if the employer with the given ID exists
-    const existingEmployer = await Employer.findById(employerId);
+    const employerId = new mongoose.Types.ObjectId(id);
+    const existingEmployer = await Employers.findById(employerId);
 
     if (!existingEmployer) {
-      return res.status(404).send("Employer not found");
+      res.send(responseBuilder(null, null, "Employer not found", 404));
     }
 
     // Update the employer's basic information
-    existingEmployer.email = email;
-    existingEmployer.password = password;
     existingEmployer.companyName = companyName;
     existingEmployer.foundedDate = foundedDate;
     existingEmployer.licenseNumber = licenseNumber;
@@ -44,7 +137,8 @@ exports.updateEmployer = async (req, res) => {
     await existingEmployer.save();
 
     // Update the address associated with the employer
-    const addressData = await Address.findById(existingEmployer.addressId);
+    const addressId = new mongoose.Types.ObjectId(existingEmployer.addressId);
+    const addressData = await Address.findById(addressId);
     if (addressData) {
       addressData.address = address;
       addressData.city = city;
@@ -54,20 +148,20 @@ exports.updateEmployer = async (req, res) => {
     }
 
     // Update the contact information associated with the employer
-    const contactData = await Contacts.findOne({ employerId: employerId });
+    const contactId = new mongoose.Types.ObjectId(existingEmployer.contactId);
+    const contactData = await Contacts.findById(contactId);
     if (contactData) {
-      contactData.contactNumber = contactNumber;
+      contactData.telephone = telephone;
       contactData.contactEmail = contactEmail;
       contactData.mobileNumber = mobileNumber;
-      contactData.faxNumber = faxNumber;
       await contactData.save();
     }
 
     // Respond with a success message
-    res.status(200).send("Employer updated successfully");
+    res.send(responseBuilder(null, null, "Employer has been updated succesfully!", 200));
   } catch (error) {
     console.error(error);
-    res.status(500).send("Something went wrong in updating the employer");
+    res.send(responseBuilder(error, null, "Something went wrong in updating the employer", 500));
   }
 };
 
@@ -104,3 +198,23 @@ exports.login = async (req, res) => {
     res.send(responseBuilder(error, null, "Something went wrong in logging in", 500));
   }
 };
+
+// exports.getEmployer =  async (req, res) => {
+//   try {
+//     const id = req.params.id;
+
+//     // Check if the employee with the given ID exists
+//     const employee = await Employee.findById(id);
+
+//     if (!employee) {
+//       res.send(responseBuilder(null, null, "Employer not found", 404));
+//     }
+
+//     // Respond with the employee data
+//     // res.status(200).json(employee);
+//     res.send(responseBuilder(null, employee, "", 200));
+
+//   } catch (error) {
+//     res.send(responseBuilder(error, null, "Something went wrong while fetching the employer", 500));
+//   }
+// };

@@ -31,11 +31,15 @@ const EmployerSchema = new mongoose.Schema(
       type: String,
       default: "User",
     },
-    is_active: {
+    isActive: {
       type: Boolean,
       default: false,
     },
-    address_id: {
+    addressId: {
+      type: mongoose.Types.ObjectId,
+      required: true,
+    },
+    contactId: {
       type: mongoose.Types.ObjectId,
       required: true,
     },
@@ -43,4 +47,4 @@ const EmployerSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("employers", EmployerSchema);
+module.exports = mongoose.model("employer", EmployerSchema);

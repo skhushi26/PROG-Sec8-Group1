@@ -4,19 +4,22 @@ import UserRegister from "../UserRegister";
 import EmployerRegister from "../EmployerRegister";
 import UserLogin from "../UserLogin";
 import Navbar from "../Navigation";
-import FooterMenu from "../Footer";
 import NotFound from "../NotFound";
 import ForgotPassword from "../ForgotPassword";
 import ResetPassword from "../ResetPassword";
+import UserProfile from "../UserProfile";
+import EmployerProfile from "../EmployerProfile";
 
 export default function Routing() {
   return (
     <>
       <Routes>
         <Route path="/" element={<Navbar />}>
-          <Route path="/userregister" element={<UserRegister />} />
-          <Route path="/employerregister" element={<EmployerRegister />} />
+          <Route path="/user/register" element={<UserRegister />} />
+          <Route path="/employer/register" element={<EmployerRegister />} />
+          <Route path="/user/profile" element={<UserProfile />} />
           <Route path="/login" element={<UserLogin />} />
+          <Route path="/employer/profile" element={<EmployerProfile />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="*" element={<NotFound />} />

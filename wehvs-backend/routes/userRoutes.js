@@ -6,7 +6,6 @@ const {
   loginSchema,
   userProfileUpdateSchema,
 } = require("../payloads/userValidation");
-const { EmployerSchema } = require("../models/Employers.js");
 const fileUploadHandler = require("../utils/fileUploadHandler");
 const router = express.Router();
 

@@ -5,6 +5,7 @@ require("./utils/db");
 
 const errorHandler = require("./utils/error-handler");
 const userRoute = require("./routes/userRoutes");
+const employerRoute = require("./routes/employerRoutes");
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.set("view engine", "ejs");
 app.set("views", "views");
 
 app.use("/users", userRoute);
+app.use("/employers", employerRoute);
 
 app.use(errorHandler);
 
