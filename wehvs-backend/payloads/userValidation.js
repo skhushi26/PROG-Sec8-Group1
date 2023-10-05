@@ -3,16 +3,36 @@ const validateRequest = require("../utils/validation");
 
 function userRegistrationSchema(req, res, next) {
   const schemaRules = {
-    first_name: Joi.string().required(),
-    last_name: Joi.string().required(),
+    firstName: Joi.string().required(),
+    lastName: Joi.string().required(),
     email: Joi.string().email().required(),
     password: Joi.string().required(),
-    mobile_no: Joi.number(),
-    date_of_birth: Joi.date(),
+    dateOfBirth: Joi.date(),
     address: Joi.string().required(),
     city: Joi.string(),
     province: Joi.string(),
-    zip_code: Joi.string(),
+    zipCode: Joi.string(),
+    telephone: Joi.string(),
+    contactEmail: Joi.string(),
+    mobileNumber: Joi.string(),
+  };
+
+  validateRequest(req, next, Joi.object(schemaRules));
+}
+
+function userProfileUpdateSchema(req, res, next) {
+  const schemaRules = {
+    firstName: Joi.string().required(),
+    lastName: Joi.string().required(),
+    email: Joi.string().email().required(),
+    dateOfBirth: Joi.date(),
+    address: Joi.string().required(),
+    city: Joi.string(),
+    province: Joi.string(),
+    zipCode: Joi.string(),
+    telephone: Joi.string(),
+    contactEmail: Joi.string(),
+    mobileNumber: Joi.string(),
   };
 
   validateRequest(req, next, Joi.object(schemaRules));
@@ -27,4 +47,4 @@ function loginSchema(req, res, next) {
   validateRequest(req, next, Joi.object(schemaRules));
 }
 
-module.exports = { userRegistrationSchema, loginSchema };
+module.exports = { userRegistrationSchema, loginSchema, userProfileUpdateSchema };

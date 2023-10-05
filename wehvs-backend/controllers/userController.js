@@ -1,25 +1,30 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const fs = require("fs");
+const mongoose = require("mongoose");
 const User = require("../models/User");
 const Address = require("../models/Address");
 const responseBuilder = require("../utils/response");
 const sendMailHandler = require("../utils/sendMailHandler");
+const Contacts = require("../models/Contacts");
 
 exports.registerUser = async (req, res) => {
   try {
     const {
-      first_name,
-      last_name,
+      firstName,
+      lastName,
       email,
       password,
-      mobile_no,
-      date_of_birth,
+      mobileNo,
+      dateOfBirth,
       role,
       address,
       city,
       province,
-      zip_code,
+      zipCode,
+      telephone,
+      contactEmail,
+      mobileNumber,
     } = req.body;
     const isEmailExists = await User.findOne({ email });
 
@@ -30,29 +35,39 @@ exports.registerUser = async (req, res) => {
         address,
         city,
         province,
-        zip_code,
+        zipCode,
+      });
+
+      const contactData = await Contacts.create({
+        telephone,
+        contactEmail,
+        mobileNumber,
       });
 
       const userData = await User.create({
-        first_name,
-        last_name,
+        firstName,
+        lastName,
         email,
         password: passwordHash,
-        mobile_no,
-        date_of_birth,
+        mobileNo,
+        dateOfBirth,
         role,
-        address_id: addressData._id,
+        addressId: addressData._id,
+        contactId: contactData._id,
       });
 
       const addressDetails = await addressData.toJSON();
       const userDetails = await userData.toJSON();
+      const contactDetails = await contactData.toJSON();
 
       const mergedData = {
         ...addressDetails,
         ...userDetails,
+        ...contactDetails,
       };
 
-      delete mergedData.address_id;
+      delete mergedData.addressId;
+      delete mergedData.contactId;
 
       let newHtml = "";
       fs.readFile("views/email.html", { encoding: "utf-8" }, (err, html) => {
@@ -96,10 +111,10 @@ exports.getVerifiedUser = async (req, res) => {
     } else {
       const userDetails = await User.findOne({ email: decoded.email });
       if (userDetails) {
-        if (userDetails.is_active) {
+        if (userDetails.isActive) {
           res.send(responseBuilder(null, null, "Your account is already activated", 200));
         } else {
-          await User.findOneAndUpdate({ email: decoded.email }, { $set: { is_active: true } });
+          await User.findOneAndUpdate({ email: decoded.email }, { $set: { isActive: true } });
           res.send(responseBuilder(null, null, "Your account has activated!", 200));
         }
       } else {
@@ -117,7 +132,7 @@ exports.login = async (req, res) => {
     const { email, password } = req.body;
     const userData = await User.findOne({ email });
     if (!userData) {
-      res.send(responseBuilder(null, null, "User not found!", 400));
+      res.send(responseBuilder(null, null, "User not found!", 404));
     } else {
       const isPasswordMatch = await bcrypt.compare(password, userData.password);
       if (isPasswordMatch) {
@@ -136,3 +151,59 @@ exports.login = async (req, res) => {
   }
 };
 
+exports.updateUser = async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    const {
+      firstName,
+      lastName,
+      email,
+      dateOfBirth,
+      address,
+      city,
+      province,
+      zipCode,
+      telephone,
+      contactEmail,
+      mobileNumber,
+    } = req.body;
+
+    const userId = new mongoose.Types.ObjectId(id);
+    const existingUser = await User.findById({ _id: userId });
+
+    const profilePhotoPath = req.file ? req.file.path : null;
+
+    if (!existingUser) {
+      res.send(responseBuilder(null, null, "User not found", 404));
+    } else {
+      existingUser.firstName = firstName;
+      existingUser.lastName = lastName;
+      existingUser.email = email;
+      existingUser.profilePhoto = profilePhotoPath;
+      existingUser.dateOfBirth = dateOfBirth;
+      await existingUser.save();
+
+      const addressData = await Address.findById(existingUser.addressId);
+      if (addressData) {
+        addressData.address = address;
+        addressData.city = city;
+        addressData.province = province;
+        addressData.zipCode = zipCode;
+        await addressData.save();
+      }
+
+      const contactData = await Contacts.findById(existingUser.contactId);
+      if (contactData) {
+        contactData.telephone = telephone;
+        contactData.contactEmail = contactEmail;
+        contactData.mobileNumber = mobileNumber;
+        await contactData.save();
+      }
+      res.send(responseBuilder(null, null, "User details updated successfully", 200));
+    }
+  } catch (error) {
+    console.log("error", error);
+    res.send(responseBuilder(error, null, "Something went wrong in updating user details", 500));
+  }
+};

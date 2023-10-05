@@ -6,7 +6,7 @@ const LoginCredentials = require("../models/LoginCredentials");
 
 exports.updateEmployer = async (req, res) => {
   try {
-    const employerId = req.params.id; 
+    const employerId = req.params.id;
 
     const {
       email,
@@ -68,5 +68,39 @@ exports.updateEmployer = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).send("Something went wrong in updating the employer");
+  }
+};
+
+exports.login = async (req, res) => {
+  let token = "";
+  try {
+    const { email, password } = req.body;
+    const employerData = await Employers.findOne({ email });
+    if (!employerData) {
+      res.send(responseBuilder(null, null, "Employer not found!", 404));
+    } else {
+      const isPasswordMatch = await bcrypt.compare(password, employerData.password);
+      if (isPasswordMatch) {
+        token = await jwt.sign(
+          { id: employerData._id, role: employerData.role },
+          "wehvsLoginEmployerSecretKey",
+          {
+            expiresIn: "9h",
+          }
+        );
+        res.send(
+          responseBuilder(
+            null,
+            { ...employerData.toJSON(), token },
+            "Employer logged in successfully",
+            200
+          )
+        );
+      } else {
+        res.send(responseBuilder(null, null, "Invalid credentails", 400));
+      }
+    }
+  } catch (error) {
+    res.send(responseBuilder(error, null, "Something went wrong in logging in", 500));
   }
 };

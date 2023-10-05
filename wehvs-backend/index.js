@@ -1,5 +1,6 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+const path = require("path");
 require("./utils/db");
 
 const errorHandler = require("./utils/error-handler");
@@ -10,6 +11,8 @@ const app = express();
 app.use(bodyParser.json({ limit: "5000mb" }));
 app.use(bodyParser.urlencoded({ extended: true, limit: "5000mb" }));
 app.use(express.json());
+
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.set("view engine", "ejs");
 app.set("views", "views");
