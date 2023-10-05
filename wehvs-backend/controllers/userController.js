@@ -1,12 +1,14 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const fs = require("fs");
+const { v4: uuidv4 } = require('uuid');
 const mongoose = require("mongoose");
 const User = require("../models/User");
+const Employer = require("../models/Employer");
 const Address = require("../models/Address");
 const responseBuilder = require("../utils/response");
 const sendMailHandler = require("../utils/sendMailHandler");
-const Contacts = require("../models/Contacts");
+const Contact = require("../models/Contact");
 
 exports.registerUser = async (req, res) => {
   try {
@@ -38,7 +40,7 @@ exports.registerUser = async (req, res) => {
         zipCode,
       });
 
-      const contactData = await Contacts.create({
+      const contactData = await Contact.create({
         telephone,
         contactEmail,
         mobileNumber,
@@ -193,7 +195,7 @@ exports.updateUser = async (req, res) => {
         await addressData.save();
       }
 
-      const contactData = await Contacts.findById(existingUser.contactId);
+      const contactData = await Contact.findById(existingUser.contactId);
       if (contactData) {
         contactData.telephone = telephone;
         contactData.contactEmail = contactEmail;
@@ -206,4 +208,62 @@ exports.updateUser = async (req, res) => {
     console.log("error", error);
     res.send(responseBuilder(error, null, "Something went wrong in updating user details", 500));
   }
+};
+
+
+
+exports.forgotPassword = async (req, res) => {
+  const { email, role } = req.body;
+  const rand = uuidv4();
+
+  // creates link to reset password
+  const link = `http://${req.get('host')}/password/reset/${rand}`;
+  let name = "";
+  if (role == "User") {
+    // finds user by email ID
+    const user = await User.findOne({ email });
+
+    // If role is "User"
+    if (!user) {
+      // sends response if user doesn't exists
+      res.send(responseBuilder(null, null, "User doesn't exists", 400));
+    }
+
+    name = user.firstName;
+    // sets the user's resetToken and expiryToken
+    user.resetToken = rand;
+    user.expiryToken = Date.now() + 3600000;
+    // saves user data
+    await user.save();
+  }
+
+  // If role is "Employer"
+  else{
+    // finds employer by email ID
+    const employer = await Employer.findOne({ email });
+
+    // checks whether employer exists or not
+    if (!employer) {
+      // sends response if employer doesn't exists
+      res.send(responseBuilder(null, null, "Employer doesn't exists", 400));
+    }
+
+    name = employer.companyName;
+    // sets the user's resetToken and expiryToken
+    employer.resetToken = rand;
+    employer.expiryToken = Date.now() + 3600000;
+    // saves employer data
+    await employer.save();
+  }
+
+  let newHtml = "";
+  fs.readFile("views/forgot-password-email.html", { encoding: "utf-8" }, (err, html) => {
+    if (err) {
+      console.log("Error in sending mail", err);
+    } else {
+      newHtml = html.replace("{{{resetlink}}}", `http://${req.get('host')}/password/reset/${rand}`);
+      newHtml = newHtml.replace("{{{name}}}", name);
+      sendMailHandler("wehvs2023@gmail.com", email, "Reset Password", newHtml);
+    }
+  });
 };

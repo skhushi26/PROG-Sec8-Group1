@@ -47,4 +47,32 @@ function loginSchema(req, res, next) {
   validateRequest(req, next, Joi.object(schemaRules));
 }
 
-module.exports = { userRegistrationSchema, loginSchema, userProfileUpdateSchema };
+
+// Forgot password server side validation
+function forgotPasswordSchema(req, res, next) {
+  const schemaRules = {
+    email: Joi.string().email().required(),
+    role: Joi.string()
+  };
+
+  validateRequest(req, next, Joi.object(schemaRules));
+};
+
+
+function resetPasswordSchema(req, res, next) {
+  const schemaRules = {
+    newPassword: Joi.string().required(),
+    confirmPassword: Joi.string().required(),
+    sentToken: Joi.string().required(),
+  };
+
+  validateRequest(req, next, Joi.object(schemaRules));
+};
+
+module.exports = {
+  userRegistrationSchema,
+  loginSchema,
+  userProfileUpdateSchema,
+  forgotPasswordSchema,
+  resetPasswordSchema
+};

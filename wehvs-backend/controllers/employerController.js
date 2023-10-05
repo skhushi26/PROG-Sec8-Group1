@@ -149,7 +149,7 @@ exports.updateEmployer = async (req, res) => {
 
     // Update the contact information associated with the employer
     const contactId = new mongoose.Types.ObjectId(existingEmployer.contactId);
-    const contactData = await Contacts.findById(contactId);
+    const contactData = await Contact.findById(contactId);
     if (contactData) {
       contactData.telephone = telephone;
       contactData.contactEmail = contactEmail;
