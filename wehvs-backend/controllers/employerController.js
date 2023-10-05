@@ -1,7 +1,7 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const fs = require("fs");
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Employer = require("../models/Employer");
 const Address = require("../models/Address");
 const Contact = require("../models/Contact");
@@ -74,7 +74,10 @@ exports.registerEmployer = async (req, res) => {
           console.log("err in sending mail", err);
         } else {
           let token = jwt.sign({ email: employerData.email }, "wehvssecretkey", { expiresIn: 600 });
-          newHtml = html.replace("{{{link}}}}", `http://${req.get("host")}/employer/verify/${token}`);
+          newHtml = html.replace(
+            "{{{link}}}}",
+            `http://${req.get("host")}/employer/verify/${token}`
+          );
           sendMailHandler("wehvs2023@gmail.com", employerData.email, "Email Verification", newHtml);
         }
       });
@@ -98,7 +101,7 @@ exports.registerEmployer = async (req, res) => {
 
 exports.updateEmployer = async (req, res) => {
   try {
-    const id = req.params.id; 
+    const id = req.params.id;
 
     const {
       companyName,
@@ -115,7 +118,7 @@ exports.updateEmployer = async (req, res) => {
     } = req.body;
 
     console.log(`req.body: ${req.body}`);
-    
+
     // Check if the employer with the given ID exists
     const employerId = new mongoose.Types.ObjectId(id);
     const existingEmployer = await Employers.findById(employerId);
@@ -126,13 +129,12 @@ exports.updateEmployer = async (req, res) => {
 
     // Update the employer's basic information
     existingEmployer.companyName = companyName;
-    existingEmployer.foundedDate =  foundedDate;
+    existingEmployer.foundedDate = foundedDate;
     existingEmployer.licenseNumber = licenseNumber;
     existingEmployer.description = description;
 
     // Save the updated employer
-    await existingEmployer.save(); 
-
+    await existingEmployer.save();
 
     // Update the address associated with the employer
     const addressId = new mongoose.Types.ObjectId(existingEmployer.addressId);
@@ -157,14 +159,45 @@ exports.updateEmployer = async (req, res) => {
 
     // Respond with a success message
     res.send(responseBuilder(null, null, "Employer has been updated succesfully!", 200));
-
   } catch (error) {
     console.error(error);
     res.send(responseBuilder(error, null, "Something went wrong in updating the employer", 500));
   }
 };
 
-
+exports.login = async (req, res) => {
+  let token = "";
+  try {
+    const { email, password } = req.body;
+    const employerData = await Employers.findOne({ email });
+    if (!employerData) {
+      res.send(responseBuilder(null, null, "Employer not found!", 404));
+    } else {
+      const isPasswordMatch = await bcrypt.compare(password, employerData.password);
+      if (isPasswordMatch) {
+        token = await jwt.sign(
+          { id: employerData._id, role: employerData.role },
+          "wehvsLoginEmployerSecretKey",
+          {
+            expiresIn: "9h",
+          }
+        );
+        res.send(
+          responseBuilder(
+            null,
+            { ...employerData.toJSON(), token },
+            "Employer logged in successfully",
+            200
+          )
+        );
+      } else {
+        res.send(responseBuilder(null, null, "Invalid credentails", 400));
+      }
+    }
+  } catch (error) {
+    res.send(responseBuilder(error, null, "Something went wrong in logging in", 500));
+  }
+};
 
 // exports.getEmployer =  async (req, res) => {
 //   try {

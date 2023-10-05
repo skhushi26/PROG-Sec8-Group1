@@ -4,15 +4,15 @@ const ContactSchema = new mongoose.Schema(
   {
     telephone: {
       type: String,
-      required: true
+      required: true,
     },
     contactEmail: {
       type: String,
-        required: true
+      required: true,
     },
     mobileNumber: {
       type: String,
-      default: ""
+      default: "",
     },
   },
   { timestamps: true }

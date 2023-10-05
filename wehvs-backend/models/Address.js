@@ -14,7 +14,7 @@ const AddressSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
-    zip_code: {
+    zipCode: {
       type: String,
       default: "",
     },
