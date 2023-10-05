@@ -43,6 +43,8 @@ const UserSchema = new mongoose.Schema(
       type: mongoose.Types.ObjectId,
       required: true,
     },
+    // resetToken: String,
+    // expiryToken: Date,
   },
   { timestamps: true }
 );
