@@ -46,7 +46,6 @@ const Navbar = () => {
                     {/* </div> */}
                 </div>
             </div>
-
             {/* Render child routes */}
             <Outlet />
         </>
