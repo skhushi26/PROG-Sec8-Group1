@@ -121,7 +121,7 @@ exports.updateEmployer = async (req, res) => {
 
     // Check if the employer with the given ID exists
     const employerId = new mongoose.Types.ObjectId(id);
-    const existingEmployer = await Employers.findById(employerId);
+    const existingEmployer = await Employer.findById(employerId);
 
     if (!existingEmployer) {
       res.send(responseBuilder(null, null, "Employer not found", 404));
@@ -158,7 +158,7 @@ exports.updateEmployer = async (req, res) => {
     }
 
     // Respond with a success message
-    res.send(responseBuilder(null, null, "Employer has been updated succesfully!", 200));
+    res.send(responseBuilder(null, existingEmployer, "Employer has been updated succesfully!", 200));
   } catch (error) {
     console.error(error);
     res.send(responseBuilder(error, null, "Something went wrong in updating the employer", 500));
@@ -169,7 +169,7 @@ exports.login = async (req, res) => {
   let token = "";
   try {
     const { email, password } = req.body;
-    const employerData = await Employers.findOne({ email });
+    const employerData = await Employer.findOne({ email });
     if (!employerData) {
       res.send(responseBuilder(null, null, "Employer not found!", 404));
     } else {
