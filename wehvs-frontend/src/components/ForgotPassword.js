@@ -1,10 +1,15 @@
 import React, { useState } from "react";
+import axios from "axios";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
+  const [role, setRole] = useState("");
   const [emailError, setEmailError] = useState("");
+  const [roleError, setRoleError] = useState("");
+  const [message, setMessage] = useState("");
+  const [success, setSuccess] = useState(true);
 
-  const validateUser = (e) => {
+  const validateUser = async (e) => {
     e.preventDefault();
 
     let valid = true;
@@ -21,9 +26,35 @@ const ForgotPassword = () => {
       setEmailError("");
     }
 
+    // Role validation
+    if (role === "") {
+      setRoleError("Role is required"); // Add a validation for role
+      valid = false;
+    } else {
+      setRoleError("");
+    }
+
     // If all validations pass, you can proceed with further action
     if (valid) {
-      // Perform your action here (e.g., submit the form)
+      try {
+        const response = await axios.post("http://localhost:3333/users/forgot-password", {
+          email,
+          role,
+        });
+        if (response.data.statusCode === 200) {
+          setMessage(response.data.message);
+          setSuccess(true);
+        } else if (response.data.statusCode === 400) {
+          setMessage(response.data.message);
+          setSuccess(false);
+        } else {
+          setMessage(response.data.message);
+          setSuccess(false);
+        }
+      } catch (error) {
+        setMessage("Something went wrong in sending reset password link");
+        setSuccess(false);
+      }
     }
   };
   return (
@@ -47,6 +78,11 @@ const ForgotPassword = () => {
                 Note: Reset password link will be send to the entered emailid. This link will be
                 valid for 10 minutes!
               </p>
+              {success ? (
+                <div className="mt-2 text-success text-center m-auto mb-5 ">{message}</div>
+              ) : (
+                <div className="mt-2 text-danger text-center">{message}</div>
+              )}
               <div
                 className="col-sm-10 m-auto
                                   "
@@ -65,12 +101,21 @@ const ForgotPassword = () => {
                   <span className="error-message text-danger">{emailError}</span>
                 </div>
               </div>
-              {/* <div className="col-sm-10 m-auto">
-                                      <div className="form-group">
-                                          <label htmlFor="password">Password</label>
-                                          <input className="form-control" name="password" id="password" type="password" placeholder="Password"/>
-                                      </div>
-                                  </div> */}
+              <div className="col-sm-10 m-auto">
+                <div className="form-group">
+                  <label htmlFor="role">Role</label>
+                  <input
+                    className="form-control valid"
+                    name="role"
+                    id="role"
+                    type="text"
+                    placeholder="Role"
+                    value={role}
+                    onChange={(e) => setRole(e.target.value)}
+                  />
+                  <span className="error-message text-danger">{roleError}</span>
+                </div>
+              </div>
             </div>
             <div className="col-12 form-group mt-2 mb-2">
               <button type="submit" className="button button-contactForm button-login boxed-btn">

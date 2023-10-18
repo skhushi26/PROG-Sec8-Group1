@@ -169,7 +169,7 @@ exports.login = async (req, res) => {
   let token = "";
   try {
     const { email, password } = req.body;
-    const employerData = await Employers.findOne({ email });
+    const employerData = await Employer.findOne({ email });
     if (!employerData) {
       res.send(responseBuilder(null, null, "Employer not found!", 404));
     } else {

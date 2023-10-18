@@ -1,7 +1,7 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const fs = require("fs");
-const { v4: uuidv4 } = require('uuid');
+const { v4: uuidv4 } = require("uuid");
 const mongoose = require("mongoose");
 const User = require("../models/User");
 const Employer = require("../models/Employer");
@@ -210,14 +210,12 @@ exports.updateUser = async (req, res) => {
   }
 };
 
-
-
 exports.forgotPassword = async (req, res) => {
   const { email, role } = req.body;
   const rand = uuidv4();
 
   // creates link to reset password
-  const link = `http://${req.get('host')}/password/reset/${rand}`;
+  const link = `http://${req.get("host")}/password/reset/${rand}`;
   let name = "";
   if (role == "User") {
     // finds user by email ID
@@ -238,7 +236,7 @@ exports.forgotPassword = async (req, res) => {
   }
 
   // If role is "Employer"
-  else{
+  else {
     // finds employer by email ID
     const employer = await Employer.findOne({ email });
 
@@ -257,18 +255,16 @@ exports.forgotPassword = async (req, res) => {
   }
 
   let newHtml = "";
-  fs.readFile("views/forgot-password-email.html", { encoding: "utf-8" }, (err, html) => {
-    if (err) {
-      console.log("Error in sending mail", err);
-    } else {
-      newHtml = html.replace("{{{resetlink}}}", `http://${req.get('host')}/password/reset/${rand}`);
-      newHtml = newHtml.replace("{{{name}}}", name);
-      sendMailHandler("wehvs2023@gmail.com", email, "Reset Password", newHtml);
-    }
-  });
+  // fs.readFile("views/forgot-password-email.html", { encoding: "utf-8" }, (err, html) => {
+  //   if (err) {
+  //     console.log("Error in sending mail", err);
+  //   } else {
+  //     newHtml = html.replace("{{{resetlink}}}", `http://${req.get('host')}/password/reset/${rand}`);
+  //     newHtml = newHtml.replace("{{{name}}}", name);
+  //     sendMailHandler("wehvs2023@gmail.com", email, "Reset Password", newHtml);
+  //   }
+  // });
 };
-
-
 
 exports.ResetPassword = async (req, res) => {
   try {
@@ -281,7 +277,7 @@ exports.ResetPassword = async (req, res) => {
     // checks if user exists or not
     if (!user) {
       // sends response if user doesn't exists
-      return res.send(response(null, null, 'User not found', 500));
+      return res.send(response(null, null, "User not found", 500));
     }
     // checks whether newPassword and confirmPassword matches or not
     if (newPassword === confirmPassword) {
@@ -301,14 +297,14 @@ exports.ResetPassword = async (req, res) => {
           new: true,
           upsert: true,
           timestamps: { createdAt: false, updatedAt: true },
-        },
+        }
       );
       const fromMail = `${process.env.SENDER_EMAIL}`;
       const toMail = `${user.email}`;
-      const subject = 'Email Verification';
-      const text = 'Hello,<br> Your password has been updated.<br>';
+      const subject = "Email Verification";
+      const text = "Hello,<br> Your password has been updated.<br>";
       const transporter = nodemailer.createTransport({
-        service: 'gmail',
+        service: "gmail",
         secure: false,
         auth: {
           user: `${process.env.SENDER_EMAIL}`,
@@ -332,12 +328,10 @@ exports.ResetPassword = async (req, res) => {
       });
 
       // eslint-disable-next-line quote-props
-      res.send(response(null, { 'user': updatedData }, 'Password Updated', 200));
+      res.send(response(null, { user: updatedData }, "Password Updated", 200));
     } else {
       // sends response if password and confirm password doesn't match
-      res.send(
-        response(null, null, "Password and confirm password doesn't match", 500),
-      );
+      res.send(response(null, null, "Password and confirm password doesn't match", 500));
     }
   } catch (error) {
     // sends response if error occurred in updating password
