@@ -6,7 +6,7 @@ const {
   loginSchema,
   userProfileUpdateSchema,
   forgotPasswordSchema,
-  resetPasswordSchema
+  resetPasswordSchema,
 } = require("../payloads/userValidation");
 
 const fileUploadHandler = require("../utils/fileUploadHandler");
@@ -14,12 +14,11 @@ const router = express.Router();
 
 const upload = fileUploadHandler("uploads");
 
-
 router.post("/register", userRegistrationSchema, userController.registerUser);
 
 router.get("/verify/:token", userController.getVerifiedUser);
 
-router.post("/login", loginSchema, userController.login);
+// router.post("/login", loginSchema, userController.login);
 
 router.put(
   "/update/:id",
@@ -28,7 +27,7 @@ router.put(
   userController.updateUser
 );
 
-router.post('/forgot-password', forgotPasswordSchema, userController.forgotPassword);
+router.post("/forgot-password", forgotPasswordSchema, userController.forgotPassword);
 
 // router.post('/reset-password', resetPasswordSchema, userController.resetPassword);
 

@@ -128,30 +128,37 @@ exports.getVerifiedUser = async (req, res) => {
   }
 };
 
-exports.login = async (req, res) => {
-  let token = "";
-  try {
-    const { email, password } = req.body;
-    const userData = await User.findOne({ email });
-    if (!userData) {
-      res.send(responseBuilder(null, null, "User not found!", 404));
-    } else {
-      const isPasswordMatch = await bcrypt.compare(password, userData.password);
-      if (isPasswordMatch) {
-        token = await jwt.sign({ id: userData._id, role: userData.role }, "wehvsLoginSecretKey", {
-          expiresIn: "9h",
-        });
-        res.send(
-          responseBuilder(null, { ...userData.toJSON(), token }, "User logged in successfully", 200)
-        );
-      } else {
-        res.send(responseBuilder(null, null, "Invalid credentails", 400));
-      }
-    }
-  } catch (error) {
-    res.send(responseBuilder(error, null, "Something went wrong in logging in", 500));
-  }
-};
+// exports.login = async (req, res) => {
+//   const { email, password, role } = req.body;
+//   let token = "";
+//   try {
+//     if (role == "User") {
+//       const userData = await User.findOne({ email });
+//       if (!userData) {
+//         res.send(responseBuilder(null, null, "User not found!", 404));
+//       } else {
+//         const isPasswordMatch = await bcrypt.compare(password, userData.password);
+//         if (isPasswordMatch) {
+//           token = await jwt.sign({ id: userData._id, role: userData.role }, "wehvsLoginSecretKey", {
+//             expiresIn: "9h",
+//           });
+//           res.send(
+//             responseBuilder(
+//               null,
+//               { ...userData.toJSON(), token },
+//               "User logged in successfully",
+//               200
+//             )
+//           );
+//         } else {
+//           res.send(responseBuilder(null, null, "Invalid credentails", 400));
+//         }
+//       }
+//     }
+//   } catch (error) {
+//     res.send(responseBuilder(error, null, "Something went wrong in logging in", 500));
+//   }
+// };
 
 exports.updateUser = async (req, res) => {
   try {
@@ -218,6 +225,7 @@ exports.forgotPassword = async (req, res) => {
   const link = `http://${req.get("host")}/password/reset/${rand}`;
   let name = "";
   if (role == "User") {
+    console.log("Helllooo");
     // finds user by email ID
     const user = await User.findOne({ email });
 
@@ -225,14 +233,16 @@ exports.forgotPassword = async (req, res) => {
     if (!user) {
       // sends response if user doesn't exists
       res.send(responseBuilder(null, null, "User doesn't exists", 400));
-    }
-    else {
+    } else {
       name = user.firstName;
       // sets the user's resetToken and expiryToken
       user.resetToken = rand;
       user.expiryToken = Date.now() + 3600000;
       // saves user data
       await user.save();
+      res.send(
+        responseBuilder(null, user, "Forgot Password email has been sent to your email id", 200)
+      );
     }
   }
 
@@ -245,27 +255,29 @@ exports.forgotPassword = async (req, res) => {
     if (!employer) {
       // sends response if employer doesn't exists
       res.send(responseBuilder(null, null, "Employer doesn't exists", 400));
-    }
-    else {
+    } else {
       name = employer.companyName;
       // sets the user's resetToken and expiryToken
       employer.resetToken = rand;
       employer.expiryToken = Date.now() + 3600000;
       // saves employer data
       await employer.save();
+      res.send(
+        responseBuilder(null, employer, "Forgot Password email has been sent to your email id", 200)
+      );
     }
   }
 
   let newHtml = "";
-  // fs.readFile("views/forgot-password-email.html", { encoding: "utf-8" }, (err, html) => {
-  //   if (err) {
-  //     console.log("Error in sending mail", err);
-  //   } else {
-  //     newHtml = html.replace("{{{resetlink}}}", `http://${req.get('host')}/password/reset/${rand}`);
-  //     newHtml = newHtml.replace("{{{name}}}", name);
-  //     sendMailHandler("wehvs2023@gmail.com", email, "Reset Password", newHtml);
-  //   }
-  // });
+  fs.readFile("views/forgot-password-email.html", { encoding: "utf-8" }, (err, html) => {
+    if (err) {
+      console.log("Error in sending mail", err);
+    } else {
+      newHtml = html.replace("{{{resetlink}}}", `http://${req.get("host")}/password/reset/${rand}`);
+      newHtml = newHtml.replace("{{{name}}}", name);
+      sendMailHandler("wehvs2023@gmail.com", email, "Reset Password", newHtml);
+    }
+  });
 };
 
 exports.ResetPassword = async (req, res) => {

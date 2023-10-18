@@ -11,6 +11,6 @@ const router = express.Router();
 // router.get("/employer/:id", employerController.getEmployer);
 router.post("/register", employerRegistrationSchema, employerController.registerEmployer);
 router.put("/updateEmployer/:id", employerUpdateSchema, employerController.updateEmployer);
-router.post("/login", employerLoginSchema, employerController.login);
+// router.post("/login", employerLoginSchema, employerController.login);
 
 module.exports = router;

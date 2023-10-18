@@ -7,7 +7,7 @@ const ForgotPassword = () => {
   const [emailError, setEmailError] = useState("");
   const [roleError, setRoleError] = useState("");
   const [message, setMessage] = useState("");
-  const [success, setSuccess] = useState(true);
+  const [success, setSuccess] = useState(false);
 
   const validateUser = async (e) => {
     e.preventDefault();
@@ -41,6 +41,7 @@ const ForgotPassword = () => {
           email,
           role,
         });
+        console.log("response", response);
         if (response.data.statusCode === 200) {
           setMessage(response.data.message);
           setSuccess(true);
@@ -77,11 +78,17 @@ const ForgotPassword = () => {
                 Note: Reset password link will be send to the entered emailid. This link will be
                 valid for 10 minutes!
               </p>
-              {success ? (
-                <div className="mt-2 text-success text-center m-auto mb-5 ">{message}</div>
-              ) : (
-                <div className="mt-2 text-danger text-center">{message}</div>
-              )}
+              <div className="col-sm-10 m-auto">
+                {success == null && success === true ? (
+                  <div className="alert alert-success" role="alert" bis_skin_checked="1">
+                    {message}
+                  </div>
+                ) : (
+                  <div className="alert alert-danger" role="alert" bis_skin_checked="1">
+                    {message}
+                  </div>
+                )}
+              </div>
               <div
                 className="col-sm-10 m-auto
                                   "

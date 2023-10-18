@@ -38,26 +38,15 @@ function userProfileUpdateSchema(req, res, next) {
   validateRequest(req, next, Joi.object(schemaRules));
 }
 
-function loginSchema(req, res, next) {
-  const schemaRules = {
-    email: Joi.string().email().required(),
-    password: Joi.string().required(),
-  };
-
-  validateRequest(req, next, Joi.object(schemaRules));
-}
-
-
 // Forgot password server side validation
 function forgotPasswordSchema(req, res, next) {
   const schemaRules = {
     email: Joi.string().email().required(),
-    role: Joi.string()
+    role: Joi.string(),
   };
 
   validateRequest(req, next, Joi.object(schemaRules));
-};
-
+}
 
 function resetPasswordSchema(req, res, next) {
   const schemaRules = {
@@ -67,12 +56,11 @@ function resetPasswordSchema(req, res, next) {
   };
 
   validateRequest(req, next, Joi.object(schemaRules));
-};
+}
 
 module.exports = {
   userRegistrationSchema,
-  loginSchema,
   userProfileUpdateSchema,
   forgotPasswordSchema,
-  resetPasswordSchema
+  resetPasswordSchema,
 };

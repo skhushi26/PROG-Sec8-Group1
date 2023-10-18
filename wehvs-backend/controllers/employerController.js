@@ -158,46 +158,48 @@ exports.updateEmployer = async (req, res) => {
     }
 
     // Respond with a success message
-    res.send(responseBuilder(null, existingEmployer, "Employer has been updated succesfully!", 200));
+    res.send(
+      responseBuilder(null, existingEmployer, "Employer has been updated succesfully!", 200)
+    );
   } catch (error) {
     console.error(error);
     res.send(responseBuilder(error, null, "Something went wrong in updating the employer", 500));
   }
 };
 
-exports.login = async (req, res) => {
-  let token = "";
-  try {
-    const { email, password } = req.body;
-    const employerData = await Employer.findOne({ email });
-    if (!employerData) {
-      res.send(responseBuilder(null, null, "Employer not found!", 404));
-    } else {
-      const isPasswordMatch = await bcrypt.compare(password, employerData.password);
-      if (isPasswordMatch) {
-        token = await jwt.sign(
-          { id: employerData._id, role: employerData.role },
-          "wehvsLoginEmployerSecretKey",
-          {
-            expiresIn: "9h",
-          }
-        );
-        res.send(
-          responseBuilder(
-            null,
-            { ...employerData.toJSON(), token },
-            "Employer logged in successfully",
-            200
-          )
-        );
-      } else {
-        res.send(responseBuilder(null, null, "Invalid credentails", 400));
-      }
-    }
-  } catch (error) {
-    res.send(responseBuilder(error, null, "Something went wrong in logging in", 500));
-  }
-};
+// exports.login = async (req, res) => {
+//   let token = "";
+//   try {
+//     const { email, password } = req.body;
+//     const employerData = await Employer.findOne({ email });
+//     if (!employerData) {
+//       res.send(responseBuilder(null, null, "Employer not found!", 404));
+//     } else {
+//       const isPasswordMatch = await bcrypt.compare(password, employerData.password);
+//       if (isPasswordMatch) {
+//         token = await jwt.sign(
+//           { id: employerData._id, role: employerData.role },
+//           "wehvsLoginEmployerSecretKey",
+//           {
+//             expiresIn: "9h",
+//           }
+//         );
+//         res.send(
+//           responseBuilder(
+//             null,
+//             { ...employerData.toJSON(), token },
+//             "Employer logged in successfully",
+//             200
+//           )
+//         );
+//       } else {
+//         res.send(responseBuilder(null, null, "Invalid credentails", 400));
+//       }
+//     }
+//   } catch (error) {
+//     res.send(responseBuilder(error, null, "Something went wrong in logging in", 500));
+//   }
+// };
 
 // exports.getEmployer =  async (req, res) => {
 //   try {
