@@ -2,7 +2,7 @@ import React from "react";
 import { Routes, Route } from "react-router-dom";
 import UserRegister from "../UserRegister";
 import EmployerRegister from "../EmployerRegister";
-import UserLogin from "../UserLogin";
+import Login from "../Login";
 import Navbar from "../Navigation";
 import NotFound from "../NotFound";
 import ForgotPassword from "../ForgotPassword";
@@ -18,7 +18,7 @@ export default function Routing() {
           <Route path="/user/register" element={<UserRegister />} />
           <Route path="/employer/register" element={<EmployerRegister />} />
           <Route path="/user/profile" element={<UserProfile />} />
-          <Route path="/login" element={<UserLogin />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/employer/profile" element={<EmployerProfile />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />

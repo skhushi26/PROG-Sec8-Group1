@@ -226,13 +226,14 @@ exports.forgotPassword = async (req, res) => {
       // sends response if user doesn't exists
       res.send(responseBuilder(null, null, "User doesn't exists", 400));
     }
-
-    name = user.firstName;
-    // sets the user's resetToken and expiryToken
-    user.resetToken = rand;
-    user.expiryToken = Date.now() + 3600000;
-    // saves user data
-    await user.save();
+    else {
+      name = user.firstName;
+      // sets the user's resetToken and expiryToken
+      user.resetToken = rand;
+      user.expiryToken = Date.now() + 3600000;
+      // saves user data
+      await user.save();
+    }
   }
 
   // If role is "Employer"
@@ -245,13 +246,14 @@ exports.forgotPassword = async (req, res) => {
       // sends response if employer doesn't exists
       res.send(responseBuilder(null, null, "Employer doesn't exists", 400));
     }
-
-    name = employer.companyName;
-    // sets the user's resetToken and expiryToken
-    employer.resetToken = rand;
-    employer.expiryToken = Date.now() + 3600000;
-    // saves employer data
-    await employer.save();
+    else {
+      name = employer.companyName;
+      // sets the user's resetToken and expiryToken
+      employer.resetToken = rand;
+      employer.expiryToken = Date.now() + 3600000;
+      // saves employer data
+      await employer.save();
+    }
   }
 
   let newHtml = "";

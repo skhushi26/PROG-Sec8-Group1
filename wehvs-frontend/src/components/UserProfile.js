@@ -36,21 +36,21 @@ class UserProfile extends Component {
     }
 
     // employer/:id
-  // Fetch user data based on user ID when the component mounts
-//   componentDidMount() {
-//     const userId = "65174acc06fd7898681f5c3b"; // it will be replaced with the value stored in session after login 
-//     fetch(`https://localhost:3333/employer/${userId}`)
-//       .then((response) => response.json())
-//       .then((data) => {
-//         this.setState({ user: data, loading: false });
-//       })
-//       .catch((error) => {
-//         console.error("Error fetching user data:", error);
-//         this.setState({ loading: false });
-//       });
-//   }
+    // Fetch user data based on user ID when the component mounts
+    //   componentDidMount() {
+    //     const userId = "65174acc06fd7898681f5c3b"; // it will be replaced with the value stored in session after login 
+    //     fetch(`https://localhost:3333/employer/${userId}`)
+    //       .then((response) => response.json())
+    //       .then((data) => {
+    //         this.setState({ user: data, loading: false });
+    //       })
+    //       .catch((error) => {
+    //         console.error("Error fetching user data:", error);
+    //         this.setState({ loading: false });
+    //       });
+    //   }
 
-    
+
     handleCountryChange = (selectedOption) => {
         this.setState({ selectedCountry: selectedOption, selectedCity: null });
     };
@@ -72,67 +72,80 @@ class UserProfile extends Component {
                             <p className="loading">Loading user data...</p>
                         ) : (
 
-                            <form className="form-contact contact_form" action="contact_process.php" method="post" id="contactForm">
+                            <form className="form-contact contact_form" method="post" id="contactForm">
                                 <div className="col-12">
                                     <h2 className="contact-title">User Profile</h2>
                                 </div>
 
+
                                 <div className="row">
-                                    <div className="col-sm-6  mt-4">
-                                        <label htmlFor="firstName">First Name</label>
-                                        {/* <input className="form-control valid" name="firstName" id="firstName" type="text"  placeholder="First Name"/> */}
-                                        <input className="form-control valid" name="firstName" id="firstName" type="text" placeholder="First Name" defaultValue={user.firstName} />
+                                    <div className="col-md-3 border-right">
+                                        <div className="d-flex flex-column align-items-center text-center p-3 py-5">
+                                            <img className="rounded-circle " width="150px" src="/images/user.png"></img>
+                                            {/* <span className="font-weight-bold">{user.firstName + " " + user.lastName}</span><span> </span> */}
+                                            <button type="submit" className="button button-contactForm btn-change-picture boxed-btn mt-4">Change Profile</button>
 
+                                        </div>
                                     </div>
-                                    <div className="col-sm-6 mt-4">
-                                        <label htmlFor="lastName">Last Name</label>
-                                        <input className="form-control valid" name="lastName" id="lastName" type="text" placeholder="Last Name" defaultValue={user.lastName} />
-                                    </div>
-                                    <div className="col-sm-6  mt-4">
-                                        <label htmlFor="email">Email</label>
-                                        <input className="form-control valid" name="email" id="email" type="text" placeholder="Email" defaultValue={user.email} />
-                                    </div>
-                                    <div className="col-sm-6 mt-4">
-                                        <label htmlFor="contactNumber">Contact Number</label>
-                                        <input className="form-control valid" name="contactNumber" id="contactNumber" type="text" placeholder="Contact Number" defaultValue={user.contactNumber} />
-                                    </div>
-                                    <div className="col-sm-6 mt-4">
-                                        <label htmlFor="dateOfBirth">Date of Birth</label>
-                                        <input className="form-control" name="dateOfBirth" id="dateOfBirth" type="date" placeholder="Select Date of Birth" defaultValue={user.dateOfBirth} />
-                                    </div>
-                                    <div className="col-12 mt-6 contact-info">
-                                        <h5>Contact Information</h5>
-                                    </div>
+                                    <div className="col-md-8">
+                                        <div className="row">
 
+                                            <div className="col-sm-6  mt-4">
+                                                <label htmlFor="firstName">First Name</label>
+                                                {/* <input className="form-control valid" name="firstName" id="firstName" type="text"  placeholder="First Name"/> */}
+                                                <input className="form-control valid" name="firstName" id="firstName" type="text" placeholder="First Name" defaultValue={user.firstName} />
 
-                                    <div className="col-sm-6  mt-4">
-                                        <label htmlFor="address">Address</label>
-                                        <input className="form-control valid" name="address" id="address" type="text" placeholder="Address" defaultValue={user.address} />
+                                            </div>
+                                            <div className="col-sm-6 mt-4">
+                                                <label htmlFor="lastName">Last Name</label>
+                                                <input className="form-control valid" name="lastName" id="lastName" type="text" placeholder="Last Name" defaultValue={user.lastName} />
+                                            </div>
+                                            <div className="col-sm-6  mt-4">
+                                                <label htmlFor="email">Email</label>
+                                                <input className="form-control valid" name="email" id="email" type="text" placeholder="Email" defaultValue={user.email} />
+                                            </div>
+                                            <div className="col-sm-6 mt-4">
+                                                <label htmlFor="contactNumber">Contact Number</label>
+                                                <input className="form-control valid" name="contactNumber" id="contactNumber" type="text" placeholder="Contact Number" defaultValue={user.contactNumber} />
+                                            </div>
+                                            <div className="col-sm-6 mt-4">
+                                                <label htmlFor="dateOfBirth">Date of Birth</label>
+                                                <input className="form-control" name="dateOfBirth" id="dateOfBirth" type="date" placeholder="Select Date of Birth" defaultValue={user.dateOfBirth} />
+                                            </div>
+                                            <div className="col-12 mt-6 contact-info">
+                                                <h5>Contact Information</h5>
+                                            </div>
+
+                                            <div className="col-sm-6  mt-4">
+                                                <label htmlFor="address">Address</label>
+                                                <input className="form-control valid" name="address" id="address" type="text" placeholder="Address" defaultValue={user.address} />
+                                            </div>
+
+                                            <div className="col-sm-6  mt-4">
+                                                <label htmlFor="country">Country</label>
+                                                <input className="form-control valid" name="country" id="country" type="text" placeholder="Country" defaultValue={user.country} />
+                                            </div>
+
+                                            <div className="col-sm-6  mt-4">
+                                                <label htmlFor="city">City</label>
+                                                <input className="form-control valid" name="city" id="city" type="text" placeholder="City" defaultValue={user.city} />
+                                            </div>
+
+                                            <div className="col-sm-6  mt-4">
+                                                <label htmlFor="province">Province</label>
+                                                <input className="form-control valid" name="province" id="province" type="text" placeholder="Province" defaultValue={user.province} />
+                                            </div>
+
+                                            <div className="col-sm-6  mt-4">
+                                                <label htmlFor="zipCode">Zip Code</label>
+                                                <input className="form-control valid" name="zipCode" id="zipCode" type="text" placeholder="Zip Code" defaultValue={user.zipCode} />
+                                            </div>
+
+                                        </div>
                                     </div>
-
-
-                                    <div className="col-sm-6  mt-4">
-                                        <label htmlFor="country">Country</label>
-                                        <input className="form-control valid" name="country" id="country" type="text" placeholder="Country" defaultValue={user.country} />
-                                    </div>
-
-                                    <div className="col-sm-6  mt-4">
-                                        <label htmlFor="city">City</label>
-                                        <input className="form-control valid" name="city" id="city" type="text" placeholder="City" defaultValue={user.city} />
-                                    </div>
-
-
-                                    <div className="col-sm-6  mt-4">
-                                        <label htmlFor="province">Province</label>
-                                        <input className="form-control valid" name="province" id="province" type="text" placeholder="Province" defaultValue={user.province} />
-                                    </div>
-
-                                    <div className="col-sm-6  mt-4">
-                                        <label htmlFor="zipCode">Zip Code</label>
-                                        <input className="form-control valid" name="zipCode" id="zipCode" type="text" placeholder="Zip Code" defaultValue={user.zipCode} />
-                                    </div>
-
                                 </div>
+
+
                                 <div className="col-12 form-group mt-5">
                                     <button type="submit" className="button button-contactForm button-submit boxed-btn">Send</button>
                                 </div>

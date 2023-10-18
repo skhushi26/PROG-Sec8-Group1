@@ -47,7 +47,6 @@ const ResetPassword = () => {
           <form
             name="resetForm"
             className="form-contact contact_form"
-            action="contact_process.php"
             method="post"
             id="contactForm"
             onSubmit={validateUser}
