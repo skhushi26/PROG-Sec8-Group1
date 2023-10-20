@@ -7,9 +7,9 @@ const ForgotPassword = () => {
   const [emailError, setEmailError] = useState("");
   const [roleError, setRoleError] = useState("");
   const [message, setMessage] = useState("");
-  const [success, setSuccess] = useState(false);
+  const [success, setSuccess] = useState(null);
 
-  const validateUser = async (e) => {
+  const validateForgotPassword = async (e) => {
     e.preventDefault();
 
     let valid = true;
@@ -68,7 +68,7 @@ const ForgotPassword = () => {
             className="form-contact contact_form"
             method="post"
             id="contactForm"
-            onSubmit={validateUser}
+            onSubmit={validateForgotPassword}
           >
             <div className="row">
               <div className="col-12">
@@ -79,15 +79,16 @@ const ForgotPassword = () => {
                 valid for 10 minutes!
               </p>
               <div className="col-sm-10 m-auto">
-                {success == null && success === true ? (
-                  <div className="alert alert-success" role="alert" bis_skin_checked="1">
-                    {message}
-                  </div>
-                ) : (
-                  <div className="alert alert-danger" role="alert" bis_skin_checked="1">
-                    {message}
-                  </div>
-                )}
+                {success !== null && // Change condition to only render if success is not null
+                  (success ? (
+                    <div className="alert alert-success" role="alert" bis_skin_checked="1">
+                      {message}
+                    </div>
+                  ) : (
+                    <div className="alert alert-danger" role="alert" bis_skin_checked="1">
+                      {message}
+                    </div>
+                  ))}
               </div>
               <div
                 className="col-sm-10 m-auto
