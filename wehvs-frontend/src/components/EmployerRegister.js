@@ -9,7 +9,7 @@ const EmployerRegister = () => {
   const [licenseNumber, setlicenseNumber] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [contactNumber, setcontactNumber] = useState("");
+  const [telephone, settelephone] = useState("");
   const [foundedDate, setfoundedDate] = useState("");
   const [description, setdescription] = useState("");
   const [address, setAddress] = useState("");
@@ -17,13 +17,17 @@ const EmployerRegister = () => {
   const [province, setProvince] = useState("");
   const [country, setCountry] = useState("");
   const [zipCode, setZipCode] = useState("");
+  const [contactEmail, setContactEmail] = useState("");
+  const [mobileNumber, setMobileNumber] = useState("");
+
 
   const [companyNameError, setcompanyNameError] = useState("");
   const [licenseNumberError, setlicenseNumberError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [addressError, setAddressError] = useState("");
-  const [contactNumberError, setcontactNumberError] = useState("");
+  const [telephoneError, settelephoneError] = useState("");
+  const [contactEmailError, setContactEmailError] = useState("");
 
   const [message, setMessage] = useState("");
   const [success, setSuccess] = useState(null);
@@ -84,17 +88,29 @@ const EmployerRegister = () => {
     }
 
     // Telephone validation
-    if (contactNumber.trim() === "") {
-      setcontactNumberError("Telephone is required");
+    if (telephone.trim() === "") {
+      settelephoneError("Telephone is required");
       valid = false;
     } else {
-      setcontactNumberError("");
+      settelephoneError("");
     }
+
+
+    // Contact Email validation
+    if (contactEmail.trim() === "") {
+        setContactEmailError("Contact Email is required");
+        valid = false;
+      } else if (!contactEmail.match(emailPattern)) {
+        setContactEmailError("Invalid email address");
+        valid = false;
+      } else {
+        setContactEmailError("");
+      }
 
     // If all validations pass, you can proceed with further action
     if (valid) {
       try {
-        const response = await axios.post("http://localhost:3333/employer/register", {
+        const response = await axios.post("http://localhost:3333/employers/register", {
           companyName,
           licenseNumber,
           email,
@@ -103,8 +119,11 @@ const EmployerRegister = () => {
           address,
           city,
           province,
+          country,
           zipCode,
-          contactNumber,
+          telephone,
+          contactEmail,
+          mobileNumber,
         });
         console.log("response", response);
         if (response.data.statusCode === 200) {
@@ -118,7 +137,8 @@ const EmployerRegister = () => {
           setSuccess(false);
         }
       } catch (error) {
-        setMessage("Something went wrong in sending reset password link");
+        console.log(error);
+        setMessage("Something went wrong in sending verification mail");
         setSuccess(false);
       }
     }
@@ -189,11 +209,24 @@ const EmployerRegister = () => {
                                             <span className="error-message text-danger">{passwordError}</span>
                                         </div>
                                         <div className="col-sm-6 mt-4">
-                                            <label htmlFor="contactNumber">Contact Number</label>
-                                            <input className="form-control valid" name="contactNumber" id="contactNumber" type="text" placeholder="Contact Number" value={contactNumber}
-                                                onChange={(e) => setcontactNumber(e.target.value)} />
-                                                <span className="error-message text-danger">{contactNumberError}</span>
+                                            <label htmlFor="telephone">Telephone</label>
+                                            <input className="form-control valid" name="telephone" id="telephone" type="text" placeholder="Telephone" value={telephone}
+                                                onChange={(e) => settelephone(e.target.value)} />
+                                                <span className="error-message text-danger">{telephoneError}</span>
                                         </div>
+                                         <div className="col-sm-6  mt-4">
+                                                <label htmlFor="contactEmail">Contact Email</label>
+                                                <input
+                                                className="form-control valid"
+                                                name="contactEmail"
+                                                id="contactEmail"
+                                                type="text"
+                                                placeholder="Contact Email"
+                                                value={contactEmail}
+                                                onChange={(e) => setContactEmail(e.target.value)}
+                                                />
+                                                <span className="error-message text-danger">{contactEmailError}</span>
+                                            </div>
                                         <div className="col-sm-6  mt-4">
                                             <label htmlFor="foundedDate">Founded Date</label>
                                             <input className="form-control" name="dateOfBirth" id="dateOfBirth" type="date" placeholder="Select Date of Birth" />
@@ -243,6 +276,18 @@ const EmployerRegister = () => {
                                             <input className="form-control valid" name="zipCode" id="zipCode" type="text" placeholder="Zip Code" value={zipCode}
                                                 onChange={(e) => setZipCode(e.target.value)}/>
                                         </div>
+                                        <div className="col-sm-6  mt-4">
+                                            <label htmlFor="mobileNumber">Mobile Number</label>
+                                            <input
+                                            className="form-control valid"
+                                            name="mobileNumber"
+                                            id="mobileNumber"
+                                            type="text"
+                                            placeholder="Mobile Number"
+                                            value={mobileNumber}
+                                            onChange={(e) => setMobileNumber(e.target.value)}
+                                            />
+                                        </div>
 
                                         <div className="col-12 form-group mt-5">
                                             <button type="submit" className="button button-contactForm button-submit boxed-btn">Send</button>
@@ -250,12 +295,9 @@ const EmployerRegister = () => {
                                     </div>
                                 </div>
                             </div>
-
-
                         </form>
                     </div>
                 </div>
-
                 {/* FOOTER */}
                 <div className="footer-area footer-bg footer-padding">
                     <div className="container">

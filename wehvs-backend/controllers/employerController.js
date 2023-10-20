@@ -19,11 +19,10 @@ exports.registerEmployer = async (req, res) => {
       description,
       address,
       city,
+      country,
       province,
       zipCode,
       telephone,
-      contactEmail,
-      mobileNumber,
     } = req.body;
 
     const isEmailExists = await Employer.findOne({ email });
@@ -34,14 +33,14 @@ exports.registerEmployer = async (req, res) => {
       const addressData = await Address.create({
         address,
         city,
+        country,
         province,
         zipCode,
       });
 
       const contactData = await Contact.create({
-        telephone,
+        contactNumber,
         contactEmail,
-        mobileNumber,
       });
 
       const employerData = await Employer.create({
