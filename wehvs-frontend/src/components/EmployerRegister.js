@@ -229,7 +229,8 @@ const EmployerRegister = () => {
                                             </div>
                                         <div className="col-sm-6  mt-4">
                                             <label htmlFor="foundedDate">Founded Date</label>
-                                            <input className="form-control" name="dateOfBirth" id="dateOfBirth" type="date" placeholder="Select Date of Birth" />
+                                            <input className="form-control" name="foundedDate" id="foundedDate" type="date" placeholder="Select Founded Date" value={foundedDate}
+                                            onChange={(e) => setfoundedDate(e.target.value)}/>
                                         </div>
 
                                         <div className="col-sm-12  mt-4">
@@ -312,7 +313,6 @@ const EmployerRegister = () => {
                                             </div>
                                         </div>
                                     </div>
-
                                 </div>
                             </div>
                             <div className="col-xl-3 col-lg-3 col-md-4 col-sm-5">
