@@ -72,7 +72,7 @@ const EmployerRegister = () => {
       valid = false;
     } else if (!password.match(passwordPattern)) {
       setPasswordError(
-        "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one number"
+        "Password must be at least 8 characters, one uppercase, one lowercase, and one number"
       );
       valid = false;
     } else {
