@@ -19,6 +19,7 @@ exports.registerEmployer = async (req, res) => {
       description,
       address,
       city,
+      country,
       province,
       zipCode,
       telephone,
@@ -34,6 +35,7 @@ exports.registerEmployer = async (req, res) => {
       const addressData = await Address.create({
         address,
         city,
+        country,
         province,
         zipCode,
       });
@@ -42,6 +44,7 @@ exports.registerEmployer = async (req, res) => {
         telephone,
         contactEmail,
         mobileNumber,
+
       });
 
       const employerData = await Employer.create({
@@ -86,7 +89,7 @@ exports.registerEmployer = async (req, res) => {
         responseBuilder(
           null,
           mergedData,
-          "Employer registered successfully!Email has been sent to your registered email id for verification.",
+          "Employer registered successfully! Email has been sent to your registered email id for verification.",
           200
         )
       );

@@ -1,50 +1,170 @@
-import { Component } from "react";
+import React, { useState } from "react";
 import { Form } from "react-bootstrap";
 import withRouter from "./Router/withRouter";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
-class EmployerRegister extends Component {
-    constructor() {
-        super();
-        this.state = {
-            selectedCountry: null,
-            selectedCity: null,
-            countries: [
-                { value: 'usa', label: 'USA' },
-                { value: 'canada', label: 'Canada' },
-                // Add more countries here
-            ],
-            cities: [
-                { value: 'new-york', label: 'New York', country: 'usa' },
-                { value: 'los-angeles', label: 'Los Angeles', country: 'usa' },
-                { value: 'toronto', label: 'Toronto', country: 'canada' },
-                { value: 'vancouver', label: 'Vancouver', country: 'canada' },
-                // Add more cities here
-            ],
-        };
+const EmployerRegister = () => {
+  const [companyName, setcompanyName] = useState("");
+  const [licenseNumber, setlicenseNumber] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [telephone, settelephone] = useState("");
+  const [foundedDate, setfoundedDate] = useState("");
+  const [description, setdescription] = useState("");
+  const [address, setAddress] = useState("");
+  const [city, setCity] = useState("");
+  const [province, setProvince] = useState("");
+  const [country, setCountry] = useState("");
+  const [zipCode, setZipCode] = useState("");
+  const [contactEmail, setContactEmail] = useState("");
+  const [mobileNumber, setMobileNumber] = useState("");
+
+
+  const [companyNameError, setcompanyNameError] = useState("");
+  const [licenseNumberError, setlicenseNumberError] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [addressError, setAddressError] = useState("");
+  const [telephoneError, settelephoneError] = useState("");
+  const [contactEmailError, setContactEmailError] = useState("");
+
+  const [message, setMessage] = useState("");
+  const [success, setSuccess] = useState(null);
+
+  const validateEmployerRegister = async (e) => {
+    e.preventDefault();
+
+    let valid = true;
+
+    // Company Name validation
+    if (companyName.trim() === "") {
+      setcompanyNameError("Company Name is required");
+      valid = false;
+    } else {
+      setcompanyNameError("");
     }
 
-    handleCountryChange = (selectedOption) => {
-        this.setState({ selectedCountry: selectedOption, selectedCity: null });
-    };
+    // licenseNumber validation
+    if (licenseNumber.trim() === "") {
+      setlicenseNumberError("License Number is required");
+      valid = false;
+    } else {
+      setlicenseNumberError("");
+    }
 
-    handleCityChange = (selectedOption) => {
-        this.setState({ selectedCity: selectedOption });
-    };
+    // Email validation
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (email.trim() === "") {
+      setEmailError("Email is required");
+      valid = false;
+    } else if (!email.match(emailPattern)) {
+      setEmailError("Invalid email address");
+      valid = false;
+    } else {
+      setEmailError("");
+    }
+
+    // Password validation
+    const passwordPattern = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
+    if (password.trim() === "") {
+      setPasswordError("Password is required");
+      valid = false;
+    } else if (!password.match(passwordPattern)) {
+      setPasswordError(
+        "Password must be at least 8 characters, one uppercase, one lowercase, and one number"
+      );
+      valid = false;
+    } else {
+      setPasswordError("");
+    }
+
+    // Address validation
+    if (address.trim() === "") {
+      setAddressError("Address is required");
+      valid = false;
+    } else {
+      setAddressError("");
+    }
+
+    // Telephone validation
+    if (telephone.trim() === "") {
+      settelephoneError("Telephone is required");
+      valid = false;
+    } else {
+      settelephoneError("");
+    }
 
 
-    render() {
-        const { countries, cities, selectedCountry, selectedCity } = this.state;
+    // Contact Email validation
+    if (contactEmail.trim() === "") {
+        setContactEmailError("Contact Email is required");
+        valid = false;
+      } else if (!contactEmail.match(emailPattern)) {
+        setContactEmailError("Invalid email address");
+        valid = false;
+      } else {
+        setContactEmailError("");
+      }
 
-        return (
-            <div>
+    // If all validations pass, you can proceed with further action
+    if (valid) {
+      try {
+        const response = await axios.post("http://localhost:3333/employers/register", {
+          companyName,
+          licenseNumber,
+          email,
+          password,
+          foundedDate,
+          address,
+          city,
+          province,
+          country,
+          zipCode,
+          telephone,
+          contactEmail,
+          mobileNumber,
+        });
+        console.log("response", response);
+        if (response.data.statusCode === 200) {
+          setMessage(response.data.message);
+          setSuccess(true);
+        } else if (response.data.statusCode === 400) {
+          setMessage(response.data.message);
+          setSuccess(false);
+        } else {
+          setMessage(response.data.message);
+          setSuccess(false);
+        }
+      } catch (error) {
+        console.log(error);
+        setMessage("Something went wrong in sending verification mail");
+        setSuccess(false);
+      }
+    }
+  };
+  return (
+              <div>
                 {/* CONTENT */}
                 <div className="row container">
                     <div className="col-lg-12">
-                        <form className="form-contact contact_form" method="post" id="contactForm">
+                        <form className="form-contact contact_form" method="post" id="contactForm"
+                        onSubmit={validateEmployerRegister}>
                             <div className="col-12">
                                 <h1 className="contact-title">Employer Register</h1>
                             </div>
+                            <div className="col-sm-10 m-auto">
+                                {success !== null && // Change condition to only render if success is not null
+                                    (success ? (
+                                    <div className="alert alert-success" role="alert" bis_skin_checked="1">
+                                        {message}
+                                    </div>
+                                    ) : (
+                                    <div className="alert alert-danger" role="alert" bis_skin_checked="1">
+                                        {message}
+                                    </div>
+                                    ))}
+                                </div>
 
                             <div className="row">
                                 <div className="col-md-3 border-right">
@@ -59,23 +179,58 @@ class EmployerRegister extends Component {
                                     <div className="row">
                                         <div className="col-sm-6  mt-4">
                                             <label htmlFor="companyName">Company Name</label>
-                                            <input className="form-control valid" name="companyName" id="companyName" type="text" placeholder="Company Name" />
+                                            <input className="form-control valid" name="companyName" id="companyName" type="text" placeholder="Company Name" value={companyName}
+                                                onChange={(e) => setcompanyName(e.target.value)}/>
+                                                <span className="error-message text-danger">{companyNameError}</span>
                                         </div>
                                         <div className="col-sm-6 mt-4">
                                             <label htmlFor="licenseNumber">License Number</label>
-                                            <input className="form-control valid" name="licenseNumber" id="licenseNumber" type="text" placeholder="License Number" />
+                                            <input className="form-control valid" name="licenseNumber" id="licenseNumber" type="text" placeholder="License Number" value={licenseNumber}
+                                                onChange={(e) => setlicenseNumber(e.target.value)} />
+                                                <span className="error-message text-danger">{licenseNumberError}</span>
                                         </div>
                                         <div className="col-sm-6  mt-4">
-                                            <label htmlFor="contactEmail">Contact Email</label>
-                                            <input className="form-control valid" name="contactEmail" id="contactEmail" type="text" placeholder="Contacct Email" />
+                                            <label htmlFor="email">Email</label>
+                                            <input className="form-control valid" name="email" id="email" type="text" placeholder="Email" value={email}
+                                                onChange={(e) => setEmail(e.target.value)} />
+                                                <span className="error-message text-danger">{emailError}</span>
                                         </div>
                                         <div className="col-sm-6 mt-4">
-                                            <label htmlFor="contactNumber">Contact Number</label>
-                                            <input className="form-control valid" name="contactNumber" id="contactNumber" type="text" placeholder="Contact Number" />
+                                            <label htmlFor="password">Password</label>
+                                            <input
+                                            className="form-control valid"
+                                            name="password"
+                                            id="password"
+                                            type="text"
+                                            placeholder="Password"
+                                            value={password}
+                                            onChange={(e) => setPassword(e.target.value)}
+                                            />
+                                            <span className="error-message text-danger">{passwordError}</span>
                                         </div>
+                                        <div className="col-sm-6 mt-4">
+                                            <label htmlFor="telephone">Telephone</label>
+                                            <input className="form-control valid" name="telephone" id="telephone" type="text" placeholder="Telephone" value={telephone}
+                                                onChange={(e) => settelephone(e.target.value)} />
+                                                <span className="error-message text-danger">{telephoneError}</span>
+                                        </div>
+                                         <div className="col-sm-6  mt-4">
+                                                <label htmlFor="contactEmail">Contact Email</label>
+                                                <input
+                                                className="form-control valid"
+                                                name="contactEmail"
+                                                id="contactEmail"
+                                                type="text"
+                                                placeholder="Contact Email"
+                                                value={contactEmail}
+                                                onChange={(e) => setContactEmail(e.target.value)}
+                                                />
+                                                <span className="error-message text-danger">{contactEmailError}</span>
+                                            </div>
                                         <div className="col-sm-6  mt-4">
                                             <label htmlFor="foundedDate">Founded Date</label>
-                                            <input className="form-control" name="dateOfBirth" id="dateOfBirth" type="date" placeholder="Select Date of Birth" />
+                                            <input className="form-control" name="foundedDate" id="foundedDate" type="date" placeholder="Select Founded Date" value={foundedDate}
+                                            onChange={(e) => setfoundedDate(e.target.value)}/>
                                         </div>
 
                                         <div className="col-sm-12  mt-4">
@@ -91,29 +246,48 @@ class EmployerRegister extends Component {
 
                                         <div className="col-sm-6  mt-4">
                                             <label htmlFor="address">Address</label>
-                                            <input className="form-control valid" name="address" id="address" type="text" placeholder="Address" />
+                                            <input className="form-control valid" name="address" id="address" type="text" placeholder="Address" value={address}
+                                            onChange={(e) => setAddress(e.target.value)}
+                                            />
+                                            <span className="error-message text-danger">{addressError}</span>
                                         </div>
 
 
                                         <div className="col-sm-6  mt-4">
                                             <label htmlFor="country">Country</label>
-                                            <input className="form-control valid" name="country" id="country" type="text" placeholder="Country" />
+                                            <input className="form-control valid" name="country" id="country" type="text" placeholder="Country" value={country}
+                                                onChange={(e) => setCountry(e.target.value)}/>
                                         </div>
 
                                         <div className="col-sm-6  mt-4">
                                             <label htmlFor="city">City</label>
-                                            <input className="form-control valid" name="city" id="city" type="text" placeholder="City" />
+                                            <input className="form-control valid" name="city" id="city" type="text" placeholder="City"  value={city}
+                                                onChange={(e) => setCity(e.target.value)}/>
                                         </div>
 
 
                                         <div className="col-sm-6  mt-4">
                                             <label htmlFor="province">Province</label>
-                                            <input className="form-control valid" name="province" id="province" type="text" placeholder="Province" />
+                                            <input className="form-control valid" name="province" id="province" type="text" placeholder="Province" value={province}
+                                                onChange={(e) => setProvince(e.target.value)} />
                                         </div>
 
                                         <div className="col-sm-6  mt-4">
                                             <label htmlFor="zipCode">Zip Code</label>
-                                            <input className="form-control valid" name="zipCode" id="zipCode" type="text" placeholder="Zip Code" />
+                                            <input className="form-control valid" name="zipCode" id="zipCode" type="text" placeholder="Zip Code" value={zipCode}
+                                                onChange={(e) => setZipCode(e.target.value)}/>
+                                        </div>
+                                        <div className="col-sm-6  mt-4">
+                                            <label htmlFor="mobileNumber">Mobile Number</label>
+                                            <input
+                                            className="form-control valid"
+                                            name="mobileNumber"
+                                            id="mobileNumber"
+                                            type="text"
+                                            placeholder="Mobile Number"
+                                            value={mobileNumber}
+                                            onChange={(e) => setMobileNumber(e.target.value)}
+                                            />
                                         </div>
 
                                         <div className="col-12 form-group mt-5">
@@ -122,12 +296,9 @@ class EmployerRegister extends Component {
                                     </div>
                                 </div>
                             </div>
-
-
                         </form>
                     </div>
                 </div>
-
                 {/* FOOTER */}
                 <div className="footer-area footer-bg footer-padding">
                     <div className="container">
@@ -142,7 +313,6 @@ class EmployerRegister extends Component {
                                             </div>
                                         </div>
                                     </div>
-
                                 </div>
                             </div>
                             <div className="col-xl-3 col-lg-3 col-md-4 col-sm-5">
@@ -228,8 +398,8 @@ class EmployerRegister extends Component {
                 </div>
 
             </div>
-        );
-    }
-}
+  );
+  //   }
+};
 
 export default withRouter(EmployerRegister);
