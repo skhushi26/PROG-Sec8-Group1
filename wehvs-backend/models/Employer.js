@@ -29,7 +29,7 @@ const EmployerSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      default: "User",
+      default: "Employer",
     },
     isActive: {
       type: Boolean,

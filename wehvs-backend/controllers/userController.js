@@ -170,12 +170,13 @@ exports.updateUser = async (req, res) => {
       email,
       dateOfBirth,
       address,
+      country,
       city,
       province,
       zipCode,
       telephone,
-      contactEmail,
       mobileNumber,
+      contactEmail
     } = req.body;
 
     const userId = new mongoose.Types.ObjectId(id);
@@ -196,6 +197,7 @@ exports.updateUser = async (req, res) => {
       const addressData = await Address.findById(existingUser.addressId);
       if (addressData) {
         addressData.address = address;
+        addressData.country = country;
         addressData.city = city;
         addressData.province = province;
         addressData.zipCode = zipCode;

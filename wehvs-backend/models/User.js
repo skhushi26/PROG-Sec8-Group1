@@ -25,7 +25,7 @@ const UserSchema = new mongoose.Schema(
     },
     dateOfBirth: {
       type: Date,
-      default: null,
+      required: true,
     },
     role: {
       type: String,

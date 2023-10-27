@@ -20,12 +20,7 @@ router.get("/verify/:token", userController.getVerifiedUser);
 
 // router.post("/login", loginSchema, userController.login);
 
-router.put(
-  "/update/:id",
-  upload.single("profilePhoto"),
-  userProfileUpdateSchema,
-  userController.updateUser
-);
+router.put("/update/:id", upload.single("profilePhoto"), userProfileUpdateSchema, userController.updateUser);
 
 router.post("/forgot-password", forgotPasswordSchema, userController.forgotPassword);
 
