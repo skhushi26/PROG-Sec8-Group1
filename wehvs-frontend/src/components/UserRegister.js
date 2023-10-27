@@ -22,6 +22,7 @@ const UserRegister = () => {
   const [lastNameError, setLastNameError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [dateOfBirthError, setDateOfBirthError] = useState("");
   const [addressError, setAddressError] = useState("");
   const [telephoneError, setTelephoneError] = useState("");
   const [contactEmailError, setContactEmailError] = useState("");
@@ -75,6 +76,17 @@ const UserRegister = () => {
       valid = false;
     } else {
       setPasswordError("");
+    }
+
+    // Date of Birth validation
+    const currentDate = new Date();
+    const inputDate = new Date(dateOfBirth);
+    const age = currentDate.getFullYear() - inputDate.getFullYear();
+    if (age < 18) {
+      setDateOfBirthError("You must be at least 18 years old");
+      valid = false;
+    } else {
+      setDateOfBirthError("");
     }
 
     // Address validation
@@ -296,6 +308,7 @@ const UserRegister = () => {
                       value={dateOfBirth}
                       onChange={(e) => setDateOfBirth(e.target.value)}
                     />
+                    <span className="error-message text-danger">{dateOfBirthError}</span>
                   </div>
                   <div className="col-12 mt-6 contact-info">
                     <h5>Contact Information</h5>

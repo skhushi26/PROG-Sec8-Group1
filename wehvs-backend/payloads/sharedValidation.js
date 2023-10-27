@@ -5,7 +5,6 @@ function loginSchema(req, res, next) {
   const schemaRules = {
     email: Joi.string().email().required(),
     password: Joi.string().required(),
-    role: Joi.string().required(),
   };
 
   validateRequest(req, next, Joi.object(schemaRules));

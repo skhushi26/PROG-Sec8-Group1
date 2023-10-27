@@ -9,6 +9,7 @@ const Address = require("../models/Address");
 const responseBuilder = require("../utils/response");
 const sendMailHandler = require("../utils/sendMailHandler");
 const Contact = require("../models/Contact");
+const Credentials = require("../models/Credentials");
 
 exports.registerUser = async (req, res) => {
   try {
@@ -27,7 +28,7 @@ exports.registerUser = async (req, res) => {
       contactEmail,
       mobileNumber,
     } = req.body;
-    const isEmailExists = await User.findOne({ email });
+    const isEmailExists = await Credentials.findOne({ email });
 
     if (!isEmailExists) {
       const passwordHash = await bcrypt.hash(password, 10);
@@ -48,35 +49,50 @@ exports.registerUser = async (req, res) => {
       const userData = await User.create({
         firstName,
         lastName,
-        email,
-        password: passwordHash,
         dateOfBirth,
         role,
         addressId: addressData._id,
         contactId: contactData._id,
       });
 
+      const credentialsData = await Credentials.create({
+        email,
+        password: passwordHash,
+        role: "User",
+        userId: userData._id,
+      });
+
       const addressDetails = await addressData.toJSON();
       const userDetails = await userData.toJSON();
       const contactDetails = await contactData.toJSON();
+      const credentialsDetails = await credentialsData.toJSON();
 
       const mergedData = {
         ...addressDetails,
         ...userDetails,
         ...contactDetails,
+        ...credentialsDetails,
       };
 
       delete mergedData.addressId;
       delete mergedData.contactId;
+      delete mergedData.userId;
 
       let newHtml = "";
       fs.readFile("views/email.html", { encoding: "utf-8" }, (err, html) => {
         if (err) {
           console.log("err in sending mail", err);
         } else {
-          let token = jwt.sign({ email: userData.email }, "wehvssecretkey", { expiresIn: 600 });
+          let token = jwt.sign({ email: credentialsData.email }, "wehvssecretkey", {
+            expiresIn: 600,
+          });
           newHtml = html.replace("{{{link}}}}", `http://${req.get("host")}/users/verify/${token}`);
-          sendMailHandler("wehvs2023@gmail.com", userData.email, "Email Verification", newHtml);
+          sendMailHandler(
+            "wehvs2023@gmail.com",
+            credentialsData.email,
+            "Email Verification",
+            newHtml
+          );
         }
       });
 
@@ -109,12 +125,15 @@ exports.getVerifiedUser = async (req, res) => {
     if (!decoded) {
       res.send(responseBuilder(null, null, "Invalid link!", 400));
     } else {
-      const userDetails = await User.findOne({ email: decoded.email });
+      const userDetails = await Credentials.findOne({ email: decoded.email });
       if (userDetails) {
         if (userDetails.isActive) {
           res.send(responseBuilder(null, null, "Your account is already activated", 200));
         } else {
-          await User.findOneAndUpdate({ email: decoded.email }, { $set: { isActive: true } });
+          await Credentials.findOneAndUpdate(
+            { email: decoded.email },
+            { $set: { isActive: true } }
+          );
           res.send(responseBuilder(null, null, "Your account has activated!", 200));
         }
       } else {
@@ -174,7 +193,7 @@ exports.updateUser = async (req, res) => {
       zipCode,
       telephone,
       mobileNumber,
-      contactEmail
+      contactEmail,
     } = req.body;
 
     const userId = new mongoose.Types.ObjectId(id);
@@ -187,7 +206,7 @@ exports.updateUser = async (req, res) => {
     } else {
       existingUser.firstName = firstName;
       existingUser.lastName = lastName;
-      existingUser.email = email;
+      // existingUser.email = email;
       existingUser.profilePhoto = profilePhotoPath;
       existingUser.dateOfBirth = dateOfBirth;
       await existingUser.save();
@@ -225,7 +244,6 @@ exports.forgotPassword = async (req, res) => {
   const link = `http://${req.get("host")}/password/reset/${rand}`;
   let name = "";
   if (role == "User") {
-    console.log("Helllooo");
     // finds user by email ID
     const user = await User.findOne({ email });
 
