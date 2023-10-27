@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Form } from "react-bootstrap";
 import withRouter from "./Router/withRouter";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const UserRegister = () => {
@@ -29,6 +29,7 @@ const UserRegister = () => {
   const [message, setMessage] = useState("");
   const [success, setSuccess] = useState(null);
 
+  const navigate = useNavigate();
   const validateUserRegister = async (e) => {
     e.preventDefault();
 
@@ -123,6 +124,7 @@ const UserRegister = () => {
         console.log("response", response);
         if (response.data.statusCode === 200) {
           setMessage(response.data.message);
+          navigate("/login", { state: { message: response.data.message } });
           setSuccess(true);
         } else if (response.data.statusCode === 400) {
           setMessage(response.data.message);
