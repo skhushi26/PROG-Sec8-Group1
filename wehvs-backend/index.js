@@ -9,6 +9,7 @@ const errorHandler = require("./utils/error-handler");
 const userRoute = require("./routes/userRoutes");
 const employerRoute = require("./routes/employerRoutes");
 const sharedRoute = require("./routes/sharedRoutes");
+const userRequestRoute = require("./routes/userRequestRoutes");
 
 const app = express();
 
@@ -31,6 +32,7 @@ app.set("views", "views");
 app.use("/shared", sharedRoute);
 app.use("/users", userRoute);
 app.use("/employers", employerRoute);
+app.use("/user-request", userRequestRoute);
 
 app.use(errorHandler);
 
