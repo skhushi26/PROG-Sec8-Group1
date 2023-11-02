@@ -10,15 +10,15 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    email: {
-      type: String,
-      required: true,
-      unique: true,
-    },
-    password: {
-      type: String,
-      required: true,
-    },
+    // email: {
+    //   type: String,
+    //   required: true,
+    //   unique: true,
+    // },
+    // password: {
+    //   type: String,
+    //   required: true,
+    // },
     profilePhoto: {
       type: String,
       default: "",
@@ -27,14 +27,14 @@ const UserSchema = new mongoose.Schema(
       type: Date,
       required: true,
     },
-    role: {
-      type: String,
-      default: "User",
-    },
-    isActive: {
-      type: Boolean,
-      default: false,
-    },
+    // role: {
+    //   type: String,
+    //   default: "User",
+    // },
+    // isActive: {
+    //   type: Boolean,
+    //   default: false,
+    // },
     addressId: {
       type: mongoose.Types.ObjectId,
       required: true,

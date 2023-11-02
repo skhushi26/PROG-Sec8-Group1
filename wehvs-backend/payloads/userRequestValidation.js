@@ -1,15 +1,14 @@
 const Joi = require("joi");
 const validateRequest = require("../utils/validation");
 
-function loginSchema(req, res, next) {
+function UserRequestApproveDenySchema(req, res, next) {
   const schemaRules = {
-    email: Joi.string().email().required(),
-    password: Joi.string().required(),
+    comment: Joi.string(),
   };
 
   validateRequest(req, next, Joi.object(schemaRules));
 }
 
 module.exports = {
-  loginSchema,
+  UserRequestApproveDenySchema,
 };

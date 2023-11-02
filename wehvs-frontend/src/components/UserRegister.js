@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Form } from "react-bootstrap";
 import withRouter from "./Router/withRouter";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const UserRegister = () => {
@@ -22,6 +22,7 @@ const UserRegister = () => {
   const [lastNameError, setLastNameError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [dateOfBirthError, setDateOfBirthError] = useState("");
   const [addressError, setAddressError] = useState("");
   const [telephoneError, setTelephoneError] = useState("");
   const [contactEmailError, setContactEmailError] = useState("");
@@ -29,6 +30,7 @@ const UserRegister = () => {
   const [message, setMessage] = useState("");
   const [success, setSuccess] = useState(null);
 
+  const navigate = useNavigate();
   const validateUserRegister = async (e) => {
     e.preventDefault();
 
@@ -74,6 +76,17 @@ const UserRegister = () => {
       valid = false;
     } else {
       setPasswordError("");
+    }
+
+    // Date of Birth validation
+    const currentDate = new Date();
+    const inputDate = new Date(dateOfBirth);
+    const age = currentDate.getFullYear() - inputDate.getFullYear();
+    if (age < 18) {
+      setDateOfBirthError("You must be at least 18 years old");
+      valid = false;
+    } else {
+      setDateOfBirthError("");
     }
 
     // Address validation
@@ -123,6 +136,7 @@ const UserRegister = () => {
         console.log("response", response);
         if (response.data.statusCode === 200) {
           setMessage(response.data.message);
+          navigate("/login", { state: { message: response.data.message } });
           setSuccess(true);
         } else if (response.data.statusCode === 400) {
           setMessage(response.data.message);
@@ -294,6 +308,7 @@ const UserRegister = () => {
                       value={dateOfBirth}
                       onChange={(e) => setDateOfBirth(e.target.value)}
                     />
+                    <span className="error-message text-danger">{dateOfBirthError}</span>
                   </div>
                   <div className="col-12 mt-6 contact-info">
                     <h5>Contact Information</h5>
