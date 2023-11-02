@@ -48,8 +48,6 @@ exports.registerEmployer = async (req, res) => {
       });
 
       const employerData = await Employer.create({
-        email,
-        password: passwordHash,
         companyName,
         foundedDate,
         licenseNumber,
@@ -58,14 +56,25 @@ exports.registerEmployer = async (req, res) => {
         contactId: contactData._id,
       });
 
+      const credentialsData = await Credentials.create({
+        email,
+        password: passwordHash,
+        role: "Employer",
+        employerId: employerData._id,
+      });
+
       const addressDetails = await addressData.toJSON();
       const employerDetails = await employerData.toJSON();
       const contactDetails = await contactData.toJSON();
+      const credentialsDetails = await credentialsData.toJSON();
+
 
       const mergedData = {
         ...addressDetails,
         ...employerDetails,
         ...contactDetails,
+        ...credentialsDetails,
+
       };
 
       delete mergedData.addressId;
