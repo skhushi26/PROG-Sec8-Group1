@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 const Employer = require("../models/Employer");
 const Address = require("../models/Address");
 const Contact = require("../models/Contact");
+const Credentials = require("../models/Credentials");
 const responseBuilder = require("../utils/response");
 const sendMailHandler = require("../utils/sendMailHandler");
 
@@ -60,37 +61,49 @@ exports.registerEmployer = async (req, res) => {
         email,
         password: passwordHash,
         role: "Employer",
+<<<<<<< HEAD
         employerId: employerData._id,
+=======
+        eployerId: employerData._id,
+>>>>>>> 102725bab1a663a9a4472a101ba4ef1e86967e9f
       });
 
       const addressDetails = await addressData.toJSON();
       const employerDetails = await employerData.toJSON();
       const contactDetails = await contactData.toJSON();
       const credentialsDetails = await credentialsData.toJSON();
+<<<<<<< HEAD
 
+=======
+>>>>>>> 102725bab1a663a9a4472a101ba4ef1e86967e9f
 
       const mergedData = {
         ...addressDetails,
         ...employerDetails,
         ...contactDetails,
+<<<<<<< HEAD
         ...credentialsDetails,
 
+=======
+        ...credentialsDetails
+>>>>>>> 102725bab1a663a9a4472a101ba4ef1e86967e9f
       };
 
       delete mergedData.addressId;
       delete mergedData.contactId;
+      delete mergedData.employerId;
 
       let newHtml = "";
       fs.readFile("views/email.html", { encoding: "utf-8" }, (err, html) => {
         if (err) {
           console.log("err in sending mail", err);
         } else {
-          let token = jwt.sign({ email: employerData.email }, "wehvssecretkey", { expiresIn: 600 });
+          let token = jwt.sign({ email: credentialsData.email }, "wehvssecretkey", { expiresIn: 600 });
           newHtml = html.replace(
             "{{{link}}}}",
             `http://${req.get("host")}/employer/verify/${token}`
           );
-          sendMailHandler("wehvs2023@gmail.com", employerData.email, "Email Verification", newHtml);
+          sendMailHandler("wehvs2023@gmail.com", credentialsData.email, "Email Verification", newHtml);
         }
       });
 
