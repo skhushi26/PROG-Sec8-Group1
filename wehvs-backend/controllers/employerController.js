@@ -61,32 +61,20 @@ exports.registerEmployer = async (req, res) => {
         email,
         password: passwordHash,
         role: "Employer",
-<<<<<<< HEAD
         employerId: employerData._id,
-=======
-        eployerId: employerData._id,
->>>>>>> 102725bab1a663a9a4472a101ba4ef1e86967e9f
       });
 
       const addressDetails = await addressData.toJSON();
       const employerDetails = await employerData.toJSON();
       const contactDetails = await contactData.toJSON();
       const credentialsDetails = await credentialsData.toJSON();
-<<<<<<< HEAD
-
-=======
->>>>>>> 102725bab1a663a9a4472a101ba4ef1e86967e9f
 
       const mergedData = {
         ...addressDetails,
         ...employerDetails,
         ...contactDetails,
-<<<<<<< HEAD
         ...credentialsDetails,
 
-=======
-        ...credentialsDetails
->>>>>>> 102725bab1a663a9a4472a101ba4ef1e86967e9f
       };
 
       delete mergedData.addressId;
