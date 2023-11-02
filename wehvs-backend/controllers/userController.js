@@ -96,6 +96,21 @@ exports.registerUser = async (req, res) => {
   }
 };
 
+exports.getUserById = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const user = await User.findById(userId);
+    
+    if (!user) {
+      res.send(responseBuilder(null, null, "User not found", 400));
+    } else {
+      res.send(responseBuilder(null, user, "", 200));
+    }
+  } catch (error) {
+    res.send(responseBuilder(error, null, "Something went wrong while fetching user", 500));
+  }
+};
+
 exports.getVerifiedUser = async (req, res) => {
   try {
     const token = req.params.token;
@@ -125,38 +140,6 @@ exports.getVerifiedUser = async (req, res) => {
     res.send(responseBuilder(error, null, "Something went in activating user", 500));
   }
 };
-
-// exports.login = async (req, res) => {
-//   const { email, password, role } = req.body;
-//   let token = "";
-//   try {
-//     if (role == "User") {
-//       const userData = await User.findOne({ email });
-//       if (!userData) {
-//         res.send(responseBuilder(null, null, "User not found!", 404));
-//       } else {
-//         const isPasswordMatch = await bcrypt.compare(password, userData.password);
-//         if (isPasswordMatch) {
-//           token = await jwt.sign({ id: userData._id, role: userData.role }, "wehvsLoginSecretKey", {
-//             expiresIn: "9h",
-//           });
-//           res.send(
-//             responseBuilder(
-//               null,
-//               { ...userData.toJSON(), token },
-//               "User logged in successfully",
-//               200
-//             )
-//           );
-//         } else {
-//           res.send(responseBuilder(null, null, "Invalid credentails", 400));
-//         }
-//       }
-//     }
-//   } catch (error) {
-//     res.send(responseBuilder(error, null, "Something went wrong in logging in", 500));
-//   }
-// };
 
 exports.updateUser = async (req, res) => {
   try {

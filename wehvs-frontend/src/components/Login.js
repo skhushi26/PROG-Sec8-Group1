@@ -1,7 +1,5 @@
-import { Component } from "react";
-import { Form } from "react-bootstrap";
+import React, { Component } from "react";
 import withRouter from "./Router/withRouter";
-import { Link } from "react-router-dom";
 import axios from 'axios';
 
 class Login extends Component {
@@ -28,22 +26,15 @@ class Login extends Component {
     const { email, password } = this.state;
     let valid = true;
 
-    console.log("email:", email);
-    console.log("password:", password);
-
     // Email validation
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (email === "") {
       this.setState({ emailError: "Email is required" });
       valid = false;
     } else if (!email.match(emailPattern)) {
-      console.log("are you here emailpattern?");
       this.setState({ emailError: "Invalid email address" });
-      console.log("email error:" + this.state.emailError);
       valid = false;
-      console.log("valid value:"+ valid);
     } else {
-      console.log("or not??");
       this.setState({ emailError: "" });
     }
 
@@ -66,20 +57,22 @@ class Login extends Component {
 
   handleSubmit = async () => {
     const { email, password } = this.state;
+    const { history } = this.props;
 
     try {
-      const response = await axios.post('http://localhost:3333/users/login', { email, password });
-      console.log('Response2:', response.data); // Log the response data
-
-      if (response.statusCode === 200) {
+      const response = await axios.post('http://localhost:3333/shared/login', { email, password, role: 'User' });
+      if (response.data.statusCode === 200) {
         // Login successful, store the token in localStorage or a global state
         localStorage.setItem('token', response.data.token);
+
+        // Call the method to handle successful login and redirect
+        history('/employer/profile');
       } else {
         this.setState({ errorMessage: "Invalid credentials" });
       }
     } catch (error) {
+      console.log(error);
       this.setState({ errorMessage: "Something went wrong, please try again!" });
-      console.error(error);
     }
   };
   render() {

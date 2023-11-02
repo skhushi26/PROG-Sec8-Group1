@@ -1,4 +1,4 @@
-import { Component } from "react";
+import React, { Component } from "react";
 import withRouter from "./Router/withRouter";
 import axios from 'axios';
 
@@ -20,19 +20,33 @@ class UserProfile extends Component {
             ],
 
             // This part will be changed after getting information from API.
+            // user: {
+            //     firstName: "John",
+            //     lastName: "Doe",
+            //     email: "johndoe@example.com",
+            //     contactEmail: "johndoe@example.com",
+            //     telephone: "123-456-7890",
+            //     dateOfBirth: new Date("1994-01-01"),
+            //     address: "123 Main Street",
+            //     country: "Canada",
+            //     city: "Waterloo",
+            //     province: "ON",
+            //     zipCode: "N2T-2Y7",
+            //     mobileNumber: "123456789"
+            // },
             user: {
-                firstName: "John",
-                lastName: "Doe",
-                email: "johndoe@example.com",
-                contactEmail: "johndoe@example.com",
-                telephone: "123-456-7890",
-                dateOfBirth: "1990-01-01",
-                address: "123 Main Street",
-                country: "Canada",
-                city: "Waterloo",
-                province: "ON",
-                zipCode: "N2T-2Y7",
-                mobileNumber: "123456789"
+                firstName: "",
+                lastName: "",
+                email: "",
+                contactEmail: "",
+                telephone: "",
+                dateOfBirth: "",
+                address: "",
+                country: "",
+                city: "",
+                province: "",
+                zipCode: "",
+                mobileNumber: ""
             },
             firstNameError: "",
             lastNameError: "",
@@ -44,6 +58,27 @@ class UserProfile extends Component {
         };
     }
 
+    componentDidMount() {
+        // Fetch user data based on user ID when the component mounts
+        // You should replace 'userId' with the actual user ID
+        const userId = "6541e404ed2309802849d4cb";
+
+        // Make an API request to get the user data
+        axios.get(`http://localhost:3333/users/getById/${userId}`)
+            .then(response => {
+                // Set the state with the fetched user data
+                const userWithParsedDate = {
+                    ...response.data,
+                    dateOfBirth: new Date(response.data.dateOfBirth)
+                };
+                console.log("userWithParsedDate: " +userWithParsedDate);
+                this.setState({ user: userWithParsedDate });
+            })
+            .catch(error => {
+                console.log("getbyid error: " + error);
+                console.error("Error fetching user data:", error);
+            });
+    }
 
     handleInputChange = (event) => {
         this.setState({
@@ -58,12 +93,14 @@ class UserProfile extends Component {
         const {
             firstName,
             lastName,
+            dateOfBirth,
             telephone,
             address } = this.state;
-        const dateOfBirth = new Date(this.state.dateOfBirth)
+        // const dateOfBirth = new Date(this.state.dateOfBirth)
+                
+        // console.log("state: " + this.state);
+        // console.log("Date of birth 1: " + dateOfBirth);
         
-console.log("Date of birth: " + this.state.dateOfBirth);
-console.log("Date of birth 1: " + dateOfBirth);
         let valid = true;
 
         // First name validation
@@ -90,16 +127,23 @@ console.log("Date of birth 1: " + dateOfBirth);
             this.setState({ telephoneError: "" });
         }
 
+
         // Date of Birth validation
-        if (this.state.dateOfBirth === "") {
+        if (dateOfBirth === "") {
             this.setState({ dateOfBirthError: "Date of Birth is required" });
             valid = false;
-        }
-        else if (isNaN(dateOfBirth.getTime())) {
-            this.setState({ dateOfBirthError: "Invalid Date of Birth" });
-            valid = false;
         } else {
-            this.setState({ dateOfBirthError: "" });
+            // Convert the date from yyyy-mm-dd format to a Date object
+            const dateOfBirthDate = new Date(dateOfBirth + "T00:00:00.000Z");
+    console.log("dateOfBirth: " + dateOfBirth);
+    console.log("dateOfBirthDate: " + dateOfBirthDate);
+
+            if (isNaN(dateOfBirthDate.getTime())) {
+                this.setState({ dateOfBirthError: "Invalid Date of Birth" });
+                valid = false;
+            } else {
+                this.setState({ dateOfBirthError: "" });
+            }
         }
 
         // Address validation
@@ -139,7 +183,7 @@ console.log("Date of birth 1: " + dateOfBirth);
         const dateOfBirth = new Date(this.state.dateOfBirth)
 
         // This part will be changed after user info will get with api
-        let id = "651e44a4d3c514f212d14e24";
+        let id = "6541e404ed2309802849d4cb";
 
         try {
             const response = await axios.put('http://localhost:3333/users/update/' + id, {
@@ -161,8 +205,9 @@ console.log("Date of birth 1: " + dateOfBirth);
             if (response.statusCode === 200) {
                 // Login successful, store the token in localStorage or a global state
                 localStorage.setItem('token', response.data.token);
+                this.setState({ successMessage: "User updated successfully!" });
             } else {
-                this.setState({ errorMessage: "Invalid credentials" });
+                this.setState({ errorMessage: "Invalid data provided" });
             }
         } catch (error) {
             console.log("Error: " + error + " :Error");
@@ -208,17 +253,33 @@ console.log("Date of birth 1: " + dateOfBirth);
     render() {
         const { user, loading } = this.state;
         const { errorMessage,
+            successMessage,
             firstNameError,
             lastNameError,
             telephoneError,
             dateOfBirthError,
             addressError } = this.state;
 
-        return (
+            console.log("user info : " + user);
+            console.log("dateOfBirth in html: " + user.dateOfBirth);
+            // const isoDateOfBirth = user.dateOfBirth.toISOString().split('T')[0];
+
+            return (
             <div>
                 {/* CONTENT */}
                 <div className="row container">
                     <div className="col-lg-12">
+                        {errorMessage && (
+                            <div className="alert alert-danger" role="alert" bis_skin_checked="1">
+                                {errorMessage}
+                            </div>
+                        )}
+
+                        {successMessage && (
+                            <div className="alert alert-success" role="alert" bis_skin_checked="1">
+                                {successMessage}
+                            </div>
+                        )}
 
                         {loading ? (
                             <p className="loading">Loading user data...</p>
