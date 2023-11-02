@@ -19,7 +19,6 @@ exports.registerUser = async (req, res) => {
       email,
       password,
       dateOfBirth,
-      role,
       address,
       city,
       province,
@@ -50,7 +49,6 @@ exports.registerUser = async (req, res) => {
         firstName,
         lastName,
         dateOfBirth,
-        role,
         addressId: addressData._id,
         contactId: contactData._id,
       });

@@ -31,6 +31,14 @@ const UserRequestSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    requestDate: {
+      type: Date,
+      required: true,
+    },
+    lastUpdateDate: {
+      type: Date,
+      default: ""
+    },
   },
   { timestamps: true }
 );

@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 const Employer = require("../models/Employer");
 const Address = require("../models/Address");
 const Contact = require("../models/Contact");
+const Credentials = require("../models/Credentials");
 const responseBuilder = require("../utils/response");
 const sendMailHandler = require("../utils/sendMailHandler");
 
@@ -48,8 +49,6 @@ exports.registerEmployer = async (req, res) => {
       });
 
       const employerData = await Employer.create({
-        email,
-        password: passwordHash,
         companyName,
         foundedDate,
         licenseNumber,
@@ -58,30 +57,40 @@ exports.registerEmployer = async (req, res) => {
         contactId: contactData._id,
       });
 
+      const credentialsData = await Credentials.create({
+        email,
+        password: passwordHash,
+        role: "Employer",
+        eployerId: employerData._id,
+      });
+
       const addressDetails = await addressData.toJSON();
       const employerDetails = await employerData.toJSON();
       const contactDetails = await contactData.toJSON();
+      const credentialsDetails = await credentialsData.toJSON();
 
       const mergedData = {
         ...addressDetails,
         ...employerDetails,
         ...contactDetails,
+        ...credentialsDetails
       };
 
       delete mergedData.addressId;
       delete mergedData.contactId;
+      delete mergedData.employerId;
 
       let newHtml = "";
       fs.readFile("views/email.html", { encoding: "utf-8" }, (err, html) => {
         if (err) {
           console.log("err in sending mail", err);
         } else {
-          let token = jwt.sign({ email: employerData.email }, "wehvssecretkey", { expiresIn: 600 });
+          let token = jwt.sign({ email: credentialsData.email }, "wehvssecretkey", { expiresIn: 600 });
           newHtml = html.replace(
             "{{{link}}}}",
             `http://${req.get("host")}/employer/verify/${token}`
           );
-          sendMailHandler("wehvs2023@gmail.com", employerData.email, "Email Verification", newHtml);
+          sendMailHandler("wehvs2023@gmail.com", credentialsData.email, "Email Verification", newHtml);
         }
       });
 

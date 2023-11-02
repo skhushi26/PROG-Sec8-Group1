@@ -1,9 +1,23 @@
 const express = require("express");
 const userRequestController = require("../controllers/userRequestController");
-const { UserRequestApproveDenySchema } = require("../payloads/userRequestValidation");
+const { UserRequestApproveDenySchema, userRequestValidationSchema } = require("../payloads/userRequestValidation");
 const authorize = require("../utils/authentication");
 
 const router = express.Router();
+
+router.get(
+  "/",
+  authorize("Employer"),
+  userRequestController.UserRequestList
+);
+
+
+router.post(
+  "/send-request",
+  authorize("User"),
+  userRequestValidationSchema,
+  userRequestController.UserVerificationRequest
+);
 
 router.put(
   "/approve/:id",
