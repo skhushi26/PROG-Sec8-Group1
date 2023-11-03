@@ -126,7 +126,7 @@ exports.ApproveRequest = async (req, res) => {
             console.log("newHtml", newHtml);
             sendMailHandler(
               "wehvs2023@gmail.com",
-              profileDetails.email,
+              profileDetails?.email,
               "Certificate Request Approval",
               newHtml
             );
@@ -168,13 +168,13 @@ exports.DenyRequest = async (req, res) => {
           } else {
             newHtml = html.replace("{{{comment}}}", comment);
             console.log("newHtml", newHtml);
-            // sendMailHandler(
-            //   "wehvs2023@gmail.com",
-            //   profileDetails.email,
-            //   "Certificate Request Approval",
-            //   newHtml
-            // );
-            res.send(newHtml);
+            sendMailHandler(
+              "wehvs2023@gmail.com",
+              profileDetails.email,
+              "Certificate Request Approval",
+              newHtml
+            );
+            // res.send(newHtml);
           }
         });
 
