@@ -12,10 +12,10 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    profilePhoto: {
-      type: String,
-      default: "",
-    },
+    // profilePhoto: {
+    //   type: String,
+    //   default: "",
+    // },
     dateOfBirth: {
       type: Date,
       required: true,
@@ -27,12 +27,12 @@ const UserSchema = new mongoose.Schema(
     addressId: {
       type: mongoose.Types.ObjectId,
       required: true,
-      ref: Address
+      ref: Address,
     },
     contactId: {
       type: mongoose.Types.ObjectId,
       required: true,
-      ref: Contact
+      ref: Contact,
     },
   },
   { timestamps: true }

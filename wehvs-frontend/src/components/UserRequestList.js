@@ -1,9 +1,20 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Table from "react-bootstrap/Table";
 import moment from "moment";
 import { Button } from "react-bootstrap";
 
 const UserRequestList = () => {
+  const [requests, setRequests] = useState([]);
+
+  useEffect(() => {
+    fetch("http://localhost:3333/user-request")
+      .then((response) => response.json())
+      .then((data) => {
+        setRequests(data.data);
+      })
+      .catch((error) => console.error("Error fetching data:", error));
+  }, []);
+
   return (
     <div className="container mt-4">
       <Table striped bordered hover>
@@ -20,51 +31,24 @@ const UserRequestList = () => {
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>Eda Ekeyilmaz</td>
-            <td>Sr. Software Engineer</td>
-            <td>{moment("2020-12-03").format("LL")}</td>
-            <td>{moment("2022-11-03").format("LL")}</td>
-            <td>{moment("2023-09-22").format("LL")}</td>
-            <td>Pending</td>
-            <td></td>
-            <td>
-              <Button variant="success">Approve</Button>
-              <Button variant="danger" className="mt-2">
-                Deny
-              </Button>
-            </td>
-          </tr>
-          <tr>
-            <td>Khushali Shah</td>
-            <td>Jr. MERN Stack Engineer</td>
-            <td>{moment("2020-12-03").format("LL")}</td>
-            <td>{moment("2022-11-03").format("LL")}</td>
-            <td>{moment("2023-09-22").format("LL")}</td>
-            <td>Pending</td>
-            <td></td>
-            <td>
-              <Button variant="success">Approve</Button>
-              <Button variant="danger" className="mt-2">
-                Deny
-              </Button>
-            </td>
-          </tr>
-          <tr>
-            <td>Namitha Chevari</td>
-            <td>Sr. Application Engineer</td>
-            <td>{moment("2020-12-03").format("LL")}</td>
-            <td>{moment("2022-11-03").format("LL")}</td>
-            <td>{moment("2023-09-22").format("LL")}</td>
-            <td>Pending</td>
-            <td></td>
-            <td>
-              <Button variant="success">Approve</Button>
-              <Button variant="danger" className="mt-2">
-                Deny
-              </Button>
-            </td>
-          </tr>
+          {requests &&
+            requests.map((request, index) => (
+              <tr key={index}>
+                <td>{request.userFullName}</td>
+                <td>{request.jobTitle}</td>
+                <td>{moment(request.startDate).format("LL")}</td>
+                <td>{moment(request.endDate).format("LL")}</td>
+                <td>{moment(request.requestDate).format("LL")}</td>
+                <td>{request.requestStatus}</td>
+                <td>{request.comment}</td>
+                <td>
+                  <Button variant="success">Approve</Button>
+                  <Button variant="danger" className="mt-2">
+                    Deny
+                  </Button>
+                </td>
+              </tr>
+            ))}
         </tbody>
       </Table>
     </div>

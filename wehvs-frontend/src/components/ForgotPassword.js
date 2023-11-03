@@ -3,9 +3,7 @@ import axios from "axios";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
-  const [role, setRole] = useState("");
   const [emailError, setEmailError] = useState("");
-  const [roleError, setRoleError] = useState("");
   const [message, setMessage] = useState("");
   const [success, setSuccess] = useState(null);
 
@@ -26,20 +24,11 @@ const ForgotPassword = () => {
       setEmailError("");
     }
 
-    // Role validation
-    if (role === "") {
-      setRoleError("Role is required"); // Add a validation for role
-      valid = false;
-    } else {
-      setRoleError("");
-    }
-
     // If all validations pass, you can proceed with further action
     if (valid) {
       try {
         const response = await axios.post("http://localhost:3333/users/forgot-password", {
           email,
-          role,
         });
         console.log("response", response);
         if (response.data.statusCode === 200) {
@@ -106,21 +95,6 @@ const ForgotPassword = () => {
                     onChange={(e) => setEmail(e.target.value)}
                   />
                   <span className="error-message text-danger">{emailError}</span>
-                </div>
-              </div>
-              <div className="col-sm-10 m-auto">
-                <div className="form-group">
-                  <label htmlFor="role">Role</label>
-                  <input
-                    className="form-control valid"
-                    name="role"
-                    id="role"
-                    type="text"
-                    placeholder="Role"
-                    value={role}
-                    onChange={(e) => setRole(e.target.value)}
-                  />
-                  <span className="error-message text-danger">{roleError}</span>
                 </div>
               </div>
             </div>

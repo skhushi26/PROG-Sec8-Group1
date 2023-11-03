@@ -8,7 +8,6 @@ function userRegistrationSchema(req, res, next) {
     email: Joi.string().email().required(),
     password: Joi.string().required(),
     dateOfBirth: Joi.date(),
-    role: Joi.string().required(),
     address: Joi.string().required(),
     city: Joi.string(),
     province: Joi.string(),

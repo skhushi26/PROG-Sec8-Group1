@@ -10,6 +10,7 @@ import ResetPassword from "../ResetPassword";
 import UserProfile from "../UserProfile";
 import EmployerProfile from "../EmployerProfile";
 import UserRequestList from "../UserRequestList";
+import UserCertificateRequest from "../UserCertificateRequest";
 
 export default function Routing() {
   return (
@@ -24,6 +25,7 @@ export default function Routing() {
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/user-request" element={<UserRequestList />} />
+          <Route path="/user/apply-certificate" element={<UserCertificateRequest />} />
           <Route path="*" element={<NotFound />} />
         </Route>
         {/* <Route path="/" element={<FooterMenu />} /> */}

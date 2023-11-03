@@ -5,7 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const UserRegister = () => {
-  const role= "User";
+  const role = "User";
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -138,7 +138,7 @@ const UserRegister = () => {
         console.log("response", response);
         if (response.data.statusCode === 200) {
           setMessage(response.data.message);
-          navigate("/shared/login", { state: { message: response.data.message } });
+          navigate("/login", { state: { message: response.data.message } });
           setSuccess(true);
         } else if (response.data.statusCode === 400) {
           setMessage(response.data.message);
