@@ -8,11 +8,16 @@ const authorize = require("../utils/authentication");
 
 const router = express.Router();
 
-router.get("/", userRequestController.UserRequestList);
+router.get(
+  "/",
+  // authorize("Employer"),
+  userRequestController.UserRequestList
+);
+
 
 router.post(
-  "/send-request",
-  authorize("User"),
+  "/send",
+  // authorize("User"),
   userRequestValidationSchema,
   userRequestController.UserVerificationRequest
 );

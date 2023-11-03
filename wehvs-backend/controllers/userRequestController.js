@@ -1,10 +1,11 @@
-const responseBuilder = require("../utils/response");
-const UserRequest = require("../models/UserRequest");
-const User = require("../models/User");
-const Credentials = require("../models/Credentials");
-const mongoose = require("mongoose");
-const sendMailHandler = require("../utils/sendMailHandler");
+const jwt = require("jsonwebtoken");
 const fs = require("fs");
+const UserRequest = require("../models/UserRequest");
+const Employer = require("../models/Employer");
+const User = require("../models/User");
+const Credential = require("../models/Credentials");
+const responseBuilder = require("../utils/response");
+const sendMailHandler = require("../utils/sendMailHandler");
 
 exports.UserRequestList = async (req, res) => {
   try {
@@ -25,56 +26,57 @@ exports.UserRequestList = async (req, res) => {
 
 exports.UserVerificationRequest = async (req, res) => {
   try {
-    const { companyName, startDate, endDate, jobTitle, comment } = req.body;
-
-    const employerData = await Employer.findOne({ companyName });
-    const employerId = employerData._id;
-    const employerCredentialsData = await Credential.findOne({ employerId });
-
-    // Check if a record exists in the userRequest table with the same conditions
-    const existingUserRequest = await UserRequest.findOne({
-      employerId,
+    const {
+      companyName,
       startDate,
       endDate,
       jobTitle,
-      requestStatus: "Pending",
-    });
+      comment
+    } = req.body;
 
-    if (!existingUserRequest) {
-      const userRequestData = await UserRequest.create({
-        userId, // It should come from session
+    const employerData = await Employer.findOne({ companyName });
+    // const employerId = employerData._id;
+    const employerId = "654559f1ef131caf95f404a5"; // This id will come from frontend.
+    const employerCredentialsData = await Credential.findOne({ userId: employerId });
+
+
+      // Check if a record exists in the userRequest table with the same conditions
+      const existingUserRequest = await UserRequest.findOne({
         employerId,
         startDate,
         endDate,
         jobTitle,
-        comment,
-        requestDate: new Date(),
+        requestStatus: "Pending" 
       });
 
+      if (!existingUserRequest) {
+
+        const userId= "65455aa6957fa8009dc75eb1";
+        const userData = await User.findById(userId);
+        const userRequestData = await UserRequest.create({
+          userId, // It should come from session
+          employerId,
+          startDate,
+          endDate,
+          jobTitle,
+          comment,
+          requestDate: new Date()
+        });
+
       let newHtml = "";
-      fs.readFile(
-        "views/user-verification-request-email.html",
-        { encoding: "utf-8" },
-        (err, html) => {
-          if (err) {
-            console.log("err in sending mail", err);
-          } else {
-            let token = jwt.sign({ email: employerCredentialsData.email }, "wehvssecretkey", {
-              expiresIn: 600,
-            });
-            newHtml = html.replace(
-              "{{{link}}}}",
-              `http://${req.get("host")}/employer/verify/${token}`
-            );
-            sendMailHandler(
-              "wehvs2023@gmail.com",
-              employerCredentialsData.email,
-              "Email Verification",
-              newHtml
-            );
-          }
+      fs.readFile("views/user-verification-request-email.html", { encoding: "utf-8" }, (err, html) => {
+        if (err) {
+          console.log("err in sending mail", err);
+        } else {
+          let token = jwt.sign({ email: employerCredentialsData.email }, "wehvssecretkey", { expiresIn: 600 });
+          let name= userData.firstName + " " + userData.lastName;
+          newHtml = html.replace(
+            "{{{name}}}",
+            name
+          );
+          sendMailHandler("wehvs2023@gmail.com", employerCredentialsData.email, "Verification Request", newHtml);
         }
-      );
+      });
 
       res.send(
         responseBuilder(
