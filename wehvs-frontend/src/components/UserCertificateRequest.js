@@ -6,20 +6,16 @@ import axios from "axios";
 
 const UserCertificateRequest = () => {
   const [companyName, setcompanyName] = useState("");
-  const [description, setdescription] = useState("");
-  const [address, setAddress] = useState("");
-  const [city, setCity] = useState("");
-  const [province, setProvince] = useState("");
-  const [country, setCountry] = useState("");
-  const [zipCode, setZipCode] = useState("");
-  const [contactEmail, setContactEmail] = useState("");
-  const [mobileNumber, setMobileNumber] = useState("");
+  const [startDate, setstartDate] = useState("");
+  const [endDate, setendDate] = useState("");
+  const [jobTitle, setjobTitle] = useState("");
+  const [comment, setcomment] = useState("");
 
 
   const [companyNameError, setcompanyNameError] = useState("");
-  const [addressError, setAddressError] = useState("");
-  const [mobileNumberError, setmobileNumberError] = useState("");
-  const [contactEmailError, setContactEmailError] = useState("");
+  const [startDateError, setstartDateError] = useState("");
+  const [endDateError, setendDateError] = useState("");
+  const [jobTitleError, setjobTitleError] = useState("");
 
   const [message, setMessage] = useState("");
   const [success, setSuccess] = useState(null);
@@ -37,46 +33,24 @@ const UserCertificateRequest = () => {
       setcompanyNameError("");
     }
 
-    // Address validation
-    if (address.trim() === "") {
-      setAddressError("Address is required");
+    // Job Title validation
+    if (jobTitle.trim() === "") {
+        setjobTitleError("Job Title is required");
       valid = false;
     } else {
-      setAddressError("");
+      setjobTitleError("");
     }
 
-    // Telephone validation
-    if (mobileNumber.trim() === "") {
-      setmobileNumberError("Telephone is required");
-      valid = false;
-    } else {
-      setmobileNumberError("");
-    }
-
-
-    // Contact Email validation
-    if (contactEmail.trim() === "") {
-        setContactEmailError("Contact Email is required");
-        valid = false;
-      } else if (!contactEmail.match(emailPattern)) {
-        setContactEmailError("Invalid email address");
-        valid = false;
-      } else {
-        setContactEmailError("");
-      }
 
     // If all validations pass, you can proceed with further action
     if (valid) {
       try {
         const response = await axios.post("http://localhost:3333/users/apply-certificate", {
           companyName,
-          address,
-          city,
-          province,
-          country,
-          zipCode,
-          contactEmail,
-          mobileNumber,
+          startDate,
+          endDate,
+          jobTitle,
+          comment,
         });
         console.log("response", response);
         if (response.data.statusCode === 200) {
@@ -102,7 +76,7 @@ const UserCertificateRequest = () => {
                 <div className="row container">
                     <div className="col-lg-12">
                         <form className="form-contact contact_form" method="post" id="contactForm"
-                        onSubmit={validateEmployerRegister}>
+                        onSubmit={validateUserCertificateRequest}>
                             <div className="col-12">
                                 <h1 className="contact-title">WEHVS Certificate Request Form</h1>
                             </div>
@@ -136,83 +110,26 @@ const UserCertificateRequest = () => {
                                                 onChange={(e) => setcompanyName(e.target.value)}/>
                                                 <span className="error-message text-danger">{companyNameError}</span>
                                         </div>
-                                        <div className="col-sm-6 mt-4">
-                                            <label htmlFor="telephone">Telephone</label>
-                                            <input className="form-control valid" name="telephone" id="telephone" type="text" placeholder="Telephone" value={telephone}
-                                                onChange={(e) => settelephone(e.target.value)} />
-                                                <span className="error-message text-danger">{telephoneError}</span>
+                                        <div className="col-sm-6  mt-4">
+                                            <label htmlFor="companyName">Job Title</label>
+                                            <input className="form-control valid" name="jobTitle" id="jobTitle" type="text" placeholder="Job Title" value={jobTitle}
+                                                onChange={(e) => setjobTitle(e.target.value)}/>
+                                                <span className="error-message text-danger">{jobTitleError}</span>
                                         </div>
-                                         <div className="col-sm-6  mt-4">
-                                                <label htmlFor="contactEmail">Contact Email</label>
-                                                <input
-                                                className="form-control valid"
-                                                name="contactEmail"
-                                                id="contactEmail"
-                                                type="text"
-                                                placeholder="Contact Email"
-                                                value={contactEmail}
-                                                onChange={(e) => setContactEmail(e.target.value)}
-                                                />
-                                                <span className="error-message text-danger">{contactEmailError}</span>
-                                            </div>
-
+                                        <div className="col-sm-6  mt-4">
+                                            <label htmlFor="startDate">Start Date</label>
+                                            <input className="form-control" name="startDate" id="startDate" type="date" placeholder="Select Start Date" value={startDate}
+                                            onChange={(e) => setstartDate(e.target.value)}/>
+                                        </div>
+                                        <div className="col-sm-6  mt-4">
+                                            <label htmlFor="endDate">End Date</label>
+                                            <input className="form-control" name="endDate" id="endDate" type="date" placeholder="Select End Date" value={endDate}
+                                            onChange={(e) => setendDate(e.target.value)}/>
+                                        </div>
                                         <div className="col-sm-12  mt-4">
-                                            <label htmlFor="description">Description</label>
-                                            <textarea className="form-control" name="description" id="description" placeholder="Description"></textarea>
+                                            <label htmlFor="comment">Comment</label>
+                                            <textarea className="form-control" name="comment" id="comment" placeholder="Comments"></textarea>
                                         </div>
-
-
-                                        <div className="col-12 mt-6 contact-info">
-                                            <h5>Contact Information</h5>
-                                        </div>
-
-
-                                        <div className="col-sm-6  mt-4">
-                                            <label htmlFor="address">Address</label>
-                                            <input className="form-control valid" name="address" id="address" type="text" placeholder="Address" value={address}
-                                            onChange={(e) => setAddress(e.target.value)}
-                                            />
-                                            <span className="error-message text-danger">{addressError}</span>
-                                        </div>
-
-
-                                        <div className="col-sm-6  mt-4">
-                                            <label htmlFor="country">Country</label>
-                                            <input className="form-control valid" name="country" id="country" type="text" placeholder="Country" value={country}
-                                                onChange={(e) => setCountry(e.target.value)}/>
-                                        </div>
-
-                                        <div className="col-sm-6  mt-4">
-                                            <label htmlFor="city">City</label>
-                                            <input className="form-control valid" name="city" id="city" type="text" placeholder="City"  value={city}
-                                                onChange={(e) => setCity(e.target.value)}/>
-                                        </div>
-
-
-                                        <div className="col-sm-6  mt-4">
-                                            <label htmlFor="province">Province</label>
-                                            <input className="form-control valid" name="province" id="province" type="text" placeholder="Province" value={province}
-                                                onChange={(e) => setProvince(e.target.value)} />
-                                        </div>
-
-                                        <div className="col-sm-6  mt-4">
-                                            <label htmlFor="zipCode">Zip Code</label>
-                                            <input className="form-control valid" name="zipCode" id="zipCode" type="text" placeholder="Zip Code" value={zipCode}
-                                                onChange={(e) => setZipCode(e.target.value)}/>
-                                        </div>
-                                        <div className="col-sm-6  mt-4">
-                                            <label htmlFor="mobileNumber">Mobile Number</label>
-                                            <input
-                                            className="form-control valid"
-                                            name="mobileNumber"
-                                            id="mobileNumber"
-                                            type="text"
-                                            placeholder="Mobile Number"
-                                            value={mobileNumber}
-                                            onChange={(e) => setMobileNumber(e.target.value)}
-                                            />
-                                        </div>
-
                                         <div className="col-12 form-group mt-5">
                                             <button type="submit" className="button button-contactForm button-submit boxed-btn">Send</button>
                                         </div>
