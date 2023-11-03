@@ -1,7 +1,11 @@
-const responseBuilder = require("../utils/response");
+const jwt = require("jsonwebtoken");
+const fs = require("fs");
 const UserRequest = require("../models/UserRequest");
+const Employer = require("../models/Employer");
 const User = require("../models/User");
-
+const Credential = require("../models/Credentials");
+const responseBuilder = require("../utils/response");
+const sendMailHandler = require("../utils/sendMailHandler");
 
 exports.UserRequestList = async (req, res) => {
   try {
@@ -29,8 +33,9 @@ exports.UserVerificationRequest = async (req, res) => {
     } = req.body;
 
     const employerData = await Employer.findOne({ companyName });
-    const employerId = employerData._id;
-    const employerCredentialsData = await Credential.findOne({ employerId });
+    // const employerId = employerData._id;
+    const employerId = "654559f1ef131caf95f404a5"; // This id will come from frontend.
+    const employerCredentialsData = await Credential.findOne({ userId: employerId });
 
 
       // Check if a record exists in the userRequest table with the same conditions
@@ -44,6 +49,8 @@ exports.UserVerificationRequest = async (req, res) => {
 
       if (!existingUserRequest) {
 
+        const userId= "65455aa6957fa8009dc75eb1";
+        const userData = await User.findById(userId);
         const userRequestData = await UserRequest.create({
           userId, // It should come from session
           employerId,
@@ -60,11 +67,12 @@ exports.UserVerificationRequest = async (req, res) => {
           console.log("err in sending mail", err);
         } else {
           let token = jwt.sign({ email: employerCredentialsData.email }, "wehvssecretkey", { expiresIn: 600 });
+          let name= userData.firstName + " " + userData.lastName;
           newHtml = html.replace(
-            "{{{link}}}}",
-            `http://${req.get("host")}/employer/verify/${token}`
+            "{{{name}}}",
+            name
           );
-          sendMailHandler("wehvs2023@gmail.com", employerCredentialsData.email, "Email Verification", newHtml);
+          sendMailHandler("wehvs2023@gmail.com", employerCredentialsData.email, "Verification Request", newHtml);
         }
       });
 

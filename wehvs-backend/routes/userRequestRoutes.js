@@ -7,14 +7,14 @@ const router = express.Router();
 
 router.get(
   "/",
-  authorize("Employer"),
+  // authorize("Employer"),
   userRequestController.UserRequestList
 );
 
 
 router.post(
-  "/send-request",
-  authorize("User"),
+  "/send",
+  // authorize("User"),
   userRequestValidationSchema,
   userRequestController.UserVerificationRequest
 );
