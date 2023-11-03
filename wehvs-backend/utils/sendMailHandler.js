@@ -8,6 +8,7 @@ const sendMailHandler = (senderEmail, recieverEmail, emailSubject, htmlBody) => 
     auth: {
       user: senderEmail,
       pass: "kiufqrtgsiamhlzj",
+      // pass: "Wehvs$Project",
     },
   });
 

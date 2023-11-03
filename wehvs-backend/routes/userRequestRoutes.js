@@ -1,16 +1,14 @@
 const express = require("express");
 const userRequestController = require("../controllers/userRequestController");
-const { UserRequestApproveDenySchema, userRequestValidationSchema } = require("../payloads/userRequestValidation");
+const {
+  UserRequestApproveDenySchema,
+  userRequestValidationSchema,
+} = require("../payloads/userRequestValidation");
 const authorize = require("../utils/authentication");
 
 const router = express.Router();
 
-router.get(
-  "/",
-  authorize("Employer"),
-  userRequestController.UserRequestList
-);
-
+router.get("/", userRequestController.UserRequestList);
 
 router.post(
   "/send-request",
@@ -21,13 +19,13 @@ router.post(
 
 router.put(
   "/approve/:id",
-  authorize("Employer"),
+  // authorize("Employer"),
   UserRequestApproveDenySchema,
   userRequestController.ApproveRequest
 );
 router.put(
   "/deny/:id",
-  authorize("Employer"),
+  // authorize("Employer"),
   UserRequestApproveDenySchema,
   userRequestController.DenyRequest
 );

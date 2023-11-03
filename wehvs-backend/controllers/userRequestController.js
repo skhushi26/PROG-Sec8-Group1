@@ -1,6 +1,10 @@
 const responseBuilder = require("../utils/response");
 const UserRequest = require("../models/UserRequest");
 const User = require("../models/User");
+const Credentials = require("../models/Credentials");
+const mongoose = require("mongoose");
+const sendMailHandler = require("../utils/sendMailHandler");
+const fs = require("fs");
 
 exports.UserRequestList = async (req, res) => {
   try {
@@ -101,6 +105,7 @@ exports.ApproveRequest = async (req, res) => {
     const { comment } = req.body;
     const id = req.params.id;
     const isRequestExists = await UserRequest.findById({ _id: id });
+    const profileDetails = await Credentials.findOne({ userId: isRequestExists.userId });
     if (!isRequestExists) {
       res.send(responseBuilder(null, null, "Request not found!", 400));
     } else {
@@ -111,11 +116,27 @@ exports.ApproveRequest = async (req, res) => {
           { _id: id },
           { $set: { requestStatus: "Approved", comment } }
         );
+
+        let newHtml = "";
+        fs.readFile("views/certificate-approve-email.html", { encoding: "utf-8" }, (err, html) => {
+          if (err) {
+            console.log("err in sending mail", err);
+          } else {
+            newHtml = html.replace("{{{comment}}}", comment);
+            console.log("newHtml", newHtml);
+            sendMailHandler(
+              "wehvs2023@gmail.com",
+              profileDetails.email,
+              "Certificate Request Approval",
+              newHtml
+            );
+            // res.send(newHtml);
+          }
+        });
+
         res.send(
           responseBuilder(null, null, "Your request has been approved by the employer.", 200)
         );
-
-        // Email will be sent to that particular user
       }
     }
   } catch (error) {
@@ -128,6 +149,7 @@ exports.DenyRequest = async (req, res) => {
     const { comment } = req.body;
     const id = req.params.id;
     const isRequestExists = await UserRequest.findById({ _id: id });
+    const profileDetails = await Credentials.findOne({ userId: isRequestExists.userId });
     if (!isRequestExists) {
       res.send(responseBuilder(null, null, "Request not found!", 400));
     } else {
@@ -138,6 +160,24 @@ exports.DenyRequest = async (req, res) => {
           { _id: id },
           { $set: { requestStatus: "Deny", comment } }
         );
+
+        let newHtml = "";
+        fs.readFile("views/certificate-deny-email.html", { encoding: "utf-8" }, (err, html) => {
+          if (err) {
+            console.log("err in sending mail", err);
+          } else {
+            newHtml = html.replace("{{{comment}}}", comment);
+            console.log("newHtml", newHtml);
+            // sendMailHandler(
+            //   "wehvs2023@gmail.com",
+            //   profileDetails.email,
+            //   "Certificate Request Approval",
+            //   newHtml
+            // );
+            res.send(newHtml);
+          }
+        });
+
         res.send(responseBuilder(null, null, "Your request has been denied by the employer.", 200));
         // Email will be sent to that particular user
       }
