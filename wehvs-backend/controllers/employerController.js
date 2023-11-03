@@ -61,7 +61,7 @@ exports.registerEmployer = async (req, res) => {
         email,
         password: passwordHash,
         role: "Employer",
-        employerId: employerData._id,
+        userId: employerData._id,
       });
 
       const addressDetails = await addressData.toJSON();
