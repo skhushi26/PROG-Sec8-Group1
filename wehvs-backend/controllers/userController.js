@@ -19,7 +19,6 @@ exports.registerUser = async (req, res) => {
       email,
       password,
       dateOfBirth,
-      role,
       address,
       city,
       province,
@@ -28,18 +27,17 @@ exports.registerUser = async (req, res) => {
       contactEmail,
       mobileNumber,
     } = req.body;
-    const isEmailExists = await Credentials.findOne({ email });
 
+    console.log("req.body", req.body);
+    const isEmailExists = await Credentials.findOne({ email });
     if (!isEmailExists) {
       const passwordHash = await bcrypt.hash(password, 10);
-
       const addressData = await Address.create({
         address,
         city,
         province,
         zipCode,
       });
-
       const contactData = await Contact.create({
         telephone,
         contactEmail,
@@ -60,6 +58,7 @@ exports.registerUser = async (req, res) => {
         role: "User",
         userId: userData._id,
       });
+      console.log("credentialsData", credentialsData);
 
       const addressDetails = await addressData.toJSON();
       const userDetails = await userData.toJSON();

@@ -19,7 +19,7 @@ router.post(
 
 router.put(
   "/approve/:id",
-  // authorize("Employer"),
+  authorize("Employer"),
   UserRequestApproveDenySchema,
   userRequestController.ApproveRequest
 );
