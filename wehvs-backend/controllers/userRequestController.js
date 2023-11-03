@@ -1,11 +1,18 @@
 const responseBuilder = require("../utils/response");
 const UserRequest = require("../models/UserRequest");
+const User = require("../models/User");
 
 
 exports.UserRequestList = async (req, res) => {
   try {
-    const userRequests = await UserRequest.find();
-    res.send(responseBuilder(null, userRequests, "User Requests retrieved successfully", 200));
+    const userRequests = await UserRequest.find().populate('userId', 'firstName lastName');
+
+    const userRequestsData = userRequests.map(request => ({
+      ...request.toObject(),
+      userFullName: request.userId.firstName + " " + request.userId.lastName,
+    }));
+
+    res.send(responseBuilder(null, userRequestsData, "User Requests retrieved successfully", 200));
   } catch (error) {
     res.send(responseBuilder(error, null, "Something went wrong while fetching user requests", 500));
   }

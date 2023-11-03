@@ -113,7 +113,9 @@ exports.registerUser = async (req, res) => {
 exports.getUserById = async (req, res) => {
   try {
     const userId = req.params.id;
-    const user = await User.findById(userId);
+    const user = await User.findById(userId) 
+                .populate('addressId')   // Populate the address
+                .populate('contactId');  // Populate the contact;
     
     if (!user) {
       res.send(responseBuilder(null, null, "User not found", 400));
@@ -165,7 +167,6 @@ exports.updateUser = async (req, res) => {
     const {
       firstName,
       lastName,
-      email,
       dateOfBirth,
       address,
       country,

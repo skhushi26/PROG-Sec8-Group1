@@ -18,22 +18,6 @@ class UserProfile extends Component {
                 { value: 'toronto', label: 'Toronto', country: 'canada' },
                 { value: 'vancouver', label: 'Vancouver', country: 'canada' },
             ],
-
-            // This part will be changed after getting information from API.
-            // user: {
-            //     firstName: "John",
-            //     lastName: "Doe",
-            //     email: "johndoe@example.com",
-            //     contactEmail: "johndoe@example.com",
-            //     telephone: "123-456-7890",
-            //     dateOfBirth: new Date("1994-01-01"),
-            //     address: "123 Main Street",
-            //     country: "Canada",
-            //     city: "Waterloo",
-            //     province: "ON",
-            //     zipCode: "N2T-2Y7",
-            //     mobileNumber: "123456789"
-            // },
             user: {
                 firstName: "",
                 lastName: "",
@@ -66,25 +50,33 @@ class UserProfile extends Component {
         // Make an API request to get the user data
         axios.get(`http://localhost:3333/users/getById/${userId}`)
             .then(response => {
+
+                const user = { ...response.data.data };
+                user.dateOfBirth = user.dateOfBirth ? new Date(user.dateOfBirth).toISOString().split('T')[0] : "";
+                if (user.addressId) {
+                    user.address = user.addressId.address;
+                    user.country = user.addressId.country;
+                    user.city = user.addressId.city;
+                    user.province = user.addressId.province;
+                    user.zipCode = user.addressId.zipCode;
+                }
+                if (user.contactId) {
+                    user.telephone = user.contactId.telephone;
+                    user.contactEmail = user.contactId.contactEmail;
+                }
                 // Set the state with the fetched user data
-                const userWithParsedDate = {
-                    ...response.data,
-                    dateOfBirth: new Date(response.data.dateOfBirth)
-                };
-                console.log("userWithParsedDate: " +userWithParsedDate);
-                this.setState({ user: userWithParsedDate });
+                this.setState({ user });
             })
             .catch(error => {
-                console.log("getbyid error: " + error);
                 console.error("Error fetching user data:", error);
             });
     }
 
-    handleInputChange = (event) => {
-        this.setState({
-            [event.target.name]: event.target.value,
-        });
-    };
+    // handleInputChange = (event) => {
+    //     this.setState({
+    //         [event.target.name]: event.target.value,
+    //     });
+    // };
 
 
     validateUser = (e) => {
@@ -95,12 +87,8 @@ class UserProfile extends Component {
             lastName,
             dateOfBirth,
             telephone,
-            address } = this.state;
-        // const dateOfBirth = new Date(this.state.dateOfBirth)
-                
-        // console.log("state: " + this.state);
-        // console.log("Date of birth 1: " + dateOfBirth);
-        
+            address } = this.state.user;
+
         let valid = true;
 
         // First name validation
@@ -135,10 +123,8 @@ class UserProfile extends Component {
         } else {
             // Convert the date from yyyy-mm-dd format to a Date object
             const dateOfBirthDate = new Date(dateOfBirth + "T00:00:00.000Z");
-    console.log("dateOfBirth: " + dateOfBirth);
-    console.log("dateOfBirthDate: " + dateOfBirthDate);
 
-            if (isNaN(dateOfBirthDate.getTime())) {
+            if (dateOfBirthDate != undefined && isNaN(dateOfBirthDate.getTime())) {
                 this.setState({ dateOfBirthError: "Invalid Date of Birth" });
                 valid = false;
             } else {
@@ -171,16 +157,16 @@ class UserProfile extends Component {
         const {
             firstName,
             lastName,
-            email,
-            contactEmail,
-            telephone,
+            dateOfBirth,
             address,
             country,
             city,
             province,
             zipCode,
-            mobileNumber } = this.state;
-        const dateOfBirth = new Date(this.state.dateOfBirth)
+            telephone,
+            mobileNumber,
+            contactEmail } = this.state.user;
+        // const dateOfBirth = new Date(this.state.dateOfBirth)
 
         // This part will be changed after user info will get with api
         let id = "6541e404ed2309802849d4cb";
@@ -189,20 +175,18 @@ class UserProfile extends Component {
             const response = await axios.put('http://localhost:3333/users/update/' + id, {
                 firstName,
                 lastName,
-                email,
                 dateOfBirth,
-                contactEmail,
-                telephone,
                 address,
                 country,
                 city,
                 province,
                 zipCode,
-                mobileNumber
+                telephone,
+                mobileNumber,
+                contactEmail
             });
-            console.log('Response2:', response.data); // Log the response data
 
-            if (response.statusCode === 200) {
+            if (response.data.statusCode === 200) {
                 // Login successful, store the token in localStorage or a global state
                 localStorage.setItem('token', response.data.token);
                 this.setState({ successMessage: "User updated successfully!" });
@@ -210,27 +194,9 @@ class UserProfile extends Component {
                 this.setState({ errorMessage: "Invalid data provided" });
             }
         } catch (error) {
-            console.log("Error: " + error + " :Error");
             this.setState({ errorMessage: "Something went wrong, please try again!" });
-            console.error(error);
         }
     };
-
-
-    // employer/:id
-    // Fetch user data based on user ID when the component mounts
-    //   componentDidMount() {
-    //     const userId = "65174acc06fd7898681f5c3b"; // it will be replaced with the value stored in session after login 
-    //     fetch(`https://localhost:3333/employer/${userId}`)
-    //       .then((response) => response.json())
-    //       .then((data) => {
-    //         this.setState({ user: data, loading: false });
-    //       })
-    //       .catch((error) => {
-    //         console.error("Error fetching user data:", error);
-    //         this.setState({ loading: false });
-    //       });
-    //   }
 
 
     handleCountryChange = (selectedOption) => {
@@ -241,14 +207,39 @@ class UserProfile extends Component {
         this.setState({ selectedCity: selectedOption });
     };
 
+    // handleInputChange = (event) => {
+    //     if (event.target.name === 'dateOfBirth') {
+    //         this.setState({
+    //             [event.target.name]: event.target.value,
+    //         });
+    //     } else {
+    //         this.setState({
+    //             [event.target.name]: event.target.value,
+    //             dateOfBirthError: "", // Clear date of birth error when other fields change
+    //         });
+    //     }
+    // };
+
+    // handleInputChange = (event) => {
+    //     const { name, value } = event.target;
+
+    //     this.setState({
+    //         [name]: value,
+    //         dateOfBirthError: "", // Clear date of birth error when other fields change
+    //     });
+    // };
+
     handleInputChange = (event) => {
-        this.setState({
-            [event.target.name]: event.target.value,
-        });
+        const { name, value } = event.target;
+
+        this.setState((prevState) => ({
+            user: {
+                ...prevState.user,
+                [name]: value,
+            },
+            dateOfBirthError: "", // Clear date of birth error when other fields change
+        }));
     };
-
-
-
 
     render() {
         const { user, loading } = this.state;
@@ -260,32 +251,29 @@ class UserProfile extends Component {
             dateOfBirthError,
             addressError } = this.state;
 
-            console.log("user info : " + user);
-            console.log("dateOfBirth in html: " + user.dateOfBirth);
-            // const isoDateOfBirth = user.dateOfBirth.toISOString().split('T')[0];
-
-            return (
+        return (
             <div>
                 {/* CONTENT */}
                 <div className="row container">
                     <div className="col-lg-12">
-                        {errorMessage && (
-                            <div className="alert alert-danger" role="alert" bis_skin_checked="1">
-                                {errorMessage}
-                            </div>
-                        )}
-
-                        {successMessage && (
-                            <div className="alert alert-success" role="alert" bis_skin_checked="1">
-                                {successMessage}
-                            </div>
-                        )}
 
                         {loading ? (
                             <p className="loading">Loading user data...</p>
                         ) : (
 
                             <form className="form-contact contact_form" method="post" id="contactForm" onSubmit={this.validateUser}>
+                                {errorMessage && (
+                                    <div className="alert alert-danger" role="alert" bis_skin_checked="1">
+                                        {errorMessage}
+                                    </div>
+                                )}
+
+                                {successMessage && (
+                                    <div className="alert alert-success" role="alert" bis_skin_checked="1">
+                                        {successMessage}
+                                    </div>
+                                )}
+
                                 <div className="col-12">
                                     <h2 className="contact-title">User Profile</h2>
                                 </div>
@@ -305,26 +293,26 @@ class UserProfile extends Component {
                                             <div className="col-sm-6  mt-4">
                                                 <label htmlFor="firstName">First Name</label>
                                                 <input className={`form-control ${firstNameError && "is-invalid"}`} name="firstName" id="firstName" type="text" placeholder="First Name" onChange={this.handleInputChange} defaultValue={user.firstName} />
-                                                { firstNameError && <div className="invalid-feedback"><span className="text-danger float-left">{firstNameError}</span></div>}
+                                                {firstNameError && <div className="invalid-feedback"><span className="text-danger float-left">{firstNameError}</span></div>}
                                             </div>
                                             <div className="col-sm-6 mt-4">
                                                 <label htmlFor="lastName">Last Name</label>
                                                 <input className={`form-control ${lastNameError && "is-invalid"}`} name="lastName" id="lastName" type="text" placeholder="Last Name" onChange={this.handleInputChange} defaultValue={user.lastName} />
-                                                { lastNameError && <div className="invalid-feedback"><span className="text-danger float-left">{lastNameError}</span></div>}
+                                                {lastNameError && <div className="invalid-feedback"><span className="text-danger float-left">{lastNameError}</span></div>}
                                             </div>
                                             <div className="col-sm-6  mt-4">
                                                 <label htmlFor="email">Email</label>
-                                                <input className="form-control valid" name="email" id="email" type="text" placeholder="Email" defaultValue={user.email} disabled/>
+                                                <input className="form-control valid" name="email" id="email" type="text" placeholder="Email" defaultValue={user.email} disabled />
                                             </div>
                                             <div className="col-sm-6 mt-4">
                                                 <label htmlFor="telephone">Telephone</label>
                                                 <input className={`form-control ${telephoneError && "is-invalid"}`} name="telephone" id="telephone" type="text" placeholder="Telephone" onChange={this.handleInputChange} defaultValue={user.telephone} />
-                                                { telephoneError && <div className="invalid-feedback"><span className="text-danger float-left">{telephoneError}</span></div>}
+                                                {telephoneError && <div className="invalid-feedback"><span className="text-danger float-left">{telephoneError}</span></div>}
                                             </div>
                                             <div className="col-sm-6 mt-4">
                                                 <label htmlFor="dateOfBirth">Date of Birth</label>
                                                 <input className={`form-control ${dateOfBirthError && "is-invalid"}`} name="dateOfBirth" id="dateOfBirth" type="date" placeholder="Select Date of Birth" onChange={this.handleInputChange} defaultValue={user.dateOfBirth} />
-                                                { dateOfBirthError && <div className="invalid-feedback"><span className="text-danger float-left">{dateOfBirthError}</span></div>}
+                                                {dateOfBirthError && <div className="invalid-feedback"><span className="text-danger float-left">{dateOfBirthError}</span></div>}
                                             </div>
                                             <div className="col-12 mt-6 contact-info">
                                                 <h5>Contact Information</h5>
@@ -333,7 +321,7 @@ class UserProfile extends Component {
                                             <div className="col-sm-6  mt-4">
                                                 <label htmlFor="address">Address</label>
                                                 <input className={`form-control ${addressError && "is-invalid"}`} name="address" id="address" type="text" placeholder="Address" onChange={this.handleInputChange} defaultValue={user.address} />
-                                                { addressError && <div className="invalid-feedback"><span className="text-danger float-left">{addressError}</span></div>}
+                                                {addressError && <div className="invalid-feedback"><span className="text-danger float-left">{addressError}</span></div>}
                                             </div>
 
                                             <div className="col-sm-6  mt-4">

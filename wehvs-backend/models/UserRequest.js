@@ -1,10 +1,12 @@
 const mongoose = require("mongoose");
+const User = require("./User.js");
 
 const UserRequestSchema = new mongoose.Schema(
   {
     userId: {
       type: mongoose.Types.ObjectId,
       required: true,
+      ref: User,
     },
     employerId: {
       type: mongoose.Types.ObjectId,

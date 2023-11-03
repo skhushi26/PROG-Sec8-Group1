@@ -25,9 +25,9 @@ function userProfileUpdateSchema(req, res, next) {
   const schemaRules = {
     firstName: Joi.string().required(),
     lastName: Joi.string().required(),
-    email: Joi.string().email().required(),
     dateOfBirth: Joi.date(),
     address: Joi.string().required(),
+    country: Joi.string(),
     city: Joi.string(),
     province: Joi.string(),
     zipCode: Joi.string(),
