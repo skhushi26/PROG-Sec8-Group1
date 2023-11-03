@@ -137,7 +137,7 @@ const EmployerRegister = () => {
           setSuccess(false);
         }
       } catch (error) {
-        console.log(error);
+        console.error(error);
         setMessage("Something went wrong in sending verification mail");
         setSuccess(false);
       }
