@@ -2,71 +2,75 @@ const responseBuilder = require("../utils/response");
 const UserRequest = require("../models/UserRequest");
 const User = require("../models/User");
 
-
 exports.UserRequestList = async (req, res) => {
   try {
-    const userRequests = await UserRequest.find().populate('userId', 'firstName lastName');
+    const userRequests = await UserRequest.find().populate("userId", "firstName lastName");
 
-    const userRequestsData = userRequests.map(request => ({
+    const userRequestsData = userRequests.map((request) => ({
       ...request.toObject(),
       userFullName: request.userId.firstName + " " + request.userId.lastName,
     }));
 
     res.send(responseBuilder(null, userRequestsData, "User Requests retrieved successfully", 200));
   } catch (error) {
-    res.send(responseBuilder(error, null, "Something went wrong while fetching user requests", 500));
+    res.send(
+      responseBuilder(error, null, "Something went wrong while fetching user requests", 500)
+    );
   }
 };
 
 exports.UserVerificationRequest = async (req, res) => {
   try {
-    const {
-      companyName,
-      startDate,
-      endDate,
-      jobTitle,
-      comment
-    } = req.body;
+    const { companyName, startDate, endDate, jobTitle, comment } = req.body;
 
     const employerData = await Employer.findOne({ companyName });
     const employerId = employerData._id;
     const employerCredentialsData = await Credential.findOne({ employerId });
 
+    // Check if a record exists in the userRequest table with the same conditions
+    const existingUserRequest = await UserRequest.findOne({
+      employerId,
+      startDate,
+      endDate,
+      jobTitle,
+      requestStatus: "Pending",
+    });
 
-      // Check if a record exists in the userRequest table with the same conditions
-      const existingUserRequest = await UserRequest.findOne({
+    if (!existingUserRequest) {
+      const userRequestData = await UserRequest.create({
+        userId, // It should come from session
         employerId,
         startDate,
         endDate,
         jobTitle,
-        requestStatus: "Pending" 
+        comment,
+        requestDate: new Date(),
       });
-
-      if (!existingUserRequest) {
-
-        const userRequestData = await UserRequest.create({
-          userId, // It should come from session
-          employerId,
-          startDate,
-          endDate,
-          jobTitle,
-          comment,
-          requestDate: new Date()
-        });
 
       let newHtml = "";
-      fs.readFile("views/user-verification-request-email.html", { encoding: "utf-8" }, (err, html) => {
-        if (err) {
-          console.log("err in sending mail", err);
-        } else {
-          let token = jwt.sign({ email: employerCredentialsData.email }, "wehvssecretkey", { expiresIn: 600 });
-          newHtml = html.replace(
-            "{{{link}}}}",
-            `http://${req.get("host")}/employer/verify/${token}`
-          );
-          sendMailHandler("wehvs2023@gmail.com", employerCredentialsData.email, "Email Verification", newHtml);
+      fs.readFile(
+        "views/user-verification-request-email.html",
+        { encoding: "utf-8" },
+        (err, html) => {
+          if (err) {
+            console.log("err in sending mail", err);
+          } else {
+            let token = jwt.sign({ email: employerCredentialsData.email }, "wehvssecretkey", {
+              expiresIn: 600,
+            });
+            newHtml = html.replace(
+              "{{{link}}}}",
+              `http://${req.get("host")}/employer/verify/${token}`
+            );
+            sendMailHandler(
+              "wehvs2023@gmail.com",
+              employerCredentialsData.email,
+              "Email Verification",
+              newHtml
+            );
+          }
         }
-      });
+      );
 
       res.send(
         responseBuilder(
@@ -77,14 +81,20 @@ exports.UserVerificationRequest = async (req, res) => {
         )
       );
     } else {
-      res.send(responseBuilder(null, null, "You currently have an active request, please wait for the ongoing request to be completed before proceeding!", 400));
+      res.send(
+        responseBuilder(
+          null,
+          null,
+          "You currently have an active request, please wait for the ongoing request to be completed before proceeding!",
+          400
+        )
+      );
     }
   } catch (error) {
     console.log(error);
     res.send(responseBuilder(error, null, "Something went wrong in registering employer!", 500));
   }
-}
-
+};
 
 exports.ApproveRequest = async (req, res) => {
   try {
@@ -104,6 +114,8 @@ exports.ApproveRequest = async (req, res) => {
         res.send(
           responseBuilder(null, null, "Your request has been approved by the employer.", 200)
         );
+
+        // Email will be sent to that particular user
       }
     }
   } catch (error) {
@@ -127,6 +139,7 @@ exports.DenyRequest = async (req, res) => {
           { $set: { requestStatus: "Deny", comment } }
         );
         res.send(responseBuilder(null, null, "Your request has been denied by the employer.", 200));
+        // Email will be sent to that particular user
       }
     }
   } catch (error) {

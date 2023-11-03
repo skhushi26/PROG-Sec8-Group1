@@ -114,10 +114,10 @@ exports.registerUser = async (req, res) => {
 exports.getUserById = async (req, res) => {
   try {
     const userId = req.params.id;
-    const user = await User.findById(userId) 
-                .populate('addressId')   // Populate the address
-                .populate('contactId');  // Populate the contact;
-    
+    const user = await User.findById(userId)
+      .populate("addressId") // Populate the address
+      .populate("contactId"); // Populate the contact;
+
     if (!user) {
       res.send(responseBuilder(null, null, "User not found", 400));
     } else {
@@ -220,29 +220,29 @@ exports.updateUser = async (req, res) => {
 };
 
 exports.forgotPassword = async (req, res) => {
-  const { email, role } = req.body;
+  const { email } = req.body;
   const rand = uuidv4();
-
+  const isExists = await Credentials.findOne({ email });
   // creates link to reset password
   const link = `http://${req.get("host")}/password/reset/${rand}`;
   let name = "";
-  if (role == "User") {
+  if (isExists.role == "User") {
     // finds user by email ID
-    const user = await User.findOne({ email });
+    // const user = await User.findOne({ email });
 
     // If role is "User"
-    if (!user) {
+    if (!isExists) {
       // sends response if user doesn't exists
       res.send(responseBuilder(null, null, "User doesn't exists", 400));
     } else {
-      name = user.firstName;
+      name = isExists.firstName;
       // sets the user's resetToken and expiryToken
-      user.resetToken = rand;
-      user.expiryToken = Date.now() + 3600000;
+      isExists.resetToken = rand;
+      isExists.expiryToken = Date.now() + 3600000;
       // saves user data
-      await user.save();
+      await isExists.save();
       res.send(
-        responseBuilder(null, user, "Forgot Password email has been sent to your email id", 200)
+        responseBuilder(null, isExists, "Forgot Password email has been sent to your email id", 200)
       );
     }
   }
@@ -250,21 +250,21 @@ exports.forgotPassword = async (req, res) => {
   // If role is "Employer"
   else {
     // finds employer by email ID
-    const employer = await Employer.findOne({ email });
+    // const employer = await Employer.findOne({ email });
 
     // checks whether employer exists or not
-    if (!employer) {
+    if (!isExists) {
       // sends response if employer doesn't exists
       res.send(responseBuilder(null, null, "Employer doesn't exists", 400));
     } else {
-      name = employer.companyName;
+      name = isExists.companyName;
       // sets the user's resetToken and expiryToken
-      employer.resetToken = rand;
-      employer.expiryToken = Date.now() + 3600000;
+      isExists.resetToken = rand;
+      isExists.expiryToken = Date.now() + 3600000;
       // saves employer data
-      await employer.save();
+      await isExists.save();
       res.send(
-        responseBuilder(null, employer, "Forgot Password email has been sent to your email id", 200)
+        responseBuilder(null, isExists, "Forgot Password email has been sent to your email id", 200)
       );
     }
   }
