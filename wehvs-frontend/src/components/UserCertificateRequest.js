@@ -4,13 +4,8 @@ import withRouter from "./Router/withRouter";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
-const EmployerRegister = () => {
+const UserCertificateRequest = () => {
   const [companyName, setcompanyName] = useState("");
-  const [licenseNumber, setlicenseNumber] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [telephone, settelephone] = useState("");
-  const [foundedDate, setfoundedDate] = useState("");
   const [description, setdescription] = useState("");
   const [address, setAddress] = useState("");
   const [city, setCity] = useState("");
@@ -22,17 +17,14 @@ const EmployerRegister = () => {
 
 
   const [companyNameError, setcompanyNameError] = useState("");
-  const [licenseNumberError, setlicenseNumberError] = useState("");
-  const [emailError, setEmailError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
   const [addressError, setAddressError] = useState("");
-  const [telephoneError, settelephoneError] = useState("");
+  const [mobileNumberError, setmobileNumberError] = useState("");
   const [contactEmailError, setContactEmailError] = useState("");
 
   const [message, setMessage] = useState("");
   const [success, setSuccess] = useState(null);
 
-  const validateEmployerRegister = async (e) => {
+  const validateUserCertificateRequest = async (e) => {
     e.preventDefault();
 
     let valid = true;
@@ -45,40 +37,6 @@ const EmployerRegister = () => {
       setcompanyNameError("");
     }
 
-    // licenseNumber validation
-    if (licenseNumber.trim() === "") {
-      setlicenseNumberError("License Number is required");
-      valid = false;
-    } else {
-      setlicenseNumberError("");
-    }
-
-    // Email validation
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (email.trim() === "") {
-      setEmailError("Email is required");
-      valid = false;
-    } else if (!email.match(emailPattern)) {
-      setEmailError("Invalid email address");
-      valid = false;
-    } else {
-      setEmailError("");
-    }
-
-    // Password validation
-    const passwordPattern = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
-    if (password.trim() === "") {
-      setPasswordError("Password is required");
-      valid = false;
-    } else if (!password.match(passwordPattern)) {
-      setPasswordError(
-        "Password must be at least 8 characters, one uppercase, one lowercase, and one number"
-      );
-      valid = false;
-    } else {
-      setPasswordError("");
-    }
-
     // Address validation
     if (address.trim() === "") {
       setAddressError("Address is required");
@@ -88,11 +46,11 @@ const EmployerRegister = () => {
     }
 
     // Telephone validation
-    if (telephone.trim() === "") {
-      settelephoneError("Telephone is required");
+    if (mobileNumber.trim() === "") {
+      setmobileNumberError("Telephone is required");
       valid = false;
     } else {
-      settelephoneError("");
+      setmobileNumberError("");
     }
 
 
@@ -110,18 +68,13 @@ const EmployerRegister = () => {
     // If all validations pass, you can proceed with further action
     if (valid) {
       try {
-        const response = await axios.post("http://localhost:3333/employers/register", {
+        const response = await axios.post("http://localhost:3333/users/apply-certificate", {
           companyName,
-          licenseNumber,
-          email,
-          password,
-          foundedDate,
           address,
           city,
           province,
           country,
           zipCode,
-          telephone,
           contactEmail,
           mobileNumber,
         });
@@ -151,7 +104,7 @@ const EmployerRegister = () => {
                         <form className="form-contact contact_form" method="post" id="contactForm"
                         onSubmit={validateEmployerRegister}>
                             <div className="col-12">
-                                <h1 className="contact-title">Employer Register</h1>
+                                <h1 className="contact-title">WEHVS Certificate Request Form</h1>
                             </div>
                             <div className="col-sm-10 m-auto">
                                 {success !== null && // Change condition to only render if success is not null
@@ -184,31 +137,6 @@ const EmployerRegister = () => {
                                                 <span className="error-message text-danger">{companyNameError}</span>
                                         </div>
                                         <div className="col-sm-6 mt-4">
-                                            <label htmlFor="licenseNumber">License Number</label>
-                                            <input className="form-control valid" name="licenseNumber" id="licenseNumber" type="text" placeholder="License Number" value={licenseNumber}
-                                                onChange={(e) => setlicenseNumber(e.target.value)} />
-                                                <span className="error-message text-danger">{licenseNumberError}</span>
-                                        </div>
-                                        <div className="col-sm-6  mt-4">
-                                            <label htmlFor="email">Email</label>
-                                            <input className="form-control valid" name="email" id="email" type="text" placeholder="Email" value={email}
-                                                onChange={(e) => setEmail(e.target.value)} />
-                                                <span className="error-message text-danger">{emailError}</span>
-                                        </div>
-                                        <div className="col-sm-6 mt-4">
-                                            <label htmlFor="password">Password</label>
-                                            <input
-                                            className="form-control valid"
-                                            name="password"
-                                            id="password"
-                                            type="text"
-                                            placeholder="Password"
-                                            value={password}
-                                            onChange={(e) => setPassword(e.target.value)}
-                                            />
-                                            <span className="error-message text-danger">{passwordError}</span>
-                                        </div>
-                                        <div className="col-sm-6 mt-4">
                                             <label htmlFor="telephone">Telephone</label>
                                             <input className="form-control valid" name="telephone" id="telephone" type="text" placeholder="Telephone" value={telephone}
                                                 onChange={(e) => settelephone(e.target.value)} />
@@ -227,11 +155,6 @@ const EmployerRegister = () => {
                                                 />
                                                 <span className="error-message text-danger">{contactEmailError}</span>
                                             </div>
-                                        <div className="col-sm-6  mt-4">
-                                            <label htmlFor="foundedDate">Founded Date</label>
-                                            <input className="form-control" name="foundedDate" id="foundedDate" type="date" placeholder="Select Founded Date" value={foundedDate}
-                                            onChange={(e) => setfoundedDate(e.target.value)}/>
-                                        </div>
 
                                         <div className="col-sm-12  mt-4">
                                             <label htmlFor="description">Description</label>
@@ -402,4 +325,4 @@ const EmployerRegister = () => {
   //   }
 };
 
-export default withRouter(EmployerRegister);
+export default withRouter(UserCertificateRequest);

@@ -19,6 +19,7 @@ exports.registerUser = async (req, res) => {
       email,
       password,
       dateOfBirth,
+      role,
       address,
       city,
       province,

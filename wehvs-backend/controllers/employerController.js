@@ -61,7 +61,7 @@ exports.registerEmployer = async (req, res) => {
         email,
         password: passwordHash,
         role: "Employer",
-        eployerId: employerData._id,
+        employerId: employerData._id,
       });
 
       const addressDetails = await addressData.toJSON();
@@ -73,7 +73,8 @@ exports.registerEmployer = async (req, res) => {
         ...addressDetails,
         ...employerDetails,
         ...contactDetails,
-        ...credentialsDetails
+        ...credentialsDetails,
+
       };
 
       delete mergedData.addressId;
@@ -106,10 +107,59 @@ exports.registerEmployer = async (req, res) => {
       res.send(responseBuilder(null, null, "Employer already exists!", 400));
     }
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.send(responseBuilder(error, null, "Something went wrong in registering employer!", 500));
   }
 };
+
+exports.getEmployerById = async (req, res) => {
+  try {
+    const employerId = req.params.id;
+    const employer = await Employer.findById(employerId);
+    
+    if (!employer) {
+      res.send(responseBuilder(null, null, "Employer not found", 400));
+    } else {
+      res.send(responseBuilder(null, employer, "", 200));
+    }
+  } catch (error) {
+    res.send(responseBuilder(error, null, "Something went wrong while fetching employer", 500));
+  }
+};
+
+exports.getVerifiedEmployer = async (req, res) => {
+  try {
+    const token = req.params.token;
+    let decoded = null;
+    try {
+      decoded = jwt.verify(token, "wehvssecretkey");
+    } catch (error) {
+      console.log("error", error);
+    }
+
+    if (!decoded) {
+      res.send(responseBuilder(null, null, "Invalid link!", 400));
+    } else {
+      const employerDetails = await Credentials.findOne({ email: decoded.email });
+      if (employerDetails) {
+        if (employerDetails.isActive) {
+          res.send(responseBuilder(null, null, "Your account is already activated", 200));
+        } else {
+          await Credentials.findOneAndUpdate(
+            { email: decoded.email },
+            { $set: { isActive: true } }
+          );
+          res.send(responseBuilder(null, null, "Your account has activated!", 200));
+        }
+      } else {
+        res.send(responseBuilder(null, null, "Employer not found", 400));
+      }
+    }
+  } catch (error) {
+    res.send(responseBuilder(error, null, "Something went in activating Employer", 500));
+  }
+};
+
 
 exports.updateEmployer = async (req, res) => {
   try {
