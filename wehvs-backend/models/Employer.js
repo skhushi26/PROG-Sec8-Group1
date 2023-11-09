@@ -2,15 +2,6 @@ const mongoose = require("mongoose");
 
 const EmployerSchema = new mongoose.Schema(
   {
-    // email: {
-    //   type: String,
-    //   required: true,
-    //   unique: true,
-    // },
-    // password: {
-    //   type: String,
-    //   required: true,
-    // },
     companyName: {
       type: String,
       required: true,
@@ -27,10 +18,6 @@ const EmployerSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
-    role: {
-      type: String,
-      default: "Employer",
-    },
     isActive: {
       type: Boolean,
       default: false,
@@ -43,8 +30,6 @@ const EmployerSchema = new mongoose.Schema(
       type: mongoose.Types.ObjectId,
       required: true,
     },
-    // resetToken: String,
-    // expiryToken: Date,
   },
   { timestamps: true }
 );

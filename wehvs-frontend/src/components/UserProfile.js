@@ -6,6 +6,7 @@ class UserProfile extends Component {
     constructor() {
         super();
         this.state = {
+            userId: null,
             selectedCountry: null,
             selectedCity: null,
             countries: [
@@ -43,9 +44,11 @@ class UserProfile extends Component {
     }
 
     componentDidMount() {
-        // Fetch user data based on user ID when the component mounts
-        // You should replace 'userId' with the actual user ID
-        const userId = "6541e404ed2309802849d4cb";
+        // Retrieve user ID and role from localStorage
+        const userId = localStorage.getItem('userId');
+
+        // Set the userId in the component's state
+        this.setState({ userId });
 
         // Make an API request to get the user data
         axios.get(`http://localhost:3333/users/getById/${userId}`)
@@ -64,6 +67,7 @@ class UserProfile extends Component {
                     user.telephone = user.contactId.telephone;
                     user.contactEmail = user.contactId.contactEmail;
                 }
+
                 // Set the state with the fetched user data
                 this.setState({ user });
             })
@@ -71,13 +75,6 @@ class UserProfile extends Component {
                 console.error("Error fetching user data:", error);
             });
     }
-
-    // handleInputChange = (event) => {
-    //     this.setState({
-    //         [event.target.name]: event.target.value,
-    //     });
-    // };
-
 
     validateUser = (e) => {
         e.preventDefault();
@@ -166,13 +163,12 @@ class UserProfile extends Component {
             telephone,
             mobileNumber,
             contactEmail } = this.state.user;
-        // const dateOfBirth = new Date(this.state.dateOfBirth)
 
-        // This part will be changed after user info will get with api
-        let id = "6541e404ed2309802849d4cb";
+        // Retrieve userId from the component's state
+        const userId = this.state.userId;
 
         try {
-            const response = await axios.put('http://localhost:3333/users/update/' + id, {
+            const response = await axios.put('http://localhost:3333/users/update/' + userId, {
                 firstName,
                 lastName,
                 dateOfBirth,
@@ -187,8 +183,6 @@ class UserProfile extends Component {
             });
 
             if (response.data.statusCode === 200) {
-                // Login successful, store the token in localStorage or a global state
-                localStorage.setItem('token', response.data.token);
                 this.setState({ successMessage: "User updated successfully!" });
             } else {
                 this.setState({ errorMessage: "Invalid data provided" });
@@ -206,28 +200,6 @@ class UserProfile extends Component {
     handleCityChange = (selectedOption) => {
         this.setState({ selectedCity: selectedOption });
     };
-
-    // handleInputChange = (event) => {
-    //     if (event.target.name === 'dateOfBirth') {
-    //         this.setState({
-    //             [event.target.name]: event.target.value,
-    //         });
-    //     } else {
-    //         this.setState({
-    //             [event.target.name]: event.target.value,
-    //             dateOfBirthError: "", // Clear date of birth error when other fields change
-    //         });
-    //     }
-    // };
-
-    // handleInputChange = (event) => {
-    //     const { name, value } = event.target;
-
-    //     this.setState({
-    //         [name]: value,
-    //         dateOfBirthError: "", // Clear date of birth error when other fields change
-    //     });
-    // };
 
     handleInputChange = (event) => {
         const { name, value } = event.target;

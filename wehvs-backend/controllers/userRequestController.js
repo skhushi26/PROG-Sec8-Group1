@@ -50,11 +50,12 @@ exports.UserVerificationRequest = async (req, res) => {
       });
 
       if (!existingUserRequest) {
-
-        const userId= "65455aa6957fa8009dc75eb1";
+        // Retrieve user ID and role from localStorage
+        const userId = localStorage.getItem('userId');
+        
         const userData = await User.findById(userId);
         const userRequestData = await UserRequest.create({
-          userId, // It should come from session
+          userId, 
           employerId,
           startDate,
           endDate,

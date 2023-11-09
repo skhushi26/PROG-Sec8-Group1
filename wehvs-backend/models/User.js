@@ -20,10 +20,6 @@ const UserSchema = new mongoose.Schema(
       type: Date,
       required: true,
     },
-    // isActive: {
-    //   type: Boolean,
-    //   default: false,
-    // },
     addressId: {
       type: mongoose.Types.ObjectId,
       required: true,

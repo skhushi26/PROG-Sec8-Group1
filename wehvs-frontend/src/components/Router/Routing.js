@@ -11,12 +11,14 @@ import UserProfile from "../UserProfile";
 import EmployerProfile from "../EmployerProfile";
 import UserRequestList from "../UserRequestList";
 import UserCertificateRequest from "../UserCertificateRequest";
+import Dashboard from "../Dashboard";
 
 export default function Routing() {
   return (
     <>
       <Routes>
         <Route path="/" element={<Navbar />}>
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/user/register" element={<UserRegister />} />
           <Route path="/employer/register" element={<EmployerRegister />} />
           <Route path="/user/profile" element={<UserProfile />} />

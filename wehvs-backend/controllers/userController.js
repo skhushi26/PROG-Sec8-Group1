@@ -120,7 +120,21 @@ exports.getUserById = async (req, res) => {
     if (!user) {
       res.send(responseBuilder(null, null, "User not found", 400));
     } else {
-      res.send(responseBuilder(null, user, "", 200));
+      // res.send(responseBuilder(null, user, "", 200));
+
+      const credentials = await Credentials.findOne({ userId: userId });
+      if (!credentials) {
+        res.send(responseBuilder(null, user, "Credentials not found", 400));
+      } else {
+    
+        const userData = {
+          ...user.toObject(), // Spread the user object
+          email: credentials.email,
+        };
+        res.send(responseBuilder(null, userData, "", 200));
+
+      }
+
     }
   } catch (error) {
     res.send(responseBuilder(error, null, "Something went wrong while fetching user", 500));
