@@ -36,3 +36,7 @@
     transform: rotate(360deg);
   }
 }
+
+.boxed-btn:hover {
+  text-decoration: none;
+}

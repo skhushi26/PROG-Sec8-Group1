@@ -16,7 +16,7 @@ const upload = fileUploadHandler("uploads");
 router.post("/register", userRegistrationSchema, userController.registerUser);
 router.get("/getById/:id", userController.getUserById);
 
-router.get("/verify/:token", userController.getVerifiedUser);
+// router.get("/verify/:token", userController.getVerifiedUser);
 
 // router.post("/login", loginSchema, userController.login);
 

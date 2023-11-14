@@ -45,7 +45,6 @@ exports.registerEmployer = async (req, res) => {
         telephone,
         contactEmail,
         mobileNumber,
-
       });
 
       const employerData = await Employer.create({
@@ -74,7 +73,6 @@ exports.registerEmployer = async (req, res) => {
         ...employerDetails,
         ...contactDetails,
         ...credentialsDetails,
-
       };
 
       delete mergedData.addressId;
@@ -86,12 +84,16 @@ exports.registerEmployer = async (req, res) => {
         if (err) {
           console.log("err in sending mail", err);
         } else {
-          let token = jwt.sign({ email: credentialsData.email }, "wehvssecretkey", { expiresIn: 600 });
-          newHtml = html.replace(
-            "{{{link}}}}",
-            `http://${req.get("host")}/employer/verify/${token}`
+          let token = jwt.sign({ email: credentialsData.email }, "wehvssecretkey", {
+            expiresIn: 600,
+          });
+          newHtml = html.replace("{{{link}}}}", `http://${req.get("host")}/shared/verify/${token}`);
+          sendMailHandler(
+            "wehvs2023@gmail.com",
+            credentialsData.email,
+            "Email Verification",
+            newHtml
           );
-          sendMailHandler("wehvs2023@gmail.com", credentialsData.email, "Email Verification", newHtml);
         }
       });
 
@@ -116,7 +118,7 @@ exports.getEmployerById = async (req, res) => {
   try {
     const employerId = req.params.id;
     const employer = await Employer.findById(employerId);
-    
+
     if (!employer) {
       res.send(responseBuilder(null, null, "Employer not found", 400));
     } else {
@@ -127,39 +129,38 @@ exports.getEmployerById = async (req, res) => {
   }
 };
 
-exports.getVerifiedEmployer = async (req, res) => {
-  try {
-    const token = req.params.token;
-    let decoded = null;
-    try {
-      decoded = jwt.verify(token, "wehvssecretkey");
-    } catch (error) {
-      console.log("error", error);
-    }
+// exports.getVerifiedEmployer = async (req, res) => {
+//   try {
+//     const token = req.params.token;
+//     let decoded = null;
+//     try {
+//       decoded = jwt.verify(token, "wehvssecretkey");
+//     } catch (error) {
+//       console.log("error", error);
+//     }
 
-    if (!decoded) {
-      res.send(responseBuilder(null, null, "Invalid link!", 400));
-    } else {
-      const employerDetails = await Credentials.findOne({ email: decoded.email });
-      if (employerDetails) {
-        if (employerDetails.isActive) {
-          res.send(responseBuilder(null, null, "Your account is already activated", 200));
-        } else {
-          await Credentials.findOneAndUpdate(
-            { email: decoded.email },
-            { $set: { isActive: true } }
-          );
-          res.send(responseBuilder(null, null, "Your account has activated!", 200));
-        }
-      } else {
-        res.send(responseBuilder(null, null, "Employer not found", 400));
-      }
-    }
-  } catch (error) {
-    res.send(responseBuilder(error, null, "Something went in activating Employer", 500));
-  }
-};
-
+//     if (!decoded) {
+//       res.send(responseBuilder(null, null, "Invalid link!", 400));
+//     } else {
+//       const employerDetails = await Credentials.findOne({ email: decoded.email });
+//       if (employerDetails) {
+//         if (employerDetails.isActive) {
+//           res.send(responseBuilder(null, null, "Your account is already activated", 200));
+//         } else {
+//           await Credentials.findOneAndUpdate(
+//             { email: decoded.email },
+//             { $set: { isActive: true } }
+//           );
+//           res.send(responseBuilder(null, null, "Your account has activated!", 200));
+//         }
+//       } else {
+//         res.send(responseBuilder(null, null, "Employer not found", 400));
+//       }
+//     }
+//   } catch (error) {
+//     res.send(responseBuilder(error, null, "Something went in activating Employer", 500));
+//   }
+// };
 
 exports.updateEmployer = async (req, res) => {
   try {

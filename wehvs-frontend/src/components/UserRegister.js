@@ -83,8 +83,8 @@ const UserRegister = () => {
     const currentDate = new Date();
     const inputDate = new Date(dateOfBirth);
     const age = currentDate.getFullYear() - inputDate.getFullYear();
-    if (age < 18) {
-      setDateOfBirthError("You must be at least 18 years old");
+    if (age < 14) {
+      setDateOfBirthError("You must be at least 14 years old");
       valid = false;
     } else {
       setDateOfBirthError("");
@@ -149,7 +149,7 @@ const UserRegister = () => {
         }
       } catch (error) {
         console.log("error>: " + error);
-        setMessage("Something went wrong in sending reset password link");
+        setMessage("Something went wrong in sending email verification link");
         setSuccess(false);
       }
     }
@@ -293,7 +293,7 @@ const UserRegister = () => {
                       className="form-control valid"
                       name="password"
                       id="password"
-                      type="text"
+                      type="password"
                       placeholder="Password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}

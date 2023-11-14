@@ -66,3 +66,36 @@ exports.login = async (req, res) => {
     res.send(responseBuilder(error, null, "Something went wrong in logging in", 500));
   }
 };
+
+exports.getVerified = async (req, res) => {
+  try {
+    const token = req.params.token;
+    let decoded = null;
+    try {
+      decoded = jwt.verify(token, "wehvssecretkey");
+    } catch (error) {
+      console.log("error", error);
+    }
+
+    if (!decoded) {
+      res.send(responseBuilder(null, null, "Invalid link!", 400));
+    } else {
+      const userDetails = await Credentials.findOne({ email: decoded.email });
+      if (userDetails) {
+        if (userDetails.isActive) {
+          res.send(responseBuilder(null, null, "Your account is already activated", 400));
+        } else {
+          await Credentials.findOneAndUpdate(
+            { email: decoded.email },
+            { $set: { isActive: true } }
+          );
+          res.send(responseBuilder(null, null, "Your account has activated!", 200));
+        }
+      } else {
+        res.send(responseBuilder(null, null, "Account not found", 400));
+      }
+    }
+  } catch (error) {
+    res.send(responseBuilder(error, null, "Something went in activating the account", 500));
+  }
+};

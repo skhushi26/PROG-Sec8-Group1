@@ -84,7 +84,8 @@ exports.registerUser = async (req, res) => {
           let token = jwt.sign({ email: credentialsData.email }, "wehvssecretkey", {
             expiresIn: 600,
           });
-          newHtml = html.replace("{{{link}}}}", `http://${req.get("host")}/users/verify/${token}`);
+          // newHtml = html.replace("{{{link}}}}", `http://${req.get("host")}/shared/verify/${token}`);
+          newHtml = html.replace("{{{link}}}}", `http://localhost:3000/verify/${token}`);
           sendMailHandler(
             "wehvs2023@gmail.com",
             credentialsData.email,
@@ -126,53 +127,50 @@ exports.getUserById = async (req, res) => {
       if (!credentials) {
         res.send(responseBuilder(null, user, "Credentials not found", 400));
       } else {
-    
         const userData = {
           ...user.toObject(), // Spread the user object
           email: credentials.email,
         };
         res.send(responseBuilder(null, userData, "", 200));
-
       }
-
     }
   } catch (error) {
     res.send(responseBuilder(error, null, "Something went wrong while fetching user", 500));
   }
 };
 
-exports.getVerifiedUser = async (req, res) => {
-  try {
-    const token = req.params.token;
-    let decoded = null;
-    try {
-      decoded = jwt.verify(token, "wehvssecretkey");
-    } catch (error) {
-      console.log("error", error);
-    }
+// exports.getVerifiedUser = async (req, res) => {
+//   try {
+//     const token = req.params.token;
+//     let decoded = null;
+//     try {
+//       decoded = jwt.verify(token, "wehvssecretkey");
+//     } catch (error) {
+//       console.log("error", error);
+//     }
 
-    if (!decoded) {
-      res.send(responseBuilder(null, null, "Invalid link!", 400));
-    } else {
-      const userDetails = await Credentials.findOne({ email: decoded.email });
-      if (userDetails) {
-        if (userDetails.isActive) {
-          res.send(responseBuilder(null, null, "Your account is already activated", 200));
-        } else {
-          await Credentials.findOneAndUpdate(
-            { email: decoded.email },
-            { $set: { isActive: true } }
-          );
-          res.send(responseBuilder(null, null, "Your account has activated!", 200));
-        }
-      } else {
-        res.send(responseBuilder(null, null, "User not found", 400));
-      }
-    }
-  } catch (error) {
-    res.send(responseBuilder(error, null, "Something went in activating user", 500));
-  }
-};
+//     if (!decoded) {
+//       res.send(responseBuilder(null, null, "Invalid link!", 400));
+//     } else {
+//       const userDetails = await Credentials.findOne({ email: decoded.email });
+//       if (userDetails) {
+//         if (userDetails.isActive) {
+//           res.send(responseBuilder(null, null, "Your account is already activated", 200));
+//         } else {
+//           await Credentials.findOneAndUpdate(
+//             { email: decoded.email },
+//             { $set: { isActive: true } }
+//           );
+//           res.send(responseBuilder(null, null, "Your account has activated!", 200));
+//         }
+//       } else {
+//         res.send(responseBuilder(null, null, "User not found", 400));
+//       }
+//     }
+//   } catch (error) {
+//     res.send(responseBuilder(error, null, "Something went in activating user", 500));
+//   }
+// };
 
 exports.updateUser = async (req, res) => {
   try {
