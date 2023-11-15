@@ -95,19 +95,18 @@ exports.registerUser = async (req, res) => {
         }
       });
 
-      res.send(
-        responseBuilder(
-          null,
-          mergedData,
-          "User registered successfully!Email has been sent to your registered email id for verification.",
-          200
-        )
+      responseBuilder(
+        res,
+        null,
+        mergedData,
+        "User registered successfully!Email has been sent to your registered email id for verification.",
+        200
       );
     } else {
-      res.send(responseBuilder(null, null, "User already exists!", 400));
+      responseBuilder(res, null, null, "User already exists!", 400);
     }
   } catch (error) {
-    res.send(responseBuilder(error, null, "Something went wrong in registering user!", 500));
+    responseBuilder(res, error, null, "Something went wrong in registering user!", 500);
   }
 };
 
@@ -119,23 +118,23 @@ exports.getUserById = async (req, res) => {
       .populate("contactId"); // Populate the contact;
 
     if (!user) {
-      res.send(responseBuilder(null, null, "User not found", 400));
+      responseBuilder(res, null, null, "User not found", 400);
     } else {
       // res.send(responseBuilder(null, user, "", 200));
 
       const credentials = await Credentials.findOne({ userId: userId });
       if (!credentials) {
-        res.send(responseBuilder(null, user, "Credentials not found", 400));
+        responseBuilder(res, null, user, "Credentials not found", 400);
       } else {
         const userData = {
           ...user.toObject(), // Spread the user object
           email: credentials.email,
         };
-        res.send(responseBuilder(null, userData, "", 200));
+        responseBuilder(res, null, userData, "", 200);
       }
     }
   } catch (error) {
-    res.send(responseBuilder(error, null, "Something went wrong while fetching user", 500));
+    responseBuilder(res, error, null, "Something went wrong while fetching user", 500);
   }
 };
 
@@ -196,7 +195,7 @@ exports.updateUser = async (req, res) => {
     const profilePhotoPath = req.file ? req.file.path : null;
 
     if (!existingUser) {
-      res.send(responseBuilder(null, null, "User not found", 404));
+      responseBuilder(res, null, null, "User not found", 404);
     } else {
       existingUser.firstName = firstName;
       existingUser.lastName = lastName;
@@ -222,11 +221,11 @@ exports.updateUser = async (req, res) => {
         contactData.mobileNumber = mobileNumber;
         await contactData.save();
       }
-      res.send(responseBuilder(null, null, "User details updated successfully", 200));
+      responseBuilder(res, null, null, "User details updated successfully", 200);
     }
   } catch (error) {
     console.log("error", error);
-    res.send(responseBuilder(error, null, "Something went wrong in updating user details", 500));
+    responseBuilder(res, error, null, "Something went wrong in updating user details", 500);
   }
 };
 
@@ -252,8 +251,13 @@ exports.forgotPassword = async (req, res) => {
       isExists.expiryToken = Date.now() + 3600000;
       // saves user data
       await isExists.save();
-      res.send(
-        responseBuilder(null, isExists, "Forgot Password email has been sent to your email id", 200)
+
+      responseBuilder(
+        res,
+        null,
+        isExists,
+        "Forgot Password email has been sent to your email id",
+        200
       );
     }
   }
@@ -274,8 +278,13 @@ exports.forgotPassword = async (req, res) => {
       isExists.expiryToken = Date.now() + 3600000;
       // saves employer data
       await isExists.save();
-      res.send(
-        responseBuilder(null, isExists, "Forgot Password email has been sent to your email id", 200)
+
+      responseBuilder(
+        res,
+        null,
+        isExists,
+        "Forgot Password email has been sent to your email id",
+        200
       );
     }
   }

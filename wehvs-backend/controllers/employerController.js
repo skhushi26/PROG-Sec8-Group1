@@ -97,20 +97,19 @@ exports.registerEmployer = async (req, res) => {
         }
       });
 
-      res.send(
-        responseBuilder(
-          null,
-          mergedData,
-          "Employer registered successfully! Email has been sent to your registered email id for verification.",
-          200
-        )
+      responseBuilder(
+        res,
+        null,
+        mergedData,
+        "Employer registered successfully! Email has been sent to your registered email id for verification.",
+        200
       );
     } else {
-      res.send(responseBuilder(null, null, "Employer already exists!", 400));
+      responseBuilder(res, null, null, "Employer already exists!", 400);
     }
   } catch (error) {
     console.error(error);
-    res.send(responseBuilder(error, null, "Something went wrong in registering employer!", 500));
+    responseBuilder(res, error, null, "Something went wrong in registering employer!", 500);
   }
 };
 
@@ -120,12 +119,12 @@ exports.getEmployerById = async (req, res) => {
     const employer = await Employer.findById(employerId);
 
     if (!employer) {
-      res.send(responseBuilder(null, null, "Employer not found", 400));
+      responseBuilder(res, null, null, "Employer not found", 400);
     } else {
-      res.send(responseBuilder(null, employer, "", 200));
+      responseBuilder(res, null, employer, "", 200);
     }
   } catch (error) {
-    res.send(responseBuilder(error, null, "Something went wrong while fetching employer", 500));
+    responseBuilder(res, error, null, "Something went wrong while fetching employer", 500);
   }
 };
 
@@ -221,12 +220,11 @@ exports.updateEmployer = async (req, res) => {
     }
 
     // Respond with a success message
-    res.send(
-      responseBuilder(null, existingEmployer, "Employer has been updated succesfully!", 200)
-    );
+
+    responseBuilder(res, null, existingEmployer, "Employer has been updated succesfully!", 200);
   } catch (error) {
     console.error(error);
-    res.send(responseBuilder(error, null, "Something went wrong in updating the employer", 500));
+    responseBuilder(res, error, null, "Something went wrong in updating the employer", 500);
   }
 };
 

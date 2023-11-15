@@ -14,17 +14,16 @@ router.get(
   userRequestController.UserRequestList
 );
 
-
 router.post(
   "/send",
-  // authorize("User"),
+  authorize("User"),
   userRequestValidationSchema,
   userRequestController.UserVerificationRequest
 );
 
 router.put(
   "/approve/:id",
-  authorize("Employer"),
+  // authorize("Employer"),
   UserRequestApproveDenySchema,
   userRequestController.ApproveRequest
 );

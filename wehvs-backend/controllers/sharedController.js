@@ -26,17 +26,15 @@ exports.login = async (req, res) => {
           );
           let userData = await details.toJSON();
           delete userData.password;
-          res.send(
-            responseBuilder(null, { ...userData, token }, "User logged in successfully", 200)
-          );
+          responseBuilder(res, null, { ...userData, token }, "User logged in successfully", 200);
         } else {
-          res.send(responseBuilder(null, null, "Invalid credentails", 400));
+          responseBuilder(res, null, null, "Invalid credentails", 400);
         }
       }
     } else {
       // const employerData = await Employer.findOne({ email });
       if (!details) {
-        res.send(responseBuilder(null, null, "Employer not found!", 404));
+        responseBuilder(res, null, null, "Employer not found!", 404);
       } else {
         const isPasswordMatch = await bcrypt.compare(password, details.password);
         if (isPasswordMatch) {
@@ -49,21 +47,20 @@ exports.login = async (req, res) => {
           );
           let employerData = await details.toJSON();
           delete employerData.password;
-          res.send(
-            responseBuilder(
-              null,
-              { ...employerData, token },
-              "Employer logged in successfully",
-              200
-            )
+          responseBuilder(
+            res,
+            null,
+            { ...employerData, token },
+            "Employer logged in successfully",
+            200
           );
         } else {
-          res.send(responseBuilder(null, null, "Invalid credentails", 400));
+          responseBuilder(res, null, null, "Invalid credentails", 400);
         }
       }
     }
   } catch (error) {
-    res.send(responseBuilder(error, null, "Something went wrong in logging in", 500));
+    responseBuilder(res, error, null, "Something went wrong in logging in", 500);
   }
 };
 
@@ -78,24 +75,24 @@ exports.getVerified = async (req, res) => {
     }
 
     if (!decoded) {
-      res.send(responseBuilder(null, null, "Invalid link!", 400));
+      responseBuilder(res, null, null, "Invalid link!", 400);
     } else {
       const userDetails = await Credentials.findOne({ email: decoded.email });
       if (userDetails) {
         if (userDetails.isActive) {
-          res.send(responseBuilder(null, null, "Your account is already activated", 400));
+          responseBuilder(res, null, null, "Your account is already activated", 400);
         } else {
           await Credentials.findOneAndUpdate(
             { email: decoded.email },
             { $set: { isActive: true } }
           );
-          res.send(responseBuilder(null, null, "Your account has activated!", 200));
+          responseBuilder(res, null, null, "Your account has activated!", 200);
         }
       } else {
-        res.send(responseBuilder(null, null, "Account not found", 400));
+        responseBuilder(res, null, null, "Account not found", 400);
       }
     }
   } catch (error) {
-    res.send(responseBuilder(error, null, "Something went in activating the account", 500));
+    responseBuilder(res, error, null, "Something went in activating the account", 500);
   }
 };

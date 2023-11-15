@@ -7,7 +7,7 @@ function userRequestValidationSchema(req, res, next) {
     startDate: Joi.date(),
     endDate: Joi.date(),
     jobTitle: Joi.string().required(),
-    comment: Joi.string().required()
+    comment: Joi.string().required(),
   };
 
   validateRequest(req, next, Joi.object(schemaRules));
@@ -15,7 +15,7 @@ function userRequestValidationSchema(req, res, next) {
 
 function UserRequestApproveDenySchema(req, res, next) {
   const schemaRules = {
-    comment: Joi.string(),
+    comment: Joi.string().allow("").optional(),
   };
 
   validateRequest(req, next, Joi.object(schemaRules));
@@ -23,5 +23,5 @@ function UserRequestApproveDenySchema(req, res, next) {
 
 module.exports = {
   UserRequestApproveDenySchema,
-  userRequestValidationSchema
+  userRequestValidationSchema,
 };

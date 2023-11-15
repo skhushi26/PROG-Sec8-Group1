@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import withRouter from "./Router/withRouter";
 import { useNavigate } from "react-router-dom";
-import axios from 'axios';
-
+import axios from "axios";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -56,17 +55,16 @@ const Login = () => {
     const { email, password } = state;
 
     try {
-      const response = await axios.post('http://localhost:3333/shared/login', { email, password });
+      const response = await axios.post("http://localhost:3333/shared/login", { email, password });
       if (response.data.statusCode === 200) {
         // Login successful, store the token in localStorage or a global state
         const result = response.data.data;
-        localStorage.setItem('token', result.token);
-        localStorage.setItem('userId', result.userId);
-        localStorage.setItem('userRole', result.role);
+        localStorage.setItem("token", result.token);
+        localStorage.setItem("userId", result.userId);
+        localStorage.setItem("userRole", result.role);
 
         // Redirect to the dashboard page
         navigate("/dashboard");
-
       } else {
         setState({ ...state, errorMessage: "Invalid credentials" });
       }
@@ -83,7 +81,12 @@ const Login = () => {
       {/* CONTENT */}
       <div className="row d-flex justify-content-center">
         <div className="col-lg-8 mt-1">
-          <form className="form-contact contact_form" onSubmit={validateUser} method="post" id="contactForm">
+          <form
+            className="form-contact contact_form"
+            onSubmit={validateUser}
+            method="post"
+            id="contactForm"
+          >
             <div className="row">
               <div className="col-12">
                 <h2 className="contact-title">Login</h2>
@@ -96,26 +99,51 @@ const Login = () => {
                 )}
                 <div className="form-group">
                   <label htmlFor="email">Email</label>
-                  <input className={`form-control ${emailError && "is-invalid"}`}
-                    name="email" id="email" type="text" onChange={handleInputChange} placeholder="Email" />
-                  {emailError && <div className="invalid-feedback"><span className="text-danger float-left">{emailError}</span></div>}
-
+                  <input
+                    className={`form-control ${emailError && "is-invalid"}`}
+                    name="email"
+                    id="email"
+                    type="text"
+                    onChange={handleInputChange}
+                    placeholder="Email"
+                  />
+                  {emailError && (
+                    <div className="invalid-feedback">
+                      <span className="text-danger float-left">{emailError}</span>
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="col-sm-10 m-auto">
                 <div className="form-group">
                   <label htmlFor="password">Password</label>
-                  <input className={`form-control ${passwordError && "is-invalid"}`} name="password" id="password" type="password" onChange={handleInputChange} placeholder="Password" />
-                  {passwordError && <div className="invalid-feedback"><span className="text-danger float-left">{passwordError}</span></div>}
+                  <input
+                    className={`form-control ${passwordError && "is-invalid"}`}
+                    name="password"
+                    id="password"
+                    type="password"
+                    onChange={handleInputChange}
+                    placeholder="Password"
+                  />
+                  {passwordError && (
+                    <div className="invalid-feedback">
+                      <span className="text-danger float-left">{passwordError}</span>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
             <div className="col-12 form-group mt-2 mb-2">
-              <button type="submit" className="button button-contactForm button-login boxed-btn">Login</button>
+              <button type="submit" className="button button-contactForm button-login boxed-btn">
+                Login
+              </button>
             </div>
             <div className="mt-4">
               <p className="mb-0">Don't have an account yet? Sign Up here!</p>
-              <p className="mt-0"><a href="/employer/register">Register as Employer</a> | <a href="/user/register">Register as User</a></p>
+              <p className="mt-0">
+                <a href="/employer/register">Register as Employer</a> |{" "}
+                <a href="/user/register">Register as User</a>
+              </p>
             </div>
           </form>
         </div>
@@ -131,11 +159,13 @@ const Login = () => {
                   <div className="footer-tittle">
                     <h4>About Us</h4>
                     <div className="footer-pera">
-                      <p>WEHVS focus on enabling everyone to leverage their work experience and skills anywhere in the world.</p>
+                      <p>
+                        WEHVS focus on enabling everyone to leverage their work experience and
+                        skills anywhere in the world.
+                      </p>
                     </div>
                   </div>
                 </div>
-
               </div>
             </div>
             <div className="col-xl-3 col-lg-3 col-md-4 col-sm-5">
@@ -144,14 +174,16 @@ const Login = () => {
                   <h4>Contact Info</h4>
                   <ul>
                     <li>
-                      <p>60 Frederick St
-                        Kitchener, ON.</p>
+                      <p>60 Frederick St Kitchener, ON.</p>
                     </li>
-                    <li><a href="#">Phone : +8880 44338899</a></li>
-                    <li><a href="#">Email : info@wehvs.com</a></li>
+                    <li>
+                      <a href="#">Phone : +8880 44338899</a>
+                    </li>
+                    <li>
+                      <a href="#">Email : info@wehvs.com</a>
+                    </li>
                   </ul>
                 </div>
-
               </div>
             </div>
             <div className="col-xl-3 col-lg-3 col-md-4 col-sm-5">
@@ -159,10 +191,18 @@ const Login = () => {
                 <div className="footer-tittle">
                   <h4>IMPORTANT LINKS</h4>
                   <ul>
-                    <li><a href="#">Contact Us</a></li>
-                    <li><a href="#">Careers</a></li>
-                    <li><a href="#">Login/ Register</a></li>
-                    <li><a href="#">Press Releases</a></li>
+                    <li>
+                      <a href="#">Contact Us</a>
+                    </li>
+                    <li>
+                      <a href="#">Careers</a>
+                    </li>
+                    <li>
+                      <a href="#">Login/ Register</a>
+                    </li>
+                    <li>
+                      <a href="#">Press Releases</a>
+                    </li>
                   </ul>
                 </div>
               </div>
@@ -174,15 +214,30 @@ const Login = () => {
                   <div className="footer-pera footer-pera2">
                     <p>Get timely updates from WEHVS, and discover other tools and publications</p>
                   </div>
-                  <div className="footer-form" >
+                  <div className="footer-form">
                     <div id="mc_embed_signup">
-                      <form target="_blank" action="https://spondonit.us12.list-manage.com/subscribe/post?u=1462626880ade1ac87bd9c93a&amp;id=92a4423d01"
-                        method="get" className="subscribe_form relative mail_part">
-                        <input type="email" name="email" id="newsletter-form-email" placeholder="Email Address"
-                          className="placeholder hide-on-focus" />
+                      <form
+                        target="_blank"
+                        action="https://spondonit.us12.list-manage.com/subscribe/post?u=1462626880ade1ac87bd9c93a&amp;id=92a4423d01"
+                        method="get"
+                        className="subscribe_form relative mail_part"
+                      >
+                        <input
+                          type="email"
+                          name="email"
+                          id="newsletter-form-email"
+                          placeholder="Email Address"
+                          className="placeholder hide-on-focus"
+                        />
                         <div className="form-icon">
-                          <button type="submit" name="submit" id="newsletter-submit"
-                            className="email_icon newsletter-submit button-contactForm"><img src="/images/logo/form.png" alt="" /></button>
+                          <button
+                            type="submit"
+                            name="submit"
+                            id="newsletter-submit"
+                            className="email_icon newsletter-submit button-contactForm"
+                          >
+                            <img src="/images/logo/form.png" alt="" />
+                          </button>
                         </div>
                         <div className="mt-10 info"></div>
                       </form>
@@ -214,9 +269,8 @@ const Login = () => {
           </div>
         </div>
       </div>
-
     </div>
   );
-}
+};
 
 export default withRouter(Login);

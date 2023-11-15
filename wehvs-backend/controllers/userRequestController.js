@@ -3,7 +3,7 @@ const fs = require("fs");
 const UserRequest = require("../models/UserRequest");
 const Employer = require("../models/Employer");
 const User = require("../models/User");
-const Credential = require("../models/Credentials");
+const Credentials = require("../models/Credentials");
 const responseBuilder = require("../utils/response");
 const sendMailHandler = require("../utils/sendMailHandler");
 
@@ -15,110 +15,108 @@ exports.UserRequestList = async (req, res) => {
       ...request.toObject(),
       userFullName: request.userId.firstName + " " + request.userId.lastName,
     }));
-
-    res.send(responseBuilder(null, userRequestsData, "User Requests retrieved successfully", 200));
+    responseBuilder(res, null, userRequestsData, "User Requests retrieved successfully", 200);
   } catch (error) {
-    res.send(
-      responseBuilder(error, null, "Something went wrong while fetching user requests", 500)
-    );
+    console.log("error: ", error);
+    responseBuilder(res, error, null, "Something went wrong while fetching user requests", 500);
   }
 };
 
 exports.UserVerificationRequest = async (req, res) => {
   try {
-    const {
-      companyName,
-      startDate,
-      endDate,
-      jobTitle,
-      comment
-    } = req.body;
+    const { companyName, startDate, endDate, jobTitle, comment } = req.body;
 
     const employerData = await Employer.findOne({ companyName });
     // const employerId = employerData._id;
     const employerId = "654559f1ef131caf95f404a5"; // This id will come from frontend.
-    const employerCredentialsData = await Credential.findOne({ userId: employerId });
+    const employerCredentialsData = await Credentials.findOne({ userId: employerId });
 
+    // Check if a record exists in the userRequest table with the same conditions
+    const existingUserRequest = await UserRequest.findOne({
+      employerId,
+      startDate,
+      endDate,
+      jobTitle,
+      requestStatus: "Pending",
+    });
 
-      // Check if a record exists in the userRequest table with the same conditions
-      const existingUserRequest = await UserRequest.findOne({
+    if (!existingUserRequest) {
+      // Retrieve user ID and role from localStorage
+      const userId = localStorage.getItem("userId");
+
+      const userData = await User.findById(userId);
+      const userRequestData = await UserRequest.create({
+        userId,
         employerId,
         startDate,
         endDate,
         jobTitle,
-        requestStatus: "Pending" 
+        comment,
+        requestDate: new Date(),
       });
-
-      if (!existingUserRequest) {
-        // Retrieve user ID and role from localStorage
-        const userId = localStorage.getItem('userId');
-        
-        const userData = await User.findById(userId);
-        const userRequestData = await UserRequest.create({
-          userId, 
-          employerId,
-          startDate,
-          endDate,
-          jobTitle,
-          comment,
-          requestDate: new Date()
-        });
 
       let newHtml = "";
-      fs.readFile("views/user-verification-request-email.html", { encoding: "utf-8" }, (err, html) => {
-        if (err) {
-          console.log("err in sending mail", err);
-        } else {
-          let token = jwt.sign({ email: employerCredentialsData.email }, "wehvssecretkey", { expiresIn: 600 });
-          let name= userData.firstName + " " + userData.lastName;
-          newHtml = html.replace(
-            "{{{name}}}",
-            name
-          );
-          sendMailHandler("wehvs2023@gmail.com", employerCredentialsData.email, "Verification Request", newHtml);
+      fs.readFile(
+        "views/user-verification-request-email.html",
+        { encoding: "utf-8" },
+        (err, html) => {
+          if (err) {
+            console.log("err in sending mail", err);
+          } else {
+            let token = jwt.sign({ email: employerCredentialsData.email }, "wehvssecretkey", {
+              expiresIn: 600,
+            });
+            let name = userData.firstName + " " + userData.lastName;
+            newHtml = html.replace("{{{name}}}", name);
+            sendMailHandler(
+              "wehvs2023@gmail.com",
+              employerCredentialsData.email,
+              "Verification Request",
+              newHtml
+            );
+          }
         }
-      });
+      );
 
-      res.send(
-        responseBuilder(
-          null,
-          userRequestData,
-          "Employer registered successfully! Email has been sent to your registered email id for verification.",
-          200
-        )
+      responseBuilder(
+        res,
+        null,
+        userRequestData,
+        "Employer registered successfully! Email has been sent to your registered email id for verification.",
+        200
       );
     } else {
-      res.send(
-        responseBuilder(
-          null,
-          null,
-          "You currently have an active request, please wait for the ongoing request to be completed before proceeding!",
-          400
-        )
+      responseBuilder(
+        res,
+        null,
+        null,
+        "You currently have an active request, please wait for the ongoing request to be completed before proceeding!",
+        400
       );
     }
   } catch (error) {
     console.log(error);
-    res.send(responseBuilder(error, null, "Something went wrong in registering employer!", 500));
+    responseBuilder(res, error, null, "Something went wrong in registering employer!", 500);
   }
 };
 
 exports.ApproveRequest = async (req, res) => {
   try {
     const { comment } = req.body;
+    console.log("req.body: ", req.body);
     const id = req.params.id;
     const isRequestExists = await UserRequest.findById({ _id: id });
     const profileDetails = await Credentials.findOne({ userId: isRequestExists.userId });
     if (!isRequestExists) {
-      res.send(responseBuilder(null, null, "Request not found!", 400));
+      responseBuilder(res, null, null, "Request not found!", 400);
     } else {
       if (isRequestExists.requestStatus == "Approved") {
-        res.send(responseBuilder(null, null, "This request has already been approved", 400));
+        responseBuilder(res, null, null, "This request has already been approved", 400);
       } else {
-        await UserRequest.findByIdAndUpdate(
-          { _id: id },
-          { $set: { requestStatus: "Approved", comment } }
-        );
+        const updateValues = { requestStatus: "Approved" };
+        if (comment) updateValues.comment = comment;
+        console.log("updateValues: ", updateValues);
+        await UserRequest.findByIdAndUpdate({ _id: id }, { $set: updateValues });
 
         let newHtml = "";
         fs.readFile("views/certificate-approve-email.html", { encoding: "utf-8" }, (err, html) => {
@@ -137,13 +135,12 @@ exports.ApproveRequest = async (req, res) => {
           }
         });
 
-        res.send(
-          responseBuilder(null, null, "Your request has been approved by the employer.", 200)
-        );
+        responseBuilder(res, null, null, "Your request has been approved by the employer.", 200);
       }
     }
   } catch (error) {
-    res.send(responseBuilder(error, null, "Something went wrong in approving request", 500));
+    console.log("error", error);
+    responseBuilder(res, error, null, "Something went wrong in approving request", 500);
   }
 };
 
@@ -154,10 +151,10 @@ exports.DenyRequest = async (req, res) => {
     const isRequestExists = await UserRequest.findById({ _id: id });
     const profileDetails = await Credentials.findOne({ userId: isRequestExists.userId });
     if (!isRequestExists) {
-      res.send(responseBuilder(null, null, "Request not found!", 400));
+      responseBuilder(res, null, null, "Request not found!", 400);
     } else {
       if (isRequestExists.requestStatus == "Deny") {
-        res.send(responseBuilder(null, null, "This request has already been denied", 400));
+        responseBuilder(res, null, null, "This request has already been denied", 400);
       } else {
         await UserRequest.findByIdAndUpdate(
           { _id: id },
@@ -181,11 +178,11 @@ exports.DenyRequest = async (req, res) => {
           }
         });
 
-        res.send(responseBuilder(null, null, "Your request has been denied by the employer.", 200));
+        responseBuilder(res, null, null, "Your request has been denied by the employer.", 200);
         // Email will be sent to that particular user
       }
     }
   } catch (error) {
-    res.send(responseBuilder(error, null, "Something went wrong in denying request", 500));
+    responseBuilder(res, error, null, "Something went wrong in denying request", 500);
   }
 };

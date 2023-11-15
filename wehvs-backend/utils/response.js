@@ -1,10 +1,13 @@
-function responseBuilder(error = null, data = null, message = null, statusCode = 200) {
-  return {
-    error,
-    data,
-    message,
-    statusCode,
-  };
+function responseBuilder(res, error = null, data = null, message = null, statusCode = 200) {
+  return res.send(
+    {
+      error,
+      data,
+      message,
+      statusCode,
+    },
+    statusCode
+  );
 }
 
 module.exports = responseBuilder;
