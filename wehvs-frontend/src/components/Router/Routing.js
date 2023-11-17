@@ -13,6 +13,7 @@ import UserRequestList from "../UserRequestList";
 import UserCertificateRequest from "../UserCertificateRequest";
 import Dashboard from "../Dashboard";
 import EmailApproval from "../EmailApproval";
+import Membership from "../Membership";
 
 export default function Routing() {
   return (
@@ -30,6 +31,7 @@ export default function Routing() {
           <Route path="/user-request" element={<UserRequestList />} />
           <Route path="/user/apply-certificate" element={<UserCertificateRequest />} />
           <Route path="/verify/:token" element={<EmailApproval />} />
+          <Route path="/membership" element={<Membership />} />
           <Route path="*" element={<NotFound />} />
         </Route>
         {/* <Route path="/" element={<FooterMenu />} /> */}

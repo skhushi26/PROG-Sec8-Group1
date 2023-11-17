@@ -33,6 +33,7 @@ const Navbar = () => {
                                     <nav className="d-none d-lg-block">
                                         <ul id="navigation">
                                             <li><Link to="/dashboard">Dashboard</Link></li>
+                                            <li><Link to="/membership">Membership</Link></li>
                                             {userRole === "User" && (
                                                 <>
                                                     <li><Link to="/user/apply-certificate">User Request</Link></li>
