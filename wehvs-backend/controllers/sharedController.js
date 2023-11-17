@@ -39,8 +39,8 @@ exports.login = async (req, res) => {
         const isPasswordMatch = await bcrypt.compare(password, details.password);
         if (isPasswordMatch) {
           token = await jwt.sign(
-            { id: details.employerId, role: details.role },
-            "wehvsLoginEmployerSecretKey",
+            { id: details.userId, role: details.role },
+            "wehvsLoginSecretKey",
             {
               expiresIn: "9h",
             }

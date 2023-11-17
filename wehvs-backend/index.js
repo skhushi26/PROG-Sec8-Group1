@@ -11,11 +11,12 @@ const employerRoute = require("./routes/employerRoutes");
 const sharedRoute = require("./routes/sharedRoutes");
 const userRequestRoute = require("./routes/userRequestRoutes");
 const checkoutRoute = require("./routes/checkoutRoutes");
+const jobPostRoute = require("./routes/jobPostRoutes");
 
 const app = express();
 
 const corsOptions = {
-  origin: ["http://localhost:3000"]
+  origin: ["http://localhost:3000"],
 };
 
 app.use(cors(corsOptions));
@@ -35,6 +36,7 @@ app.use("/users", userRoute);
 app.use("/employers", employerRoute);
 app.use("/user-request", userRequestRoute);
 app.use("/checkout", checkoutRoute);
+app.use("/job-post", jobPostRoute);
 
 app.use(errorHandler);
 
