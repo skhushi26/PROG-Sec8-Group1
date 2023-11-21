@@ -92,3 +92,59 @@ exports.findJobById = async (req, res) => {
     );
   }
 };
+
+exports.updateJobPost = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const { jobTitle, jobDescription, jobTypeId, addressId, jobExperienceLevelId } = req.body;
+    if (!id) {
+      responseBuilder(res, null, null, "Job posting not found!", 400);
+    } else {
+      const updatedJobPost = await JobPost.findByIdAndUpdate(
+        { _id: id },
+        {
+          $set: {
+            jobTitle,
+            jobDescription,
+            jobTypeId,
+            addressId,
+            jobExperienceLevelId,
+          },
+        }
+      );
+      responseBuilder(res, null, updatedJobPost.toJSON(), "Job Posting updated successfully", 200);
+    }
+  } catch (error) {
+    responseBuilder(res, error, null, "Something went wrong in updating job posting", 500);
+  }
+};
+
+exports.getAllExperienceLevels = async (req, res) => {
+  try {
+    const allExperienceLevelsDetails = await JobExperienceLevel.find();
+    responseBuilder(
+      res,
+      null,
+      allExperienceLevelsDetails,
+      "All experience levels data found successfully",
+      200
+    );
+  } catch (error) {
+    responseBuilder(
+      res,
+      error,
+      null,
+      "Something went wrong in finding all experience levels data",
+      500
+    );
+  }
+};
+
+exports.getAllJobTypes = async (req, res) => {
+  try {
+    const allJobTypeDetails = await JobType.find();
+    responseBuilder(res, null, allJobTypeDetails, "All job types data found successfully", 200);
+  } catch (error) {
+    responseBuilder(res, error, null, "Something went wrong in finding all job types data", 500);
+  }
+};
