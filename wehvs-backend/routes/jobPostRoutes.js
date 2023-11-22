@@ -6,10 +6,10 @@ const { jobPostSchema } = require("../payloads/jobPostValidation");
 
 const router = express.Router();
 
-router.post("/add", jobPostSchema, authorize("Employer"), jobPostController.addJobPost);
-router.get("/find/:id", authorize("Employer"), jobPostController.findJobById);
-router.put("/update/:id", jobPostSchema, authorize("Employer"), jobPostController.updateJobPost);
-router.get("/experience-level", authorize("Employer"), jobPostController.getAllExperienceLevels);
-router.get("/job-types", authorize("Employer"), jobPostController.getAllJobTypes);
+router.post("/add", jobPostSchema, jobPostController.addJobPost);
+router.get("/find/:id", jobPostController.findJobById);
+router.put("/update/:id", jobPostSchema, jobPostController.updateJobPost);
+router.get("/experience-level", jobPostController.getAllExperienceLevels);
+router.get("/job-types", jobPostController.getAllJobTypes);
 
 module.exports = router;

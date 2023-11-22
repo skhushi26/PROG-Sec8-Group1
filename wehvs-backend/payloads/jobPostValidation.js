@@ -7,7 +7,7 @@ function jobPostSchema(req, res, next) {
     jobDescription: Joi.string().required(),
     jobTypeId: Joi.string().required(),
     jobExperienceLevelId: Joi.string().required(),
-    addressId: Joi.string().required(),
+    address: Joi.string().required(),
   };
 
   validateRequest(req, next, Joi.object(schemaRules));

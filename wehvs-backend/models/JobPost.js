@@ -19,8 +19,8 @@ const JobPostSchema = new mongoose.Schema(
       required: true,
     },
 
-    addressId: {
-      type: mongoose.Types.ObjectId,
+    address: {
+      type: String,
       required: true,
     },
     jobExperienceLevelId: {

@@ -14,6 +14,7 @@ import UserCertificateRequest from "../UserCertificateRequest";
 import Dashboard from "../Dashboard";
 import EmailApproval from "../EmailApproval";
 import Membership from "../Membership";
+import JobPostingList from "../JobPostingList";
 
 export default function Routing() {
   return (
@@ -32,6 +33,7 @@ export default function Routing() {
           <Route path="/user/apply-certificate" element={<UserCertificateRequest />} />
           <Route path="/verify/:token" element={<EmailApproval />} />
           <Route path="/membership" element={<Membership />} />
+          <Route path="/job-list" element={<JobPostingList />} />
           <Route path="*" element={<NotFound />} />
         </Route>
         {/* <Route path="/" element={<FooterMenu />} /> */}

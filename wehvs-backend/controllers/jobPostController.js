@@ -13,25 +13,28 @@ const Address = require("../models/Address");
 
 exports.addJobPost = async (req, res) => {
   try {
-    const { jobTitle, jobDescription, jobTypeId, addressId, jobExperienceLevelId } = req.body;
-    const userId = req.user.id;
-    const employer = await Employer.findById({ _id: userId });
+    const { jobTitle, jobDescription, jobTypeId, address, jobExperienceLevelId } = req.body;
+    // const userId = req.user.id;
+    // const employer = await Employer.findById({_id: userId});
+    const employer = await Employer.findById("6554e5f1881bd81831c78420");
+    console.log("employer: ", employer);
 
     if (!employer) {
       responseBuilder(res, null, null, "Employer not found", 400);
+    } else {
+      const newJobPost = await JobPost.create({
+        jobTitle,
+        jobDescription,
+        jobTypeId,
+        address,
+        jobExperienceLevelId,
+        employerId: employer._id,
+      });
+
+      responseBuilder(res, null, newJobPost, "Job post added successfully", 200);
     }
-
-    const newJobPost = await JobPost.create({
-      jobTitle,
-      jobDescription,
-      jobTypeId,
-      addressId,
-      jobExperienceLevelId,
-      employerId: employer._id,
-    });
-
-    responseBuilder(res, null, newJobPost, "Job post added successfully", 200);
   } catch (error) {
+    console.log("error", error);
     responseBuilder(
       res,
       error,
@@ -45,9 +48,9 @@ exports.addJobPost = async (req, res) => {
 exports.findJobById = async (req, res) => {
   try {
     const id = req.params.id;
-    const userId = req.user.id;
-    const employer = await Employer.findById({ _id: userId });
-    const jobPost = await JobPost.findOne({ _id: id, isActive: true, employerId: employer._id });
+    // const userId = req.user.id;
+    // const employer = await Employer.findById({ _id: userId });
+    const jobPost = await JobPost.findOne({ _id: id, isActive: true });
 
     if (!jobPost) {
       return responseBuilder(res, null, null, "Job post doesn't exist", 400);
@@ -57,28 +60,27 @@ exports.findJobById = async (req, res) => {
     const jobExperienceLevelData = await JobExperienceLevel.findById({
       _id: jobPost.jobExperienceLevelId,
     });
-    const addressData = await Address.findById({ _id: jobPost.addressId });
+    // const addressData = await Address.findById({ _id: jobPost.addressId });
 
     // Extracting required data from Mongoose documents
     const jobTypeDetail = jobTypeData ? jobTypeData.toObject() : {};
     const jobExperienceLevelDetail = jobExperienceLevelData
       ? jobExperienceLevelData.toObject()
       : {};
-    const addressDetail = addressData ? addressData.toObject() : {};
+    // const addressDetail = addressData ? addressData.toObject() : {};
 
     // Creating a clean object without Mongoose-specific properties
     const mergedData = {
       jobTitle: jobPost.jobTitle,
       jobDescription: jobPost.jobDescription,
+      address: jobPost.address,
       isActive: jobPost.isActive,
       createdAt: jobPost.createdAt,
       updatedAt: jobPost.updatedAt,
+      jobExperienceLevelId: jobPost.jobExperienceLevelId,
+      jobTypeId: jobPost.jobTypeId,
       jobExperienceLevel: jobExperienceLevelDetail.jobExperienceLevel || "",
       jobType: jobTypeDetail.jobType || "",
-      address: addressDetail.address || "",
-      city: addressDetail.city || "",
-      province: addressDetail.province || "",
-      zipCode: addressDetail.zipCode || "",
     };
 
     return responseBuilder(res, null, mergedData, "Job post data found successfully", 200);
@@ -96,7 +98,7 @@ exports.findJobById = async (req, res) => {
 exports.updateJobPost = async (req, res) => {
   try {
     const id = req.params.id;
-    const { jobTitle, jobDescription, jobTypeId, addressId, jobExperienceLevelId } = req.body;
+    const { jobTitle, jobDescription, jobTypeId, address, jobExperienceLevelId } = req.body;
     if (!id) {
       responseBuilder(res, null, null, "Job posting not found!", 400);
     } else {
@@ -107,7 +109,7 @@ exports.updateJobPost = async (req, res) => {
             jobTitle,
             jobDescription,
             jobTypeId,
-            addressId,
+            address,
             jobExperienceLevelId,
           },
         }
