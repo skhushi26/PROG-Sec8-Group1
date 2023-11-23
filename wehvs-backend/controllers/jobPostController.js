@@ -150,3 +150,24 @@ exports.getAllJobTypes = async (req, res) => {
     responseBuilder(res, error, null, "Something went wrong in finding all job types data", 500);
   }
 };
+
+exports.getAllJobListUser = async (req, res) => {
+  try {
+    const getAllJobList = await JobPost.find({ isActive: true });
+    responseBuilder(res, null, getAllJobList, "Job Lists found successfully", 200);
+  } catch (error) {
+    responseBuilder(res, error, null, "Something went wrong in finding job lists", 500);
+  }
+};
+
+exports.getAllJobListEmployer = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const employer = await Employer.findById({ _id: userId });
+    const getAllJobListDetails = await JobPost.find({ employerId: employer._id });
+    responseBuilder(res, null, getAllJobListDetails, "Job Lists found successfully", 200);
+    // const employer = await Employer.findById("6554e5f1881bd81831c78420");
+  } catch (error) {
+    responseBuilder(res, error, null, "Something went wrong in finding job lists", 500);
+  }
+};
