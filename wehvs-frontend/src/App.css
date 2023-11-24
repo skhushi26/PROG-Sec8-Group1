@@ -163,3 +163,10 @@ button:disabled {
     min-width: initial;
   }
 }
+
+@media (min-width: 576px) {
+  .modal-dialog {
+    max-width: 70%;
+    margin: 1.75rem auto;
+  }
+}
