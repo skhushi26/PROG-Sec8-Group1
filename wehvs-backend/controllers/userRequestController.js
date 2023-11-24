@@ -114,8 +114,10 @@ exports.ApproveRequest = async (req, res) => {
         responseBuilder(res, null, null, "This request has already been approved", 400);
       } else {
         const updateValues = { requestStatus: "Approved" };
-        if (comment) updateValues.comment = comment;
-        console.log("updateValues: ", updateValues);
+
+        if (comment !== undefined && comment !== null) {
+          updateValues.comment = comment;
+        }
         await UserRequest.findByIdAndUpdate({ _id: id }, { $set: updateValues });
 
         let newHtml = "";
@@ -147,6 +149,7 @@ exports.ApproveRequest = async (req, res) => {
 exports.DenyRequest = async (req, res) => {
   try {
     const { comment } = req.body;
+    console.log("comment", comment);
     const id = req.params.id;
     const isRequestExists = await UserRequest.findById({ _id: id });
     const profileDetails = await Credentials.findOne({ userId: isRequestExists.userId });
@@ -156,10 +159,11 @@ exports.DenyRequest = async (req, res) => {
       if (isRequestExists.requestStatus == "Deny") {
         responseBuilder(res, null, null, "This request has already been denied", 400);
       } else {
-        await UserRequest.findByIdAndUpdate(
-          { _id: id },
-          { $set: { requestStatus: "Deny", comment } }
-        );
+        const updateValues = { requestStatus: "Deny" };
+        if (comment !== undefined && comment !== null) {
+          updateValues.comment = comment;
+        }
+        await UserRequest.findByIdAndUpdate({ _id: id }, { $set: updateValues });
 
         let newHtml = "";
         fs.readFile("views/certificate-deny-email.html", { encoding: "utf-8" }, (err, html) => {

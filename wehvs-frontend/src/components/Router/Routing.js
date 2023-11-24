@@ -16,6 +16,7 @@ import EmailApproval from "../EmailApproval";
 import Membership from "../Membership";
 import ReturnPayment from "../ReturnPayment";
 import SuccessPayment from "../SuccessPayment";
+import JobPostingList from "../JobPostingList";
 
 export default function Routing() {
   return (
@@ -36,6 +37,7 @@ export default function Routing() {
           <Route path="/membership" element={<Membership />} />
           <Route path="/return" element={<ReturnPayment />} />
           <Route path="/success-payment" element={<SuccessPayment />} />
+          <Route path="/job-list" element={<JobPostingList />} />
           <Route path="*" element={<NotFound />} />
         </Route>
         {/* <Route path="/" element={<FooterMenu />} /> */}

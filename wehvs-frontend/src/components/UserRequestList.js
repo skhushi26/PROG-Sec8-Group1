@@ -50,8 +50,10 @@ const UserRequestList = () => {
     }
 
     const requestBody = {
-      comment: comment,
+      comment: comment || "",
     };
+
+    console.log("requestBody", requestBody);
 
     try {
       const response = await fetch(
