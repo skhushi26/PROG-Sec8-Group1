@@ -14,6 +14,8 @@ import UserCertificateRequest from "../UserCertificateRequest";
 import Dashboard from "../Dashboard";
 import EmailApproval from "../EmailApproval";
 import Membership from "../Membership";
+import ReturnPayment from "../ReturnPayment";
+import SuccessPayment from "../SuccessPayment";
 
 export default function Routing() {
   return (
@@ -32,6 +34,8 @@ export default function Routing() {
           <Route path="/user/apply-certificate" element={<UserCertificateRequest />} />
           <Route path="/verify/:token" element={<EmailApproval />} />
           <Route path="/membership" element={<Membership />} />
+          <Route path="/return" element={<ReturnPayment />} />
+          <Route path="/success-payment" element={<SuccessPayment />} />
           <Route path="*" element={<NotFound />} />
         </Route>
         {/* <Route path="/" element={<FooterMenu />} /> */}

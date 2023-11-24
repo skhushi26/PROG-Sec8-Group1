@@ -33,7 +33,6 @@ const Navbar = () => {
                                     <nav className="d-none d-lg-block">
                                         <ul id="navigation">
                                             <li><Link to="/dashboard">Dashboard</Link></li>
-                                            <li><Link to="/membership">Membership</Link></li>
                                             {userRole === "User" && (
                                                 <>
                                                     <li><Link to="/user/apply-certificate">User Request</Link></li>
@@ -44,6 +43,12 @@ const Navbar = () => {
                                                     <li><Link to="/user-request">User Request List</Link></li>
                                                 </>
                                             )}
+                                            {userRole !== null && (
+                                                <>
+                                                    <li><Link to="/membership">Membership</Link></li>
+                                                </>
+                                            )}
+
                                             <li><a href="job_listing.html">Find a Job</a></li>
                                             <li><a href="about.html">About</a></li>
                                         </ul>
@@ -59,7 +64,8 @@ const Navbar = () => {
                                         </>
                                     )}
                                     {userId ? (
-                                        <button onClick={handleLogout} className="button button-contactForm boxed-btn btn-login mr-3">Logout</button>
+                                            <Link onClick={handleLogout} className="button button-contactForm boxed-btn btn-login mr-3">Logout</Link>
+                                        // <button onClick={handleLogout} className="button button-contactForm boxed-btn btn-login mr-3">Logout</button>
                                     ) : (
                                         <Link to="/login" className="button button-contactForm boxed-btn btn-login mr-3">Login</Link>
                                     )}

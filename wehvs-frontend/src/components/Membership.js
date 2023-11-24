@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import withRouter from "./Router/withRouter";
-import {loadStripe} from '@stripe/stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
 import {
   EmbeddedCheckoutProvider,
   EmbeddedCheckout
@@ -11,30 +11,50 @@ import {
   Routes,
   Navigate
 } from "react-router-dom";
+import axios from "axios";
 
-// Make sure to call `loadStripe` outside of a component’s render to avoid
-// recreating the `Stripe` object on every render.
-// This is your test public API key.
+
+// This is the test public API key.
 const stripePromise = loadStripe("pk_test_51OCrEYIlWqny1x6ygARX3qSIhgszDPo1Ay7SQ9B3eIg4WfONaGM5pz59RQ6Et2DFctHQ9OYTb2orevc8hU5Qnlmw000ZltpXqk");
 
 const CheckoutForm = () => {
   const [clientSecret, setClientSecret] = useState('');
 
   useEffect(() => {
-    // Create a Checkout Session as soon as the page loads
-    fetch("http://localhost:3333/checkout/create-checkout-session", {
-      method: "POST",
-    })
-      .then((res) => res.json())
-      .then((data) => setClientSecret(data.clientSecret));
-  }, []);
+    const fetchData = async () => {
+     const userId = localStorage.getItem("userId");
+
+      // Create a Checkout Session as soon as the page loads
+      const response = await fetch("http://localhost:3333/checkout/create-checkout-session", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId }),
+      });
+
+      const data = await response.json();
+      setClientSecret(data.clientSecret);
+
+      const stripe = await stripePromise;
+      const { error } = await stripe.redirectToCheckout({
+        sessionId: data.sessionId,
+      });
+
+      if (error) {
+        console.error(error);
+      }
+    };
+  
+      fetchData();
+    }, []);
 
   return (
     <div id="checkout">
       {clientSecret && (
         <EmbeddedCheckoutProvider
           stripe={stripePromise}
-          options={{clientSecret}}
+          options={{ clientSecret }}
         >
           <EmbeddedCheckout />
         </EmbeddedCheckoutProvider>
@@ -46,6 +66,7 @@ const CheckoutForm = () => {
 const Return = () => {
   const [status, setStatus] = useState(null);
   const [customerEmail, setCustomerEmail] = useState('');
+  const [customSuccessMessage, setCustomSuccessMessage] = useState('');
 
   useEffect(() => {
     const queryString = window.location.search;
@@ -56,7 +77,33 @@ const Return = () => {
       .then((res) => res.json())
       .then((data) => {
         setStatus(data.status);
-        setCustomerEmail(data.customer_email);
+        setCustomerEmail(data.customer_email); 
+
+           // Check if payment is successful and update IsPaymentDone value
+           if (data.status === 'complete') {
+            // Make a request to update IsPaymentDone in your backend
+            const userId = data.client_reference_id;
+            const paymentTrackingId = data.paymentTrackingId; 
+
+            axios.post('http://localhost:3333/shared/update-payment-status', { userId, paymentTrackingId })
+              .then(() => {
+                setCustomSuccessMessage('Payment successfully completed!');
+                const stripe =  stripePromise;
+
+                const { error } = stripe.redirectToCheckout({
+                sessionId: data.sessionId,
+              });
+
+              Navigate("/success-payment");
+              })
+              .catch((error) => {
+                console.error('Error updating payment status:', error);
+              });
+
+
+             
+          }
+
       });
   }, []);
 
@@ -66,18 +113,7 @@ const Return = () => {
     )
   }
 
-  if (status === 'complete') {
-    return (
-      <section id="success">
-        <p>
-          We appreciate your business! A confirmation email will be sent to {customerEmail}.
-
-          If you have any questions, please email <a href="mailto:orders@example.com">orders@example.com</a>.
-        </p>
-      </section>
-    )
-  }
-
+ 
   return null;
 }
 

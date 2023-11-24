@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const responseBuilder = require("../utils/response");
 const bcrypt = require("bcrypt");
 const Credentials = require("../models/Credentials");
+const mongoose = require('mongoose');
 
 exports.login = async (req, res) => {
   const { email, password } = req.body;
@@ -94,5 +95,33 @@ exports.getVerified = async (req, res) => {
     }
   } catch (error) {
     responseBuilder(res, error, null, "Something went in activating the account", 500);
+  }
+};
+
+
+exports.updatePaymentStatus = async (req, res) => {
+  const { userId, paymentTrackingId } = req.body;
+
+  try {
+    const userIdObjectId = new mongoose.Types.ObjectId(userId);
+
+    // Use findOne to get a single document
+    const existingCredentials = await Credentials.findOne({ userId: userIdObjectId });
+
+    // Check if a document was found
+    if (existingCredentials) {
+      existingCredentials.isPaymentDone = true;
+      existingCredentials.paymentTrackingId = paymentTrackingId;
+
+      // Use save method to update the document
+      await existingCredentials.save();
+
+      res.status(200).end();
+    } else {
+      res.status(404).send("User not found");
+    }
+  } catch (error) {
+    console.error('Error updating user:', error);
+    res.status(500).end();
   }
 };

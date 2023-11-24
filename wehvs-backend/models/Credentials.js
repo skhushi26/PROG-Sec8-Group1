@@ -15,6 +15,14 @@ const CredentialsSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    isPaymentDone: {
+      type: Boolean,
+      default: false,
+    },
+    paymentTrackingId: {
+      type: String,
+      default: "",
+    },
     role: {
       type: String,
       default: "",
