@@ -206,9 +206,6 @@ const JobPostingList = () => {
 
   return (
     <div>
-      <Button variant="primary" onClick={handleAddJobClick}>
-        Add Job
-      </Button>
       <Table striped bordered hover>
         <thead>
           <tr>
@@ -229,7 +226,9 @@ const JobPostingList = () => {
           ))}
         </tbody>
       </Table>
-
+      <Button variant="primary" onClick={handleAddJobClick}>
+        Add Job
+      </Button>
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
           <Modal.Title>{editMode ? "Update Job" : "Add Job"}</Modal.Title>
