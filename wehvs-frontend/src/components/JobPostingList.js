@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import FooterMenu from "./Footer";
 import { Table, Button, Modal, Form } from "react-bootstrap";
 import { toast } from "react-toastify";
 
@@ -206,6 +207,7 @@ const JobPostingList = () => {
 
   return (
     <div>
+      {/* <div className="jobportal"><h2><strong>Welcome to Job Portal Database</strong></h2></div> */}
       <Table striped bordered hover>
         <thead>
           <tr>
@@ -260,7 +262,7 @@ const JobPostingList = () => {
             </Form.Group>
             <br />
             <br />
-
+            
             <Form.Group controlId="address">
               <Form.Label>Address</Form.Label>
               <Form.Control
@@ -328,6 +330,8 @@ const JobPostingList = () => {
           </Button>
         </Modal.Footer>
       </Modal>
+      {/* FOOTER */}
+     <FooterMenu />
     </div>
   );
 };
