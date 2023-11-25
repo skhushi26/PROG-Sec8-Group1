@@ -60,7 +60,7 @@ const JobDetails = () => {
                   <li>Posted date: <span>12 Aug 2019</span></li>
                   <li>Location: <span>{jobDetail.address}</span></li>
                   <li>Job nature: <span>Full time</span></li>
-                  <li>Salary: <span>$7,800 yearly</span></li>
+                  <li>Salary: <span>$7,8000 yearly</span></li>
                 </ul>
                 <div className="apply-btn2">
                   <a href="#" className="btnapply">Apply Now</a>
