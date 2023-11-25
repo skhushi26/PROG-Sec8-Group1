@@ -24,75 +24,85 @@ exports.UserRequestList = async (req, res) => {
 
 exports.UserVerificationRequest = async (req, res) => {
   try {
-    const { companyName, startDate, endDate, jobTitle, comment } = req.body;
+    const { userId, companyName, startDate, endDate, jobTitle, comment } = req.body;
 
-    const employerData = await Employer.findOne({ companyName });
-    // const employerId = employerData._id;
-    const employerId = "654559f1ef131caf95f404a5"; // This id will come from frontend.
-    const employerCredentialsData = await Credentials.findOne({ userId: employerId });
+    const existingRequests = await UserRequest.find({ userId: userId });
+    const existingRequestsCount = existingRequests.length;
 
-    // Check if a record exists in the userRequest table with the same conditions
-    const existingUserRequest = await UserRequest.findOne({
-      employerId,
-      startDate,
-      endDate,
-      jobTitle,
-      requestStatus: "Pending",
-    });
-
-    if (!existingUserRequest) {
-      // Retrieve user ID and role from localStorage
-      const userId = localStorage.getItem("userId");
-
-      const userData = await User.findById(userId);
-      const userRequestData = await UserRequest.create({
-        userId,
-        employerId,
-        startDate,
-        endDate,
-        jobTitle,
-        comment,
-        requestDate: new Date(),
-      });
-
-      let newHtml = "";
-      fs.readFile(
-        "views/user-verification-request-email.html",
-        { encoding: "utf-8" },
-        (err, html) => {
-          if (err) {
-            console.log("err in sending mail", err);
-          } else {
-            let token = jwt.sign({ email: employerCredentialsData.email }, "wehvssecretkey", {
-              expiresIn: 600,
-            });
-            let name = userData.firstName + " " + userData.lastName;
-            newHtml = html.replace("{{{name}}}", name);
-            sendMailHandler(
-              "wehvs2023@gmail.com",
-              employerCredentialsData.email,
-              "Verification Request",
-              newHtml
-            );
-          }
-        }
-      );
-
-      responseBuilder(
-        res,
-        null,
-        userRequestData,
-        "Employer registered successfully! Email has been sent to your registered email id for verification.",
-        200
-      );
+    if (existingRequestsCount >= 2) {
+      responseBuilder(res, null, null, "You have reached the maximum number of requests. Upgrade your membership to unlock more access!", 400);
     } else {
-      responseBuilder(
-        res,
-        null,
-        null,
-        "You currently have an active request, please wait for the ongoing request to be completed before proceeding!",
-        400
-      );
+      const existingEmployer = await Employer.findOne({ companyName });
+      if (!existingEmployer) {
+        responseBuilder(res, null, null, "Employer is not found in our system!", 400);
+      } else {
+
+        const employerId = existingEmployer._id;
+        // const employerId = "654559f1ef131caf95f404a5"; // This id will come from frontend.
+        const employerCredentialsData = await Credentials.findOne({ userId: employerId });
+
+        // Check if a record exists in the userRequest table with the same conditions
+        const existingUserRequest = await UserRequest.findOne({
+          employerId,
+          startDate,
+          endDate,
+          jobTitle,
+          requestStatus: "Pending",
+        });
+
+        if (!existingUserRequest) {
+          // Retrieve user ID and role from localStorage
+          const userData = await User.findById(userId);
+          const userRequestData = await UserRequest.create({
+            userId,
+            employerId,
+            startDate,
+            endDate,
+            jobTitle,
+            comment,
+            requestDate: new Date(),
+          });
+
+          let newHtml = "";
+          fs.readFile(
+            "views/user-verification-request-email.html",
+            { encoding: "utf-8" },
+            (err, html) => {
+              if (err) {
+                console.log("err in sending mail", err);
+              } else {
+                let token = jwt.sign({ email: employerCredentialsData.email }, "wehvssecretkey", {
+                  expiresIn: 600,
+                });
+                let name = userData.firstName + " " + userData.lastName;
+                newHtml = html.replace("{{{name}}}", name);
+                sendMailHandler(
+                  "wehvs2023@gmail.com",
+                  employerCredentialsData.email,
+                  "Verification Request",
+                  newHtml
+                );
+              }
+            }
+          );
+
+          responseBuilder(
+            res,
+            null,
+            userRequestData,
+            "Your request has been received successfully! You will receive an email notification once the process is complete.",
+            200
+          );
+        } else {
+          responseBuilder(
+            res,
+            null,
+            null,
+            "You currently have an active request, please wait for the ongoing request to be completed before proceeding!",
+            400
+          );
+        }
+      }
     }
   } catch (error) {
     console.log(error);

@@ -64,7 +64,7 @@ const Login = () => {
         localStorage.setItem("userRole", result.role);
 
         // Redirect to the dashboard page
-        navigate("/dashboard");
+        navigate("/");
       } else {
         setState({ ...state, errorMessage: "Invalid credentials" });
       }

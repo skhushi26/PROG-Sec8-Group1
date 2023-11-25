@@ -20,6 +20,11 @@ const UserCertificateRequest = () => {
     const [message, setMessage] = useState("");
     const [success, setSuccess] = useState(null);
 
+    const isValidDateFormat = (dateString) => {
+        const regex = /^\d{4}-\d{2}-\d{2}$/;
+        return regex.test(dateString);
+    };
+
     const validateUserCertificateRequest = async (e) => {
         e.preventDefault();
 
@@ -41,21 +46,54 @@ const UserCertificateRequest = () => {
             setjobTitleError("");
         }
 
+        // Start Date validation
+        if (startDate.trim() === "") {
+            setstartDateError("Start Date is required");
+            valid = false;
+        } else if (!isValidDateFormat(startDate)) {
+            setendDateError("Invalid date format. Please use YYYY-MM-DD");
+            valid = false;
+        } else {
+            setstartDateError("");
+        }
+
+        // End Date validation
+        if (endDate.trim() === "") {
+            setendDateError("End Date is required");
+            valid = false;
+        } else if (!isValidDateFormat(endDate)) {
+            setendDateError("Invalid date format. Please use YYYY-MM-DD");
+            valid = false;
+        } else if (new Date(startDate) >= new Date(endDate)) {
+            setendDateError("End Date should be after Start Date");
+            valid = false;
+        } else {
+            setendDateError("");
+        }
 
         // If all validations pass, you can proceed with further action
         if (valid) {
             try {
-                const response = await axios.post("http://localhost:3333/users/apply-certificate", {
+                const userId = localStorage.getItem('userId');
+                const response = await axios.post("http://localhost:3333/user-request/send", {
+                    userId,
                     companyName,
                     startDate,
                     endDate,
                     jobTitle,
-                    comment,
+                    comment
                 });
                 console.log("response", response);
                 if (response.data.statusCode === 200) {
                     setMessage(response.data.message);
                     setSuccess(true);
+
+                    // Clear the form or reset state values
+                    setcompanyName("");
+                    setstartDate("");
+                    setendDate("");
+                    setjobTitle("");
+                    setcomment("");
                 } else if (response.data.statusCode === 400) {
                     setMessage(response.data.message);
                     setSuccess(false);
@@ -65,7 +103,7 @@ const UserCertificateRequest = () => {
                 }
             } catch (error) {
                 console.error(error);
-                setMessage("Something went wrong in sending verification mail");
+                setMessage(error.response.data.message);
                 setSuccess(false);
             }
         }
@@ -80,7 +118,7 @@ const UserCertificateRequest = () => {
                         <div className="col-12">
                             <h1 className="contact-title">WEHVS Certificate Request Form</h1>
                         </div>
-                        <div className="col-sm-10 m-auto">
+                        <div className="col-sm-12 m-auto">
                             {success !== null && // Change condition to only render if success is not null
                                 (success ? (
                                     <div className="alert alert-success" role="alert" bis_skin_checked="1">
@@ -94,41 +132,36 @@ const UserCertificateRequest = () => {
                         </div>
 
                         <div className="row">
-                            <div className="col-md-3 border-right">
-                                <div className="d-flex flex-column align-items-center text-center p-3 py-5">
-                                    <img className="rounded-circle " width="150px" src="/images/user.png"></img>
-                                    {/* <span className="font-weight-bold">{user.firstName + " " + user.lastName}</span><span> </span> */}
-                                    <button type="submit" className="button button-contactForm btn-change-picture boxed-btn mt-4">Change Profile</button>
-                                </div>
-                            </div>
-
-                            <div className="col-md-8">
+                            <div className="col-md-12">
                                 <div className="row">
                                     <div className="col-sm-6  mt-4">
                                         <label htmlFor="companyName">Company Name</label>
                                         <input className="form-control valid" name="companyName" id="companyName" type="text" placeholder="Company Name" value={companyName}
-                                            onChange={(e) => setcompanyName(e.target.value)}/>
+                                            onChange={(e) => setcompanyName(e.target.value)} />
                                         <span className="error-message text-danger">{companyNameError}</span>
                                     </div>
                                     <div className="col-sm-6  mt-4">
                                         <label htmlFor="companyName">Job Title</label>
                                         <input className="form-control valid" name="jobTitle" id="jobTitle" type="text" placeholder="Job Title" value={jobTitle}
-                                            onChange={(e) => setjobTitle(e.target.value)}/>
+                                            onChange={(e) => setjobTitle(e.target.value)} />
                                         <span className="error-message text-danger">{jobTitleError}</span>
                                     </div>
                                     <div className="col-sm-6  mt-4">
                                         <label htmlFor="startDate">Start Date</label>
                                         <input className="form-control" name="startDate" id="startDate" type="date" placeholder="Select Start Date" value={startDate}
-                                            onChange={(e) => setstartDate(e.target.value)}/>
+                                            onChange={(e) => setstartDate(e.target.value)} />
+                                        <span className="error-message text-danger">{startDateError}</span>
                                     </div>
                                     <div className="col-sm-6  mt-4">
                                         <label htmlFor="endDate">End Date</label>
                                         <input className="form-control" name="endDate" id="endDate" type="date" placeholder="Select End Date" value={endDate}
-                                            onChange={(e) => setendDate(e.target.value)}/>
+                                            onChange={(e) => setendDate(e.target.value)} />
+                                        <span className="error-message text-danger">{endDateError}</span>
                                     </div>
                                     <div className="col-sm-12  mt-4">
                                         <label htmlFor="comment">Comment</label>
-                                        <textarea className="form-control" name="comment" id="comment" placeholder="Comments"></textarea>
+                                        <textarea className="form-control" name="comment" id="comment" placeholder="Comments" value={comment}
+                                        onChange={(e) => setcomment(e.target.value)} ></textarea>
                                     </div>
                                     <div className="col-12 form-group mt-5">
                                         <button type="submit" className="button button-contactForm button-submit boxed-btn">Send</button>
