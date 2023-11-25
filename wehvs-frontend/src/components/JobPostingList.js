@@ -40,6 +40,18 @@ const JobPostingList = () => {
       address: "xyz street, Waterloo, ON",
     },
   ];
+  const [requests, setJoblist] = useState([]);
+
+  
+  useEffect(() => {
+    fetch("http://localhost:3333/job-post/get-all-for-employer")
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("data.data", data.data);
+        setJoblist(data.data);
+      })
+      .catch((error) => console.error("Error fetching data:", error));
+  }, [requests]);
 
   const fetchExperienceLevels = async () => {
     const response = await fetch("http://localhost:3333/job-post/experience-level");
@@ -208,6 +220,7 @@ const JobPostingList = () => {
   return (
     <div>
       {/* <div className="jobportal"><h2><strong>Welcome to Job Portal Database</strong></h2></div> */}
+      <div className="containertable">
       <Table striped bordered hover>
         <thead>
           <tr>
@@ -217,7 +230,8 @@ const JobPostingList = () => {
           </tr>
         </thead>
         <tbody>
-          {jobData.map((job) => (
+          {requests &&
+          requests.map((job) => (
             <tr key={job._id}>
               <td>{job.jobTitle}</td>
               <td>{job.jobDescription}</td>
@@ -228,7 +242,8 @@ const JobPostingList = () => {
           ))}
         </tbody>
       </Table>
-      <Button variant="primary" onClick={handleAddJobClick}>
+      </div>
+      <Button onClick={handleAddJobClick}>
         Add Job
       </Button>
       <Modal show={showModal} onHide={handleCloseModal}>
@@ -262,7 +277,7 @@ const JobPostingList = () => {
             </Form.Group>
             <br />
             <br />
-            
+
             <Form.Group controlId="address">
               <Form.Label>Address</Form.Label>
               <Form.Control
@@ -325,7 +340,7 @@ const JobPostingList = () => {
           <Button variant="secondary" onClick={handleCloseModal}>
             Close
           </Button>
-          <Button variant="primary" onClick={handleAddJob}>
+          <Button onClick={handleAddJob}>
             {editMode ? "Update Job" : "Add Job"}
           </Button>
         </Modal.Footer>

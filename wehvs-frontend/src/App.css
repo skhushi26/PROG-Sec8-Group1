@@ -53,6 +53,51 @@
 .jobportal{
   margin-top: 30px;
 }
+.custom-job-item{
+  height: 180px;
+  width: 800px;
+  background-color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.items-link a {
+  color: #fb246a;
+  display: block;
+  border: 1px solid #fb246a;
+  border-radius: 0;
+}
+
+.items-link a:hover {
+  color: #ffffff;
+  background-color: #fb246a;
+  text-decoration: none; 
+  border-color: #ffffff;
+  border-radius: 0;
+}
+.btnapply{
+  background: #fff;
+  color: #fb246a !important;
+  display: inline-block;
+  padding: 18px 44px;
+  font-family: "Muli",sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  border: 0;
+  border: 1px solid #fb246a;
+  letter-spacing: 3px;
+  text-align: center;
+  color: #fb246a;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.btnapply a:hover {
+  color: #ffffff;
+  background-color: #fb246a;
+  text-decoration: none; 
+  border-color: #ffffff;
+  border-radius: 0;
+}
 /*  STRIPE */
 
 
@@ -151,7 +196,14 @@ button:disabled {
   text-decoration: underline;
   font-size:17px;
 }
-
+.jobdetail{
+  text-align: left;
+  font-size: 16px;
+  line-height: 30px;
+}
+.containertable{
+  margin: 40px;
+}
 @keyframes loading {
   0% {
     -webkit-transform: rotate(0deg);

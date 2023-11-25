@@ -162,11 +162,11 @@ exports.getAllJobListUser = async (req, res) => {
 
 exports.getAllJobListEmployer = async (req, res) => {
   try {
-    const userId = req.user.id;
-    const employer = await Employer.findById({ _id: userId });
+    // const userId = req.user.id;
+    // const employer = await Employer.findById({ _id: userId });
+    const employer = await Employer.findById("6554e5f1881bd81831c78420");
     const getAllJobListDetails = await JobPost.find({ employerId: employer._id });
     responseBuilder(res, null, getAllJobListDetails, "Job Lists found successfully", 200);
-    // const employer = await Employer.findById("6554e5f1881bd81831c78420");
   } catch (error) {
     responseBuilder(res, error, null, "Something went wrong in finding job lists", 500);
   }
