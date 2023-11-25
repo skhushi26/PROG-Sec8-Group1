@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import withRouter from "./Router/withRouter";
+import FooterMenu from "./Footer";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 

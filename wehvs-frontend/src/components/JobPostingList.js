@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import FooterMenu from "./Footer";
 import { Table, Button, Modal, Form } from "react-bootstrap";
 import { toast } from "react-toastify";
 
@@ -39,6 +40,18 @@ const JobPostingList = () => {
       address: "xyz street, Waterloo, ON",
     },
   ];
+  const [requests, setJoblist] = useState([]);
+
+  
+  useEffect(() => {
+    fetch("http://localhost:3333/job-post/get-all-for-employer")
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("data.data", data.data);
+        setJoblist(data.data);
+      })
+      .catch((error) => console.error("Error fetching data:", error));
+  }, [requests]);
 
   const fetchExperienceLevels = async () => {
     const response = await fetch("http://localhost:3333/job-post/experience-level");
@@ -206,9 +219,8 @@ const JobPostingList = () => {
 
   return (
     <div>
-      <Button variant="primary" onClick={handleAddJobClick}>
-        Add Job
-      </Button>
+      {/* <div className="jobportal"><h2><strong>Welcome to Job Portal Database</strong></h2></div> */}
+      <div className="containertable">
       <Table striped bordered hover>
         <thead>
           <tr>
@@ -218,7 +230,8 @@ const JobPostingList = () => {
           </tr>
         </thead>
         <tbody>
-          {jobData.map((job) => (
+          {requests &&
+          requests.map((job) => (
             <tr key={job._id}>
               <td>{job.jobTitle}</td>
               <td>{job.jobDescription}</td>
@@ -229,7 +242,10 @@ const JobPostingList = () => {
           ))}
         </tbody>
       </Table>
-
+      </div>
+      <Button onClick={handleAddJobClick}>
+        Add Job
+      </Button>
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
           <Modal.Title>{editMode ? "Update Job" : "Add Job"}</Modal.Title>
@@ -324,11 +340,13 @@ const JobPostingList = () => {
           <Button variant="secondary" onClick={handleCloseModal}>
             Close
           </Button>
-          <Button variant="primary" onClick={handleAddJob}>
+          <Button onClick={handleAddJob}>
             {editMode ? "Update Job" : "Add Job"}
           </Button>
         </Modal.Footer>
       </Modal>
+      {/* FOOTER */}
+     <FooterMenu />
     </div>
   );
 };
