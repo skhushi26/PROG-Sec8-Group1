@@ -16,7 +16,7 @@ router.get(
 
 router.post(
   "/send",
-  authorize("User"),
+  // authorize("User"),
   userRequestValidationSchema,
   userRequestController.UserVerificationRequest
 );

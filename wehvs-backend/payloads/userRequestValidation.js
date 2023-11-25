@@ -3,11 +3,12 @@ const validateRequest = require("../utils/validation");
 
 function userRequestValidationSchema(req, res, next) {
   const schemaRules = {
+    userId:  Joi.string().required(),
     companyName: Joi.string().required(),
-    startDate: Joi.date(),
-    endDate: Joi.date(),
+    startDate: Joi.date().required(),
+    endDate: Joi.date().required(),
     jobTitle: Joi.string().required(),
-    comment: Joi.string().required(),
+    comment: Joi.string(),
   };
 
   validateRequest(req, next, Joi.object(schemaRules));

@@ -1,59 +1,58 @@
 import React, { useState, useEffect } from "react";
 import withRouter from "./Router/withRouter";
 import { loadStripe } from '@stripe/stripe-js';
-import { Link,  Navigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import axios from "axios";
 
-const stripePromise = loadStripe("pk_test_51OCrEYIlWqny1x6ygARX3qSIhgszDPo1Ay7SQ9B3eIg4WfONaGM5pz59RQ6Et2DFctHQ9OYTb2orevc8hU5Qnlmw000ZltpXqk");
 
 const SuccessPayment = () => {
-    const [status, setStatus] = useState(null);
-    const [customerEmail, setCustomerEmail] = useState('');
-    const [customSuccessMessage, setCustomSuccessMessage] = useState('');
+  const [status, setStatus] = useState(null);
+  const [customerEmail, setCustomerEmail] = useState('');
+  const [customSuccessMessage, setCustomSuccessMessage] = useState('');
 
-    useEffect(() => {
-      console.log("Effect is running!");
+  useEffect(() => {
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const sessionId = urlParams.get('session_id');
 
-        const queryString = window.location.search;
-        const urlParams = new URLSearchParams(queryString);
-        const sessionId = urlParams.get('session_id');
+    const stripePromise = loadStripe("pk_test_51OCrEYIlWqny1x6ygARX3qSIhgszDPo1Ay7SQ9B3eIg4WfONaGM5pz59RQ6Et2DFctHQ9OYTb2orevc8hU5Qnlmw000ZltpXqk");
+    
+    fetch(`http://localhost:3333/checkout/session-status?session_id=${sessionId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setStatus(data.status);
+        setCustomerEmail(data.customer_email);
 
-        fetch(`http://localhost:3333/checkout/session-status?session_id=${sessionId}`)
-            .then((res) => res.json())
-            .then((data) => {
-                setStatus(data.status);
-                setCustomerEmail(data.customer_email);
+        // Check if payment is successful and update IsPaymentDone value
+        if (data.status === 'complete') {
+          // Make a request to update IsPaymentDone in your backend
+          const userId = data.userId;
+          const paymentTrackingId = data.paymentTrackingId;
 
-                // Check if payment is successful and update IsPaymentDone value
-                if (data.status === 'complete') {
-                    // Make a request to update IsPaymentDone in your backend
-                    const userId = data.userId;
-                    const paymentTrackingId = data.paymentTrackingId;
+          axios.post('http://localhost:3333/shared/update-payment-status', { userId, paymentTrackingId })
+            .then(() => {
+              setCustomSuccessMessage('Payment successfully completed!');
+              const stripe = stripePromise;
 
-                    axios.post('http://localhost:3333/shared/update-payment-status', { userId, paymentTrackingId })
-                        .then(() => {
-                            setCustomSuccessMessage('Payment successfully completed!');
-                            const stripe = stripePromise;
+              const { error } = stripe.redirectToCheckout({
+                sessionId: data.sessionId,
+              });
 
-                            const { error } = stripe.redirectToCheckout({
-                                sessionId: data.sessionId,
-                            });
-
-                            Navigate("/success-payment");
-                        })
-                        .catch((error) => {
-                            console.error('Error updating payment status:', error);
-                        });
-                }
+              Navigate("/success-payment");
+            })
+            .catch((error) => {
+              console.error('Error updating payment status:', error);
             });
-    }, []);
+        }
+      });
+  }, []);
 
 
-    if (status === 'open') {
-        return (
-            <Navigate to="/checkout" />
-        )
-    }
+  if (status === 'open') {
+    return (
+      <Navigate to="/checkout" />
+    )
+  }
 
 
   return (
@@ -61,14 +60,14 @@ const SuccessPayment = () => {
       {/* CONTENT */}
       <div className="row d-flex justify-content-center">
         <div className="col-lg-8 mt-1 my-3 mt-1">
-        <div className="d-flex flex-column align-items-center text-center p-3 pt-5"><img className="rounded-circle" width="120px" src="/images/checklist.png"></img></div>
+          <div className="d-flex flex-column align-items-center text-center p-3 pt-5"><img className="rounded-circle" width="120px" src="/images/checklist.png"></img></div>
 
           <h1 className="my-3">Thanks for your subscription!</h1>
-          <p> We appreciate for your interest! <br/>
-          If you have any questions, please email <a href="mailto:orders@example.com">wevhs2023@gmail.com</a>.
-          <br/>
+          <p> We appreciate for your interest! <br />
+            If you have any questions, please email <a href="mailto:orders@example.com">wevhs2023@gmail.com</a>.
+            <br />
             <Link to="/user/apply-certificate" className="button button-contactForm boxed-btn btn-login mr-3 my-4">Go Back and Complete Request</Link>
-          </p> 
+          </p>
         </div>
       </div>
 

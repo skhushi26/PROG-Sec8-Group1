@@ -24,7 +24,7 @@ export default function Routing() {
     <>
       <Routes>
         <Route path="/" element={<Navbar />}>
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/" element={<Dashboard />} />
           <Route path="/user/register" element={<UserRegister />} />
           <Route path="/employer/register" element={<EmployerRegister />} />
           <Route path="/user/profile" element={<UserProfile />} />
