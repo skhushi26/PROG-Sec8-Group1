@@ -29,9 +29,12 @@ exports.registerUser = async (req, res) => {
     } = req.body;
 
     console.log("req.body", req.body);
+
+    let profilePhotoPath = "";
     const isEmailExists = await Credentials.findOne({ email });
     if (!isEmailExists) {
       const passwordHash = await bcrypt.hash(password, 10);
+      profilePhotoPath = req.file ? req.file.path : "";
       const addressData = await Address.create({
         address,
         city,
@@ -48,6 +51,7 @@ exports.registerUser = async (req, res) => {
         firstName,
         lastName,
         dateOfBirth,
+        profilePhoto: profilePhotoPath,
         addressId: addressData._id,
         contactId: contactData._id,
       });

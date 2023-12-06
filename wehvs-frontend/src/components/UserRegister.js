@@ -19,6 +19,11 @@ const UserRegister = () => {
   const [telephone, setTelephone] = useState("");
   const [contactEmail, setContactEmail] = useState("");
   const [mobileNumber, setMobileNumber] = useState("");
+  const [selectedFile, setSelectedFile] = useState(null);
+
+  const handleFileChange = (event) => {
+    setSelectedFile(event.target.files[0]);
+  };
 
   const [firstNameError, setFirstNameError] = useState("");
   const [lastNameError, setLastNameError] = useState("");
@@ -121,20 +126,24 @@ const UserRegister = () => {
     // If all validations pass, you can proceed with further action
     if (valid) {
       try {
-        const response = await axios.post("http://localhost:3333/users/register", {
-          firstName,
-          lastName,
-          email,
-          password,
-          dateOfBirth,
-          role,
-          address,
-          city,
-          province,
-          zipCode,
-          telephone,
-          contactEmail,
-          mobileNumber,
+        const formData = new FormData();
+        formData.append("profilePhoto", selectedFile);
+        formData.append("firstName", firstName);
+        formData.append("lastName", lastName);
+        formData.append("email", email);
+        formData.append("password", password);
+        formData.append("dateOfBirth", dateOfBirth);
+        formData.append("address", address);
+        formData.append("city", city);
+        formData.append("province", province);
+        formData.append("zipCode", zipCode);
+        formData.append("telephone", telephone);
+        formData.append("contactEmail", contactEmail);
+        formData.append("mobileNumber", mobileNumber);
+        const response = await axios.post("http://localhost:3333/users/register", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data", // Set the content type to multipart form data
+          },
         });
         console.log("response", response);
         if (response.data.statusCode === 200) {
@@ -237,14 +246,35 @@ const UserRegister = () => {
             <div className="row">
               <div className="col-md-3 border-right">
                 <div className="d-flex flex-column align-items-center text-center p-3 py-5">
-                  <img className="rounded-circle " width="150px" src="/images/user.png"></img>
-                  {/* <span className="font-weight-bold">{user.firstName + " " + user.lastName}</span><span> </span> */}
-                  <button
-                    type="submit"
+                  {selectedFile ? (
+                    <img
+                      className="rounded-circle"
+                      width="150px"
+                      src={URL.createObjectURL(selectedFile)}
+                      alt="Profile Photo"
+                    />
+                  ) : (
+                    <img
+                      className="rounded-circle"
+                      width="150px"
+                      src="/images/user.png"
+                      alt="Placeholder"
+                    />
+                  )}
+                  <label
+                    htmlFor="fileInput"
                     className="button button-contactForm btn-change-picture boxed-btn mt-4"
                   >
-                    Change Profile
-                  </button>
+                    Upload profile photo
+                    {/* Actual file input, visually hidden */}
+                    <input
+                      type="file"
+                      id="fileInput"
+                      accept=".jpg, .jpeg, .png"
+                      onChange={handleFileChange}
+                      style={{ display: "none" }}
+                    />
+                  </label>
                 </div>
               </div>
               <div className="col-md-8">

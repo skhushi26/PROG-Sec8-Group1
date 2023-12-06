@@ -12,10 +12,10 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    // profilePhoto: {
-    //   type: String,
-    //   default: "",
-    // },
+    profilePhoto: {
+      type: String,
+      default: "",
+    },
     dateOfBirth: {
       type: Date,
       required: true,
