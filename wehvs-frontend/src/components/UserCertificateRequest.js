@@ -108,6 +108,21 @@ const UserCertificateRequest = () => {
             }
         }
     };
+
+    const cancelSubscription = async () => {
+        try {
+          const paymentTrackingId = localStorage.getItem('paymentTrackingId') ?? 'pm_1OImEYIlWqny1x6yEYYjfSxF';
+          const response = await axios.post('http://localhost:3333/checkout/cancel-subscription', { paymentTrackingId });
+      
+          // Handle successful subscription cancellation
+          console.log(response.data.message);
+        } catch (error) {
+          // Handle errors
+          console.error('Error canceling subscription:', error);
+        }
+      };
+      
+
     return (
         <div>
             {/* CONTENT */}
@@ -161,13 +176,16 @@ const UserCertificateRequest = () => {
                                     <div className="col-sm-12  mt-4">
                                         <label htmlFor="comment">Comment</label>
                                         <textarea className="form-control" name="comment" id="comment" placeholder="Comments" value={comment}
-                                        onChange={(e) => setcomment(e.target.value)} ></textarea>
+                                            onChange={(e) => setcomment(e.target.value)} ></textarea>
                                     </div>
                                     <div className="col-12 form-group mt-5">
                                         <button type="submit" className="button button-contactForm button-submit boxed-btn">Send</button>
                                     </div>
                                     <div className="col-sm-12">
                                         <Link className="success medium membership-link" to="/membership">Upgrade to Premium Membership</Link><br />
+                                    </div>
+                                    <div className="col-sm-12">
+                                        <button type="button" onClick={cancelSubscription}>Cancel Subscription</button>
                                     </div>
                                 </div>
                             </div>

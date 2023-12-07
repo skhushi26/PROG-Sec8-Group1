@@ -63,6 +63,21 @@ const CheckoutForm = () => {
   )
 }
 
+
+const cancelSubscription = async () => {
+  try {
+    const paymentTrackingId = localStorage.getItem('paymentTrackingId');
+    const response = await axios.post('http://localhost:3333/checkout/cancel-subscription', { paymentTrackingId });
+
+    // Handle successful subscription cancellation
+    console.log(response.data.message);
+  } catch (error) {
+    // Handle errors
+    console.error('Error canceling subscription:', error);
+  }
+};
+
+
 const Return = () => {
   const [status, setStatus] = useState(null);
   const [customerEmail, setCustomerEmail] = useState('');
@@ -113,8 +128,19 @@ const Return = () => {
     )
   }
 
- 
-  return null;
+  return (
+    <div>
+      {status === 'complete' && (
+        <div>
+          <p>Payment successful!</p>
+          <p>Email: {customerEmail}</p>
+          {/* Add the Cancel Subscription button here */}
+          <button onClick={cancelSubscription}>Cancel Subscription</button>
+        </div>
+      )}
+    </div>
+  );
+  // return null;
 }
 
 const App = () => {
