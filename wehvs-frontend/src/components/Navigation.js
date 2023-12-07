@@ -51,7 +51,7 @@ const Navbar = () => {
                                                     <li><Link to="/user-request">User Request List</Link></li>
                                                 </>
                                             )}
-                                            <li><a href="job_listing.html">Find a Job</a></li>
+                                            <li><a href="/user/all-jobs">Find a Job</a></li>
                                         </ul>
                                     </nav>
                                 </div>

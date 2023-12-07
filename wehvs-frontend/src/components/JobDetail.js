@@ -7,8 +7,9 @@ import { Link, useParams } from "react-router-dom";
 
 
 const JobDetails = () => {
-    const [jobDetail, setJobDetail] = useState({})
-    const { id } = useParams();
+  const [jobDetail, setJobDetail] = useState({});
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const { id } = useParams();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -22,10 +23,32 @@ const JobDetails = () => {
         };
         fetchData();
     }, [id]);
+    const handleApplyNow = async () => {
+      try {
+        // Assuming you have an API endpoint for submitting applications
+        // Replace this with your actual API endpoint
+        // For now, simulate a successful submission
+        // by setting showSuccessMessage to true after a delay
+        await new Promise(resolve => setTimeout(resolve, 1000));
+  
+        // Application submission logic successful, show the success message
+        setShowSuccessMessage(true);
+  
+        // You can also navigate to another page or perform other actions here
+      } catch (error) {
+        console.error('Error submitting application:', error);
+      }
+    };
 
     return (
       <div className="job-post-company pt-120 pb-120">
         <div className="container">
+          {/* Show success message if the application is successful */}
+          {showSuccessMessage && (
+            <div className="alert alert-success" role="alert">
+              Thanks for applying for the job! Your application has been submitted successfully.
+            </div>
+          )}
           <div className="row justify-content-between">
             <div className="col-xl-7 col-lg-8">
               <div className="single-job-items mb-50">
@@ -63,7 +86,7 @@ const JobDetails = () => {
                   <li>Salary: <span>$7,8000 yearly</span></li>
                 </ul>
                 <div className="apply-btn2">
-                  <a href="#" className="btnapply">Apply Now</a>
+                  <button className="btnapply" onClick={handleApplyNow}>Apply Now</button>
                 </div>
               </div>
               {/* <div className="post-details4 mb-50">
