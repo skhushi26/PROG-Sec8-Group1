@@ -43,3 +43,31 @@ exports.sessionStatus = async (req, res) => {
     paymentTrackingId: session.id
   });
 };
+
+exports.cancelSubscription = async (req, res) => {
+  const { paymentTrackingId } = req.body;
+
+  try {
+    // const subscription = await stripe.subscriptions.retrieve({
+    //   ID: paymentTrackingId, // Use the customer ID associated with the subscription
+    // });
+
+    // // Cancel the subscription
+    // await stripe.subscriptions.update(subscription.id, { cancel_at_period_end: true });
+    const subscriptions = await stripe.subscriptions.list({
+      limit: 3,
+    });
+
+    const subscription = await stripe.subscriptions.update(
+      { paymentTrackingId },
+      {
+        cancel_at_period_end: true,
+      }
+    );
+
+    res.status(200).json({ message: 'Subscription canceled successfully.' });
+  } catch (error) {
+    console.error('Error canceling subscription:', error);
+    res.status(500).json({ error: 'Unable to cancel subscription.' });
+  }
+};

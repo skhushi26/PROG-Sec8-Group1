@@ -216,6 +216,27 @@ const JobPostingList = () => {
     setEditId(id);
     setShowModal(true);
   };
+  const handleDelete = async (id) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this job post?");
+
+    if (confirmDelete) {
+      try {
+        const response = await fetch(`http://localhost:3333/job-post/delete/${id}`, {
+          method: "DELETE",
+        });
+
+        if (response.ok) {
+          setJoblist((prevJobs) => prevJobs.filter((job) => job._id !== id));
+          toast.success("Job deleted successfully");
+        } else {
+          toast.error("Something went wrong. Please try again!");
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        toast.error("Something went wrong. Please try again!");
+      }
+    }
+  };
 
   return (
     <div>
@@ -237,6 +258,7 @@ const JobPostingList = () => {
               <td>{job.jobDescription}</td>
               <td>
                 <Button onClick={() => handleEdit(job._id)}>Edit</Button>
+                <Button variant="danger" onClick={() => handleDelete(job._id)}>Delete</Button>
               </td>
             </tr>
           ))}

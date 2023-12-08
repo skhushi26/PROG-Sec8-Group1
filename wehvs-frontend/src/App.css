@@ -203,7 +203,7 @@ button:disabled {
 
 .dashboard-banner-bg {
   background-image: url("http://localhost:3000/images/dashboard-banner.jpg");
-  height:500px;
+  height:550px;
 }
 
 .slider-area .hero-cap h3 {
@@ -223,6 +223,12 @@ button:disabled {
 }
 .containertable{
   margin: 40px;
+}
+.verified-user{
+  margin-left:10px;
+}
+.section-padding {
+  padding-top: 50px;
 }
 @keyframes loading {
   0% {

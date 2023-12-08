@@ -1,19 +1,22 @@
-import { 
-    Link, 
-    Outlet, 
-    useNavigate } from "react-router-dom";
+import {
+    Link,
+    Outlet,
+    useNavigate
+} from "react-router-dom";
 
 const Navbar = () => {
     const navigate = useNavigate();
 
     const userId = localStorage.getItem('userId');
     const userRole = localStorage.getItem('userRole');
+    const isSubscribed = localStorage.getItem('isSubscribed');
 
     const handleLogout = () => {
         // Clear user data from localStorage
         localStorage.removeItem('token');
         localStorage.removeItem('userId');
         localStorage.removeItem('userRole');
+        localStorage.removeItem('isSubscribed');
 
         // Redirect the user to the login page
         navigate("/login");
@@ -43,12 +46,12 @@ const Navbar = () => {
                                                     <li><Link to="/user/apply-certificate">User Request</Link></li>
                                                 </>
                                             )}
-                                             {userRole === "Employer" && (
+                                            {userRole === "Employer" && (
                                                 <>
                                                     <li><Link to="/user-request">User Request List</Link></li>
                                                 </>
                                             )}
-                                            <li><a href="job_listing.html">Find a Job</a></li>
+                                            <li><a href="/job-list">Job Dashboard</a></li>
                                         </ul>
                                     </nav>
                                 </div>
@@ -58,11 +61,15 @@ const Navbar = () => {
                                     )}
                                     {userRole === "User" && (
                                         <>
-                                            <Link to="/user/profile" className="button button-contactForm boxed-btn btn-login mr-3">User Profile</Link>
+                                            <Link to="/user/profile" className="button button-contactForm boxed-btn btn-login mr-3">User Profile
+                                                {isSubscribed && (
+                                                    <img className="verified-user" src="/images/verified-user-2.png" width="24px"></img>
+                                                )}
+                                            </Link>
                                         </>
                                     )}
                                     {userId ? (
-                                            <Link onClick={handleLogout} className="button button-contactForm boxed-btn btn-login mr-3">Logout</Link>
+                                        <Link onClick={handleLogout} className="button button-contactForm boxed-btn btn-login mr-3">Logout</Link>
                                     ) : (
                                         <Link to="/login" className="button button-contactForm boxed-btn btn-login mr-3">Login / Sign up</Link>
                                     )}

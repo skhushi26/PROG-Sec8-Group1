@@ -40,7 +40,7 @@ export default function Routing() {
           <Route path="/success-payment" element={<SuccessPayment />} />
           <Route path="/job-list" element={<JobPostingList />} />
           <Route path="/job-list/:id" element={<JobDetails />} />
-          <Route path="/all-jobs" element={<AllJobList />} />
+          <Route path="/user/jobs" element={<AllJobList />} />
           <Route path="*" element={<NotFound />} />
         </Route>
         {/* <Route path="/" element={<FooterMenu />} /> */}

@@ -120,7 +120,21 @@ exports.updateJobPost = async (req, res) => {
     responseBuilder(res, error, null, "Something went wrong in updating job posting", 500);
   }
 };
-
+exports.deleteJobPost = async (req, res) => {
+  try {
+    const id = req.params.id;
+    if (!id) {
+      responseBuilder(res, null, null, "Job posting not found!", 400);
+    } else {
+      const deletedJobPost = await JobPost.findByIdAndDelete(
+        { _id: id },
+      );
+      responseBuilder(res, null, deletedJobPost.toJSON(), "Job Posting deleted successfully", 200);
+    }
+  } catch (error) {
+    responseBuilder(res, error, null, "Something went wrong in updating job posting", 500);
+  }
+};
 exports.getAllExperienceLevels = async (req, res) => {
   try {
     const allExperienceLevelsDetails = await JobExperienceLevel.find();

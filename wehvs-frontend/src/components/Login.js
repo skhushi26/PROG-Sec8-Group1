@@ -63,7 +63,8 @@ const Login = () => {
         localStorage.setItem("token", result.token);
         localStorage.setItem("userId", result.userId);
         localStorage.setItem("userRole", result.role);
-
+        localStorage.setItem("isSubscribed", result.isPaymentDone);
+        localStorage.setItem("paymentTrackingId", result.paymentTrackingId);
         // Redirect to the dashboard page
         navigate("/");
       } else {
