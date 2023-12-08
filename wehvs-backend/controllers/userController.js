@@ -195,16 +195,34 @@ exports.updateUser = async (req, res) => {
 
     const userId = new mongoose.Types.ObjectId(id);
     const existingUser = await User.findById({ _id: userId });
-
+    console.log("req.file: ", req.file);
     const profilePhotoPath = req.file ? req.file.path : null;
-
+    console.log("profilePhotoPath", profilePhotoPath);
     if (!existingUser) {
       responseBuilder(res, null, null, "User not found", 404);
     } else {
+      // Remove the existing profile photo if it exists and a new one is uploaded
+      // if (existingUser.profilePhoto && profilePhotoPath) {
+      //   fs.unlink(existingUser.profilePhoto, (err) => {
+      //     if (err) {
+      //       console.log("Error removing file:", err);
+      //     }
+      //   });
+      // }
+
+      if (profilePhotoPath && existingUser.profilePhoto !== profilePhotoPath) {
+        if (existingUser.profilePhoto) {
+          fs.unlink(existingUser.profilePhoto, (err) => {
+            if (err) {
+              console.log("Error removing file:", err);
+            }
+          });
+        }
+        existingUser.profilePhoto = profilePhotoPath;
+      }
+
       existingUser.firstName = firstName;
       existingUser.lastName = lastName;
-      // existingUser.email = email;
-      existingUser.profilePhoto = profilePhotoPath;
       existingUser.dateOfBirth = dateOfBirth;
       await existingUser.save();
 
