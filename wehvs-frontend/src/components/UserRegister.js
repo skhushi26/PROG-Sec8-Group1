@@ -148,7 +148,7 @@ const UserRegister = () => {
         console.log("response", response);
         if (response.data.statusCode === 200) {
           setMessage(response.data.message);
-          navigate("/login", { state: { message: response.data.message } });
+          // navigate("/login", { state: { message: response.data.message } });
           setSuccess(true);
         } else if (response.data.statusCode === 400) {
           setMessage(response.data.message);
