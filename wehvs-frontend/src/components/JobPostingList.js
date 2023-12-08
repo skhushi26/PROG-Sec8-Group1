@@ -218,13 +218,13 @@ const JobPostingList = () => {
   };
   const handleDelete = async (id) => {
     const confirmDelete = window.confirm("Are you sure you want to delete this job post?");
-  
+
     if (confirmDelete) {
       try {
         const response = await fetch(`http://localhost:3333/job-post/delete/${id}`, {
           method: "DELETE",
         });
-  
+
         if (response.ok) {
           setJoblist((prevJobs) => prevJobs.filter((job) => job._id !== id));
           toast.success("Job deleted successfully");
@@ -236,7 +236,7 @@ const JobPostingList = () => {
         toast.error("Something went wrong. Please try again!");
       }
     }
-  };  
+  };
 
   return (
     <div>
