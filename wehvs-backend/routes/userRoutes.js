@@ -33,7 +33,6 @@ router.put(
 );
 
 router.post("/forgot-password", forgotPasswordSchema, userController.forgotPassword);
-
-// router.post('/reset-password', resetPasswordSchema, userController.resetPassword);
+router.post('/reset-password', resetPasswordSchema, userController.resetPassword);
 
 module.exports = router;
