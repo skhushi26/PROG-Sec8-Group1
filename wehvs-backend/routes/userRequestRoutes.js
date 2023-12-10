@@ -8,11 +8,8 @@ const authorize = require("../utils/authentication");
 
 const router = express.Router();
 
-router.get(
-  "/",
-  authorize("Employer"),
-  userRequestController.UserRequestList
-);
+// router.get("/", authorize("Employer"), userRequestController.UserRequestList);
+router.get("/", userRequestController.UserRequestList);
 
 router.post(
   "/send",
@@ -33,5 +30,7 @@ router.put(
   UserRequestApproveDenySchema,
   userRequestController.DenyRequest
 );
+
+router.get("/generate-certificate", userRequestController.generateCertificate);
 
 module.exports = router;

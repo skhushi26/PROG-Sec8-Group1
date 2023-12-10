@@ -6,11 +6,11 @@ const User = require("../models/User");
 const Credentials = require("../models/Credentials");
 const responseBuilder = require("../utils/response");
 const sendMailHandler = require("../utils/sendMailHandler");
+const PDFDocument = require("pdfkit");
 
 exports.UserRequestList = async (req, res) => {
   try {
     const userRequests = await UserRequest.find().populate("userId", "firstName lastName");
-
     const userRequestsData = userRequests.map((request) => ({
       ...request.toObject(),
       userFullName: request.userId.firstName + " " + request.userId.lastName,
@@ -30,13 +30,18 @@ exports.UserVerificationRequest = async (req, res) => {
     const existingRequestsCount = existingRequests.length;
 
     if (existingRequestsCount >= 2) {
-      responseBuilder(res, null, null, "You have reached the maximum number of requests. Upgrade your membership to unlock more access!", 400);
+      responseBuilder(
+        res,
+        null,
+        null,
+        "You have reached the maximum number of requests. Upgrade your membership to unlock more access!",
+        400
+      );
     } else {
       const existingEmployer = await Employer.findOne({ companyName });
       if (!existingEmployer) {
         responseBuilder(res, null, null, "Employer is not found in our system!", 400);
       } else {
-
         const employerId = existingEmployer._id;
         // const employerId = "654559f1ef131caf95f404a5"; // This id will come from frontend.
         const employerCredentialsData = await Credentials.findOne({ userId: employerId });
@@ -198,5 +203,75 @@ exports.DenyRequest = async (req, res) => {
     }
   } catch (error) {
     responseBuilder(res, error, null, "Something went wrong in denying request", 500);
+  }
+};
+
+function generateCertificate(userData) {
+  return new Promise((resolve, reject) => {
+    try {
+      const doc = new PDFDocument({ size: "A4", margin: 50 });
+
+      // Register custom fonts if needed
+      // For example, loading fonts from file
+      // doc.font('path/to/your/font.ttf');
+
+      // Set font size, color, and text for the certificate
+      doc.fontSize(32).fillColor("#5469d4").text("CERTIFICATE", { align: "center" });
+      doc.moveDown().fontSize(24).text("WORLD EMPLOYMENT VERIFICATION", { align: "center" });
+
+      doc.moveDown(2).fontSize(18).text("This Certificate is Presented To:", { align: "center" });
+      doc
+        .moveDown()
+        .fontSize(28)
+        .font("Times-Italic")
+        .text(userData.firstName + " " + userData.lastName, { align: "center" });
+
+      doc
+        .moveDown(2)
+        .fontSize(18)
+        .text(
+          `This is to certify that her employment at XYZ, Turkey, during her tenure from 2012 to 2016 is valid.`,
+          { align: "center" }
+        );
+
+      doc.moveDown(2).fontSize(18).fillColor("#fb246a").text("MATT ZHANG", { align: "center" });
+      doc.moveDown().fontSize(18).fillColor("#5469d4").text("TITLE", { align: "center" });
+      doc.moveDown().fontSize(18).fillColor("#fb246a").text("NEIL TRAN", { align: "center" });
+      doc.moveDown().fontSize(18).fillColor("#5469d4").text("TITLE", { align: "center" });
+
+      const buffers = [];
+      doc.on("data", buffers.push.bind(buffers));
+      doc.on("end", () => {
+        const pdfData = Buffer.concat(buffers).toString("base64");
+        resolve(pdfData);
+      });
+
+      doc.end();
+    } catch (error) {
+      console.error("Error generating certificate:", error);
+      reject("Failed to generate the certificate");
+    }
+  });
+}
+
+// Assuming '/generateCertificate' is your endpoint to trigger certificate generation
+exports.generateCertificate = async (req, res) => {
+  try {
+    // const userId = req.user.id;
+    const userId = "657281ee453b6086a02bf072";
+
+    // Fetch user data based on the userId
+    const userData = await User.findById(userId);
+
+    const pdfData = await generateCertificate(userData);
+
+    // Set the response content type to application/pdf
+    res.contentType("application/pdf");
+
+    // Send the PDF data as the response
+    res.send(Buffer.from(pdfData, "base64"));
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to generate the certificate" });
   }
 };
