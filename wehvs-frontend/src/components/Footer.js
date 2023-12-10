@@ -26,8 +26,7 @@ const FooterMenu = () => {
                                 <h4>Contact Info</h4>
                                 <ul>
                                     <li>
-                                    <p>60 Frederick St
-                                    Kitchener, ON.</p>
+                                    <p>Kitchener, ON.</p>
                                     </li>
                                     <li><a href="#">Phone : +8880 44338899</a></li>
                                     <li><a href="#">Email : info@wehvs.com</a></li>

@@ -18,6 +18,10 @@ const JobPostSchema = new mongoose.Schema(
       type: mongoose.Types.ObjectId,
       required: true,
     },
+    salary: {
+      type: String,
+      required: true,
+    },
 
     address: {
       type: String,

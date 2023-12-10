@@ -5,6 +5,7 @@ function jobPostSchema(req, res, next) {
   const schemaRules = {
     jobTitle: Joi.string().required(),
     jobDescription: Joi.string().required(),
+    salary: Joi.string().required(),
     jobTypeId: Joi.string().required(),
     jobExperienceLevelId: Joi.string().required(),
     address: Joi.string().required(),

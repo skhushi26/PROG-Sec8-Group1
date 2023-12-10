@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 const JobPostingList = () => {
   const [showModal, setShowModal] = useState(false);
   const [jobTitle, setJobTitle] = useState("");
+  const [salary, setsalary] = useState("");
   const [jobDescription, setJobDescription] = useState("");
   const [address, setAddress] = useState("");
   const [experienceLevels, setExperienceLevels] = useState([]);
@@ -14,6 +15,7 @@ const JobPostingList = () => {
   const [selectedJobType, setSelectedJobType] = useState("");
 
   const [jobTitleError, setJobTitleError] = useState("");
+  const [salaryError, setsalaryError] = useState("");
   const [jobDescriptionError, setJobDescriptionError] = useState("");
   const [addressError, setAddressError] = useState("");
   const [experienceLevelsError, setExperienceLevelsError] = useState("");
@@ -21,25 +23,6 @@ const JobPostingList = () => {
 
   const [editMode, setEditMode] = useState(false);
   const [editId, setEditId] = useState(null);
-
-  const jobData = [
-    {
-      _id: "6557e7b95528c58d8339bddf",
-      jobTitle: "Sr. FullStack Developer",
-      jobDescription: "Experience with NodeJS, ReactJS, MongoDB, MySQL, ExpressJS",
-      jobTypeId: "6557916eab23cfa77b0d6b63",
-      jobExperienceLevelId: "655791b2ab23cfa77b0d6b66",
-      address: "University Ave, Northfield",
-    },
-    {
-      _id: "655797c2fd7e24ae6cd02388",
-      jobTitle: "Backend Developer",
-      jobDescription: "Experience with NodeJS",
-      jobTypeId: "65579184ab23cfa77b0d6b64",
-      jobExperienceLevelId: "655791b2ab23cfa77b0d6b66",
-      address: "xyz street, Waterloo, ON",
-    },
-  ];
   const [requests, setJoblist] = useState([]);
 
   
@@ -47,7 +30,7 @@ const JobPostingList = () => {
     fetch("http://localhost:3333/job-post/get-all-for-employer")
       .then((response) => response.json())
       .then((data) => {
-        console.log("data.data", data.data);
+        // console.log("data.data", data.data);
         setJoblist(data.data);
       })
       .catch((error) => console.error("Error fetching data:", error));
@@ -140,6 +123,12 @@ const JobPostingList = () => {
     } else {
       setJobTitleError("");
     }
+    if (salary.trim() === "") {
+      setsalaryError("Job salary is required");
+      valid = false;
+    } else {
+      setsalaryError("");
+    }
 
     if (jobDescription.trim() === "") {
       setJobDescriptionError("Job Description is required");
@@ -176,6 +165,7 @@ const JobPostingList = () => {
 
       const requestBody = {
         jobTitle,
+        salary,
         jobDescription,
         jobTypeId: selectedJobType,
         address,
@@ -296,6 +286,18 @@ const JobPostingList = () => {
                 onChange={(e) => setJobDescription(e.target.value)}
               />
               <span className="error-message text-danger">{jobDescriptionError}</span>
+            </Form.Group>
+            <br />
+            <br />
+            <Form.Group controlId="salary">
+              <Form.Label>Salary</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter job salary"
+                value={salary}
+                onChange={(e) => setsalary(e.target.value)}
+              />
+              <span className="error-message text-danger">{salaryError}</span>
             </Form.Group>
             <br />
             <br />

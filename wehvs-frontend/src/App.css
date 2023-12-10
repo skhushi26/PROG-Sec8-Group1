@@ -6,6 +6,20 @@
   height: 40vmin;
   pointer-events: none;
 }
+.forgotpassword {
+  text-align: left;
+  margin-top: 10px;
+}
+.pb-120 {
+  padding-bottom: 250px;
+}
+.single-job-items .job-tittle ul li{
+  color: black;
+  font-size: 16px;
+}
+.job-category-listing .single-listing .select-Categories .container {
+  padding: 7px;
+}
 
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
