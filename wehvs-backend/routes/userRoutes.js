@@ -21,10 +21,6 @@ router.post(
 );
 router.get("/getById/:id", userController.getUserById);
 
-// router.get("/verify/:token", userController.getVerifiedUser);
-
-// router.post("/login", loginSchema, userController.login);
-
 router.put(
   "/update/:id",
   upload.single("profilePhoto"),
@@ -33,7 +29,5 @@ router.put(
 );
 
 router.post("/forgot-password", forgotPasswordSchema, userController.forgotPassword);
-
-// router.post('/reset-password', resetPasswordSchema, userController.resetPassword);
 
 module.exports = router;

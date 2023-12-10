@@ -28,11 +28,12 @@ exports.registerEmployer = async (req, res) => {
       mobileNumber,
     } = req.body;
 
+    let profilePhotoPath = "";
     const isEmailExists = await Employer.findOne({ email });
 
     if (!isEmailExists) {
       const passwordHash = await bcrypt.hash(password, 10);
-
+      profilePhotoPath = req.file ? req.file.path : "";
       const addressData = await Address.create({
         address,
         city,
@@ -52,6 +53,7 @@ exports.registerEmployer = async (req, res) => {
         foundedDate,
         licenseNumber,
         description,
+        profilePhoto: profilePhotoPath,
         addressId: addressData._id,
         contactId: contactData._id,
       });
@@ -116,50 +118,29 @@ exports.registerEmployer = async (req, res) => {
 exports.getEmployerById = async (req, res) => {
   try {
     const employerId = req.params.id;
-    const employer = await Employer.findById(employerId);
+    const employer = await Employer.findById(employerId)
+    .populate("addressId") // Populate the address
+    .populate("contactId"); // Populate the contact;
 
-    if (!employer) {
+    if (employer == null) {
       responseBuilder(res, null, null, "Employer not found", 400);
     } else {
-      responseBuilder(res, null, employer, "", 200);
+      const credentials = await Credentials.findOne({ userId: employerId });
+      if (!credentials) {
+        responseBuilder(res, null, employer, "Credentials not found", 400);
+      } else {
+        const userData = {
+          ...employer.toObject(), // Spread the employer object
+          email: credentials.email,
+        };
+        responseBuilder(res, null, userData, "", 200);
+      }
     }
   } catch (error) {
     responseBuilder(res, error, null, "Something went wrong while fetching employer", 500);
   }
 };
 
-// exports.getVerifiedEmployer = async (req, res) => {
-//   try {
-//     const token = req.params.token;
-//     let decoded = null;
-//     try {
-//       decoded = jwt.verify(token, "wehvssecretkey");
-//     } catch (error) {
-//       console.log("error", error);
-//     }
-
-//     if (!decoded) {
-//       res.send(responseBuilder(null, null, "Invalid link!", 400));
-//     } else {
-//       const employerDetails = await Credentials.findOne({ email: decoded.email });
-//       if (employerDetails) {
-//         if (employerDetails.isActive) {
-//           res.send(responseBuilder(null, null, "Your account is already activated", 200));
-//         } else {
-//           await Credentials.findOneAndUpdate(
-//             { email: decoded.email },
-//             { $set: { isActive: true } }
-//           );
-//           res.send(responseBuilder(null, null, "Your account has activated!", 200));
-//         }
-//       } else {
-//         res.send(responseBuilder(null, null, "Employer not found", 400));
-//       }
-//     }
-//   } catch (error) {
-//     res.send(responseBuilder(error, null, "Something went in activating Employer", 500));
-//   }
-// };
 
 exports.updateEmployer = async (req, res) => {
   try {
@@ -179,14 +160,27 @@ exports.updateEmployer = async (req, res) => {
       mobileNumber,
     } = req.body;
 
-    console.log(`req.body: ${req.body}`);
 
     // Check if the employer with the given ID exists
     const employerId = new mongoose.Types.ObjectId(id);
     const existingEmployer = await Employer.findById(employerId);
 
+    const profilePhotoPath = req.file ? req.file.path : null;
+    console.log("profilePhotoPath", profilePhotoPath);
+    
     if (!existingEmployer) {
       res.send(responseBuilder(null, null, "Employer not found", 404));
+    } else {
+      if (profilePhotoPath && existingEmployer.profilePhoto !== profilePhotoPath) {
+        if (existingEmployer.profilePhoto) {
+          fs.unlink(existingEmployer.profilePhoto, (err) => {
+            if (err) {
+              console.log("Error removing file:", err);
+            }
+          });
+        }
+        existingEmployer.profilePhoto = profilePhotoPath;
+      }
     }
 
     // Update the employer's basic information
@@ -227,57 +221,3 @@ exports.updateEmployer = async (req, res) => {
     responseBuilder(res, error, null, "Something went wrong in updating the employer", 500);
   }
 };
-
-// exports.login = async (req, res) => {
-//   let token = "";
-//   try {
-//     const { email, password } = req.body;
-//     const employerData = await Employer.findOne({ email });
-//     if (!employerData) {
-//       res.send(responseBuilder(null, null, "Employer not found!", 404));
-//     } else {
-//       const isPasswordMatch = await bcrypt.compare(password, employerData.password);
-//       if (isPasswordMatch) {
-//         token = await jwt.sign(
-//           { id: employerData._id, role: employerData.role },
-//           "wehvsLoginEmployerSecretKey",
-//           {
-//             expiresIn: "9h",
-//           }
-//         );
-//         res.send(
-//           responseBuilder(
-//             null,
-//             { ...employerData.toJSON(), token },
-//             "Employer logged in successfully",
-//             200
-//           )
-//         );
-//       } else {
-//         res.send(responseBuilder(null, null, "Invalid credentails", 400));
-//       }
-//     }
-//   } catch (error) {
-//     res.send(responseBuilder(error, null, "Something went wrong in logging in", 500));
-//   }
-// };
-
-// exports.getEmployer =  async (req, res) => {
-//   try {
-//     const id = req.params.id;
-
-//     // Check if the employee with the given ID exists
-//     const employee = await Employee.findById(id);
-
-//     if (!employee) {
-//       res.send(responseBuilder(null, null, "Employer not found", 404));
-//     }
-
-//     // Respond with the employee data
-//     // res.status(200).json(employee);
-//     res.send(responseBuilder(null, employee, "", 200));
-
-//   } catch (error) {
-//     res.send(responseBuilder(error, null, "Something went wrong while fetching the employer", 500));
-//   }
-// };

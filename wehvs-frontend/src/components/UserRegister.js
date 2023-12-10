@@ -165,56 +165,6 @@ const UserRegister = () => {
     }
   };
 
-  //   constructor() {
-  //     super();
-  //     this.state = {
-  //       selectedCountry: null,
-  //       selectedCity: null,
-  //       countries: [
-  //         { value: "usa", label: "USA" },
-  //         { value: "canada", label: "Canada" },
-  //         // Add more countries here
-  //       ],
-  //       cities: [
-  //         { value: "new-york", label: "New York", country: "usa" },
-  //         { value: "los-angeles", label: "Los Angeles", country: "usa" },
-  //         { value: "toronto", label: "Toronto", country: "canada" },
-  //         { value: "vancouver", label: "Vancouver", country: "canada" },
-  //         // Add more cities here
-  //       ],
-  //     };
-  //   }
-
-  //   handleCountryChange = (selectedOption) => {
-  //     this.setState({ selectedCountry: selectedOption, selectedCity: null });
-  //   };
-
-  //   handleCityChange = (selectedOption) => {
-  //     this.setState({ selectedCity: selectedOption });
-  //   };
-
-  //   componentDidMount() {
-  //     // Fetch countries from your backend API
-  //     axios.get('https://restcountries.com/v3.1/all') // Adjust the URL if needed
-  //       .then((response) => {
-  //         console.log("CountryOptions response: " + response);
-
-  //         const countryOptions = response.data.map((country) => ({
-  //           value: country.value,
-  //           label: country.label,
-  //         }));
-
-  //         console.log("CountryOptions: " + countryOptions);
-  //         this.setState({ countries: countryOptions });
-  //       })
-  //       .catch((error) => {
-  //         console.error('Error fetching countries:', error);
-  //       });
-  //   }
-
-  //   render() {
-  // const { countries, cities, selectedCountry, selectedCity } = this.state;
-
   return (
     <div>
       {/* CONTENT */}
@@ -250,6 +200,7 @@ const UserRegister = () => {
                     <img
                       className="rounded-circle"
                       width="150px"
+                      height="150px"
                       src={URL.createObjectURL(selectedFile)}
                       alt="Profile Photo"
                     />
@@ -257,7 +208,8 @@ const UserRegister = () => {
                     <img
                       className="rounded-circle"
                       width="150px"
-                      src="/images/user.png"
+                      height="150px"
+                      src="/images/default-profile.png"
                       alt="Placeholder"
                     />
                   )}

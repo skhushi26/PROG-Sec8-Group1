@@ -63,7 +63,7 @@ const Login = () => {
         localStorage.setItem("token", result.token);
         localStorage.setItem("userId", result.userId);
         localStorage.setItem("userRole", result.role);
-        localStorage.setItem("isSubscribed", result.isPaymentDone);
+        localStorage.setItem("isPaymentDone", result.isPaymentDone ?? false);
         localStorage.setItem("paymentTrackingId", result.paymentTrackingId);
         // Redirect to the dashboard page
         navigate("/");
@@ -94,6 +94,11 @@ const Login = () => {
                 <h2 className="contact-title">Login</h2>
               </div>
               <div className="col-sm-10 m-auto">
+              {/* {successMessage !== null && (
+                  <div className="alert alert-danger" role="alert" bis_skin_checked="1">
+                    { successMessage }
+                  </div>
+                )} */}
                 {errorMessage && (
                   <div className="alert alert-danger" role="alert" bis_skin_checked="1">
                     {errorMessage}

@@ -6,16 +6,17 @@ function employerRegistrationSchema(req, res, next) {
     email: Joi.string().required(),
     password: Joi.string().required(),
     companyName: Joi.string().required(),
-    foundedDate: Joi.date().required(),
-    licenseNumber: Joi.string(),
-    description: Joi.string(),
+    foundedDate: Joi.date().iso().required(),
+    licenseNumber: Joi.string().required(),
+    description: Joi.string().allow(''),
     address: Joi.string().required(),
-    city: Joi.string(),
-    province: Joi.string(),
-    zipCode: Joi.string(),
+    country: Joi.string().allow(''),
+    city: Joi.string().allow(''),
+    province: Joi.string().allow(''),
+    zipCode: Joi.string().allow(''),
     telephone: Joi.string().required(),
     contactEmail: Joi.string().required(),
-    mobileNumber: Joi.string(),
+    mobileNumber: Joi.string().allow(''),
   }
 
   validateRequest(req, next, Joi.object(schemaRules));
@@ -24,15 +25,16 @@ function employerRegistrationSchema(req, res, next) {
 function employerUpdateSchema(req, res, next) {
   const schemaRules = {
     companyName: Joi.string().required(),
-    foundedDate: Joi.date().required(),
     licenseNumber: Joi.string(),
-    description: Joi.string(),
+    contactEmail: Joi.string().required(),
+    foundedDate: Joi.date().required(),
     address: Joi.string().required(),
+    description: Joi.string(),
+    country: Joi.string(),
     city: Joi.string(),
     province: Joi.string(),
     zipCode: Joi.string(),
     telephone: Joi.string().required(),
-    contactEmail: Joi.string().required(),
     mobileNumber: Joi.string(),
   }
 

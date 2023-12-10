@@ -13,7 +13,7 @@ exports.UserRequestList = async (req, res) => {
 
     const userRequestsData = userRequests.map((request) => ({
       ...request.toObject(),
-      userFullName: request.userId.firstName + " " + request.userId.lastName,
+      userFullName: request.userId ? (request.userId.firstName + " " + request.userId.lastName) : "",
     }));
     responseBuilder(res, null, userRequestsData, "User Requests retrieved successfully", 200);
   } catch (error) {

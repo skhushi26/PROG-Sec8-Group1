@@ -10,7 +10,7 @@ const router = express.Router();
 
 router.get(
   "/",
-  authorize("Employer"),
+  // authorize("Employer"),
   userRequestController.UserRequestList
 );
 

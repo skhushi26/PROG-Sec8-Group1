@@ -230,6 +230,7 @@ button:disabled {
 .section-padding {
   padding-top: 50px;
 }
+
 @keyframes loading {
   0% {
     -webkit-transform: rotate(0deg);

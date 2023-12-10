@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import {
     Link,
     Outlet,
@@ -6,21 +7,28 @@ import {
 
 const Navbar = () => {
     const navigate = useNavigate();
-
+    const [isPaymentDone, setIsPaymentDone] = useState(localStorage.getItem('isPaymentDone'));
     const userId = localStorage.getItem('userId');
     const userRole = localStorage.getItem('userRole');
-    const isSubscribed = localStorage.getItem('isSubscribed');
+
+    useEffect(() => {
+        const storedIsPaymentDone = localStorage.getItem('isPaymentDone');
+        setIsPaymentDone(storedIsPaymentDone);
+    });
 
     const handleLogout = () => {
         // Clear user data from localStorage
         localStorage.removeItem('token');
         localStorage.removeItem('userId');
         localStorage.removeItem('userRole');
-        localStorage.removeItem('isSubscribed');
+        localStorage.removeItem('isPaymentDone');
+        localStorage.removeItem('paymentTrackingId');
 
         // Redirect the user to the login page
-        navigate("/login");
-        // Navigate("/login");
+        setTimeout(() => {
+            // Redirect the user to the dashboard page
+            navigate("/");
+        }, 100);
 
     };
 
@@ -62,7 +70,7 @@ const Navbar = () => {
                                     {userRole === "User" && (
                                         <>
                                             <Link to="/user/profile" className="button button-contactForm boxed-btn btn-login mr-3">User Profile
-                                                {isSubscribed && (
+                                                {isPaymentDone == "true" && (
                                                     <img className="verified-user" src="/images/verified-user-2.png" width="24px"></img>
                                                 )}
                                             </Link>

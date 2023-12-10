@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 
 const UserCertificateRequest = () => {
+    const isPaymentDone = localStorage.getItem('isPaymentDone');
     const [companyName, setcompanyName] = useState("");
     const [startDate, setstartDate] = useState("");
     const [endDate, setendDate] = useState("");
@@ -109,20 +110,6 @@ const UserCertificateRequest = () => {
         }
     };
 
-    const cancelSubscription = async () => {
-        try {
-          const paymentTrackingId = localStorage.getItem('paymentTrackingId') ?? 'pm_1OImEYIlWqny1x6yEYYjfSxF';
-          const response = await axios.post('http://localhost:3333/checkout/cancel-subscription', { paymentTrackingId });
-      
-          // Handle successful subscription cancellation
-          console.log(response.data.message);
-        } catch (error) {
-          // Handle errors
-          console.error('Error canceling subscription:', error);
-        }
-      };
-      
-
     return (
         <div>
             {/* CONTENT */}
@@ -181,12 +168,11 @@ const UserCertificateRequest = () => {
                                     <div className="col-12 form-group mt-5">
                                         <button type="submit" className="button button-contactForm button-submit boxed-btn">Send</button>
                                     </div>
-                                    <div className="col-sm-12">
-                                        <Link className="success medium membership-link" to="/membership">Upgrade to Premium Membership</Link><br />
-                                    </div>
-                                    <div className="col-sm-12">
-                                        <button type="button" onClick={cancelSubscription}>Cancel Subscription</button>
-                                    </div>
+                                    {isPaymentDone == 'false' &&
+                                        <div className="col-sm-12">
+                                            <Link className="success medium membership-link" to="/membership">Upgrade to Premium Membership</Link><br />
+                                        </div>
+                                    }
                                 </div>
                             </div>
                         </div>
