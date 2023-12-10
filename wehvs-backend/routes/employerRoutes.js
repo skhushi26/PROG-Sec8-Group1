@@ -6,13 +6,24 @@ const {
   employerUpdateSchema,
   employerLoginSchema,
 } = require("../payloads/employerValidation");
+
+const fileUploadHandler = require("../utils/fileUploadHandler");
 const router = express.Router();
 
-// router.get("/employer/:id", employerController.getEmployer);
-router.post("/register", employerRegistrationSchema, employerController.registerEmployer);
+const upload = fileUploadHandler("uploads");
+
+router.post(
+  "/register", 
+  upload.single("profilePhoto"),
+  employerRegistrationSchema, 
+  employerController.registerEmployer);
+
 router.get("/getById/:id", employerController.getEmployerById);
-// router.get("/verify/:token", employerController.getVerifiedEmployer);
-router.put("/updateEmployer/:id", employerUpdateSchema, employerController.updateEmployer);
-// router.post("/login", employerLoginSchema, employerController.login);
+
+router.put(
+  "/updateEmployer/:id", 
+  upload.single("profilePhoto"),
+  employerUpdateSchema, 
+  employerController.updateEmployer);
 
 module.exports = router;

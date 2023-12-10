@@ -13,12 +13,12 @@ const Address = require("../models/Address");
 
 exports.addJobPost = async (req, res) => {
   try {
-    const { jobTitle, jobDescription, jobTypeId, address, jobExperienceLevelId } = req.body;
+    const { jobTitle, jobDescription, jobTypeId, address, salary, jobExperienceLevelId } = req.body;
     // const userId = req.user.id;
     // const employer = await Employer.findById({_id: userId});
     const employer = await Employer.findById("6554e5f1881bd81831c78420");
     console.log("employer: ", employer);
-
+    console.log("reqbody:", req.body);
     if (!employer) {
       responseBuilder(res, null, null, "Employer not found", 400);
     } else {
@@ -27,6 +27,7 @@ exports.addJobPost = async (req, res) => {
         jobDescription,
         jobTypeId,
         address,
+        salary,
         jobExperienceLevelId,
         employerId: employer._id,
       });
@@ -74,6 +75,7 @@ exports.findJobById = async (req, res) => {
       jobTitle: jobPost.jobTitle,
       jobDescription: jobPost.jobDescription,
       address: jobPost.address,
+      salary: jobPost.salary,
       isActive: jobPost.isActive,
       createdAt: jobPost.createdAt,
       updatedAt: jobPost.updatedAt,
@@ -98,7 +100,7 @@ exports.findJobById = async (req, res) => {
 exports.updateJobPost = async (req, res) => {
   try {
     const id = req.params.id;
-    const { jobTitle, jobDescription, jobTypeId, address, jobExperienceLevelId } = req.body;
+    const { jobTitle, jobDescription, jobTypeId, address, salary, jobExperienceLevelId } = req.body;
     if (!id) {
       responseBuilder(res, null, null, "Job posting not found!", 400);
     } else {
@@ -110,6 +112,7 @@ exports.updateJobPost = async (req, res) => {
             jobDescription,
             jobTypeId,
             address,
+            salary,
             jobExperienceLevelId,
           },
         }
@@ -165,15 +168,67 @@ exports.getAllJobTypes = async (req, res) => {
   }
 };
 
+// exports.getAllJobListUser = async (req, res) => {
+//   try {
+//     const getAllJobList = await JobPost.find({ isActive: true });
+//     responseBuilder(res, null, getAllJobList, "Job Lists found successfully", 200);
+//   } catch (error) {
+//     responseBuilder(res, error, null, "Something went wrong in finding job lists", 500);
+//   }
+// };
+// exports.getAllJobListUser = async (req, res) => {
+//   try {
+//     const getAllJobList = await JobPost.find({ isActive: true })
+//       .populate('jobTypeId', 'jobType') // Replace 'name' with the field you want to populate from JobType
+//       .populate('jobExperienceLevelId', 'jobExperienceLevel'); // Replace 'name' with the field you want to populate from JobExperienceLevel
+
+//     responseBuilder(res, null, getAllJobList, "Job Lists found successfully", 200);
+//   } catch (error) {
+//     responseBuilder(res, error, null, "Something went wrong in finding job lists", 500);
+//   }
+// };
 exports.getAllJobListUser = async (req, res) => {
   try {
-    const getAllJobList = await JobPost.find({ isActive: true });
+    const getAllJobList = await JobPost.aggregate([
+      {
+        $match: { isActive: true }
+      },
+      {
+        $lookup: {
+          from: 'jobtypes', // Replace 'jobtypes' with the name of your JobType collection
+          localField: 'jobTypeId',
+          foreignField: '_id',
+          as: 'jobType'
+        }
+      },
+      {
+        $lookup: {
+          from: 'jobexperiencelevels', // Replace 'jobexperiencelevels' with the name of your JobExperienceLevel collection
+          localField: 'jobExperienceLevelId',
+          foreignField: '_id',
+          as: 'jobExperienceLevel'
+        }
+      },
+      {
+        $project: {
+          jobTitle: 1,
+          jobDescription: 1,
+          isActive: 1,
+          createdAt: 1,
+          updatedAt: 1,
+          salary: 1,
+          address: 1,
+          jobType: { $arrayElemAt: ['$jobType', 0] }, // Get the first element of the array
+          jobExperienceLevel: { $arrayElemAt: ['$jobExperienceLevel', 0] } // Get the first element of the array
+        }
+      }
+    ]);
+
     responseBuilder(res, null, getAllJobList, "Job Lists found successfully", 200);
   } catch (error) {
     responseBuilder(res, error, null, "Something went wrong in finding job lists", 500);
   }
 };
-
 exports.getAllJobListEmployer = async (req, res) => {
   try {
     // const userId = req.user.id;

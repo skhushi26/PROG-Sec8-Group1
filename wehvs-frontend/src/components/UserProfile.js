@@ -8,6 +8,7 @@ class UserProfile extends Component {
     super();
     this.state = {
       userId: null,
+      isCancelSubscriptionModalOpen: false,
       selectedCountry: null,
       selectedCity: null,
       countries: [
@@ -48,9 +49,11 @@ class UserProfile extends Component {
   componentDidMount() {
     // Retrieve user ID and role from localStorage
     const userId = localStorage.getItem("userId");
+    const isPaymentDone = localStorage.getItem("isPaymentDone");
 
     // Set the userId in the component's state
     this.setState({ userId });
+    this.setState({ isPaymentDone });
 
     // Make an API request to get the user data
     axios
@@ -161,7 +164,7 @@ class UserProfile extends Component {
       telephone,
       mobileNumber,
       contactEmail,
-      profilePhoto, // Include profilePhoto in the user state
+      profilePhoto,
     } = this.state.user;
 
     // Retrieve userId from the component's state
@@ -233,8 +236,42 @@ class UserProfile extends Component {
     }));
   };
 
+
+
+  toggleCancelSubscriptionModal = (e) => {
+    e.preventDefault();
+    this.setState((prevState) => ({
+      isCancelSubscriptionModalOpen: !prevState.isCancelSubscriptionModalOpen,
+    }));
+  };
+
+  handleCancelSubscriptionConfirm = (e) => {
+    // User confirmed cancellation, proceed with cancelSubscription
+    e.preventDefault();
+    this.cancelSubscription();
+  };
+
+  cancelSubscription = async () => {
+    try {
+      const userId = localStorage.getItem('userId');
+      const paymentTrackingId = localStorage.getItem('paymentTrackingId');
+      const response = await axios.post('http://localhost:3333/checkout/cancel-subscription', { paymentTrackingId, userId });
+      // Handle successful subscription cancellation
+      if (response.status == 200){
+      console.log(response.data.message);
+      localStorage.setItem('isPaymentDone', false);
+      localStorage.setItem('paymentTrackingId', paymentTrackingId);
+      this.setState({ successMessage: response.data.message, isPaymentDone: false, errorMessage: null, isCancelSubscriptionModalOpen: false });
+    }
+    } catch (error) {
+      // Handle errors for canceling subscription
+      console.error('Error canceling subscription:', error);
+      this.setState({ errorMessage: 'Unable to cancel subscription', successMessage: null, isCancelSubscriptionModalOpen: false });
+    }
+  };
+
   render() {
-    const { user, loading } = this.state;
+    const { user, loading, isPaymentDone, isCancelSubscriptionModalOpen } = this.state;
     const {
       errorMessage,
       successMessage,
@@ -257,10 +294,60 @@ class UserProfile extends Component {
         ? `http://localhost:3333/${user.profilePhoto}`
         : "images/default-profile.png";
     }
-    console.log("profilePhotoUrl: ", profilePhotoUrl);
 
     return (
       <div>
+
+        {/* Confirm Cancel Subscription Modal */}
+        <div
+          className={`modal fade ${isCancelSubscriptionModalOpen ? "show fade-in" : ""
+            }`}
+          style={{
+            display: isCancelSubscriptionModalOpen ? "block" : "none",
+          }}
+          id="cancelSubscriptionModal"
+          tabIndex="-1"
+          aria-labelledby="cancelSubscriptionModalLabel"
+          aria-hidden={!isCancelSubscriptionModalOpen}
+        >
+          <div className="modal-dialog modal-dialog-subs">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title" id="cancelSubscriptionModalLabel">
+                  Cancel Subscription
+                </h5>
+                <button
+                  type="button"
+                  className="btn-popup bg-light"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                  onClick={(e) => this.toggleCancelSubscriptionModal(e)}
+                >X</button>
+              </div>
+              <div className="modal-body py-4">
+                Do you want to cancel the subscription?
+              </div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn-popup btn-danger"
+                  data-bs-dismiss="modal"
+                  onClick={(e) => this.toggleCancelSubscriptionModal(e)}
+                >
+                  Close
+                </button>
+                <button
+                  type="button"
+                  className="btn-popup btn-success"
+                  onClick={(e) => this.handleCancelSubscriptionConfirm(e)}
+                >
+                  Confirm
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* CONTENT */}
         <div className="row container">
           <div className="col-lg-12">
@@ -292,26 +379,20 @@ class UserProfile extends Component {
                 <div className="row">
                   <div className="col-md-3 border-right">
                     <div className="d-flex flex-column align-items-center text-center p-3 py-5">
-                      <img
-                        className="rounded-circle"
-                        width="150px"
-                        src={profilePhotoUrl}
-                        alt="Profile"
-                      ></img>
-                      <label
-                        htmlFor="fileInput"
-                        className="button button-contactForm btn-change-picture boxed-btn mt-4"
-                      >
+                      <img className="rounded-circle" width="150px" height="150px" src={profilePhotoUrl} alt="Profile"></img>
+                      <label htmlFor="fileInput" className="button button-contactForm btn-change-picture boxed-btn mt-4" >
                         Change Profile Photo
-                        <input
-                          type="file"
-                          id="fileInput"
-                          name="profilePhoto"
-                          accept=".jpg, .jpeg, .png"
-                          onChange={this.handleFileChange}
-                          style={{ display: "none" }}
-                        />
+                        <input type="file" id="fileInput" name="profilePhoto" accept=".jpg, .jpeg, .png" onChange={this.handleFileChange} style={{ display: "none" }} />
                       </label>
+
+                      <br></br>
+                      <div className="col-md-12 border-bottom mt-4 mb-2"></div>
+
+                      {isPaymentDone == "true" ?
+                        <button className="button button-contactForm btn-change-picture boxed-btn mt-4" onClick={(e) => this.toggleCancelSubscriptionModal(e)}>Cancel Subscription</button> : null
+                      }
+
+                      {/* <button className="button button-contactForm btn-change-picture boxed-btn mt-4" onClick={this.cancelSubscription}>Cancel Subscription</button> */}
                     </div>
                   </div>
                   <div className="col-md-8">
@@ -481,9 +562,10 @@ class UserProfile extends Component {
             )}
           </div>
         </div>
+
         {/* FOOTER */}
         <FooterMenu />
-      </div>
+      </div >
     );
   }
 }

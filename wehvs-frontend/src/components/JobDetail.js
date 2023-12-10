@@ -41,7 +41,7 @@ const JobDetails = () => {
     };
 
     return (
-      <div className="job-post-company pt-120 pb-120">
+      <div className="job-post-company pt-120">
         <div className="container">
           {/* Show success message if the application is successful */}
           {showSuccessMessage && (
@@ -83,7 +83,7 @@ const JobDetails = () => {
                   <li>Posted date: <span>12 Aug 2019</span></li>
                   <li>Location: <span>{jobDetail.address}</span></li>
                   <li>Job nature: <span>Full time</span></li>
-                  <li>Salary: <span>$7,8000 yearly</span></li>
+                  <li>Salary: <span>{jobDetail.salary} yearly</span></li>
                 </ul>
                 <div className="apply-btn2">
                   <button className="btnapply" onClick={handleApplyNow}>Apply Now</button>

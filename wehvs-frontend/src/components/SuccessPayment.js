@@ -15,7 +15,7 @@ const SuccessPayment = () => {
     const urlParams = new URLSearchParams(queryString);
     const sessionId = urlParams.get('session_id');
 
-    const stripe = loadStripe("pk_test_51OCrEYIlWqny1x6ygARX3qSIhgszDPo1Ay7SQ9B3eIg4WfONaGM5pz59RQ6Et2DFctHQ9OYTb2orevc8hU5Qnlmw000ZltpXqk");
+    const stripePromise = loadStripe("pk_test_51OCrEYIlWqny1x6ygARX3qSIhgszDPo1Ay7SQ9B3eIg4WfONaGM5pz59RQ6Et2DFctHQ9OYTb2orevc8hU5Qnlmw000ZltpXqk");
     
     fetch(`http://localhost:3333/checkout/session-status?session_id=${sessionId}`)
       .then((res) => res.json())
@@ -28,15 +28,23 @@ const SuccessPayment = () => {
           // Make a request to update IsPaymentDone in your backend
           const userId = data.userId;
           const paymentTrackingId = data.paymentTrackingId;
+          
+          localStorage.setItem("isPaymentDone", true);
+          localStorage.setItem("paymentTrackingId", paymentTrackingId);
 
           axios.post('http://localhost:3333/shared/update-payment-status', { userId, paymentTrackingId })
             .then(() => {
               setCustomSuccessMessage('Payment successfully completed!');
+              const stripe =  stripePromise;
 
               const { error } = stripe.redirectToCheckout({
                 sessionId: data.sessionId,
               });
 
+              if (error) {
+                console.error(error);
+              }
+              
               Navigate("/success-payment");
             })
             .catch((error) => {

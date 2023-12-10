@@ -256,7 +256,7 @@ exports.forgotPassword = async (req, res) => {
   const rand = uuidv4();
   const isExists = await Credentials.findOne({ email });
   // creates link to reset password
-  const link = `http://${req.get("host")}/password/reset/${rand}`;
+  const link = `http://${req.get("host")}/reset-password/${rand}`;
   let name = "";
   if (isExists.role == "User") {
     // finds user by email ID
@@ -316,14 +316,14 @@ exports.forgotPassword = async (req, res) => {
     if (err) {
       console.log("Error in sending mail", err);
     } else {
-      newHtml = html.replace("{{{resetlink}}}", `http://${req.get("host")}/password/reset/${rand}`);
+      newHtml = html.replace("{{{resetlink}}}", `http://${req.get("host")}/reset-password/${rand}`);
       newHtml = newHtml.replace("{{{name}}}", name);
       sendMailHandler("wehvs2023@gmail.com", email, "Reset Password", newHtml);
     }
   });
 };
 
-exports.ResetPassword = async (req, res) => {
+exports.resetPassword = async (req, res) => {
   try {
     const { newPassword, confirmPassword, sentToken } = req.body;
     // finds user by resetToken and expiryToken greater than current date

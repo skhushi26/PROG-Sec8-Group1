@@ -99,7 +99,11 @@ const Return = () => {
             // Make a request to update IsPaymentDone in your backend
             const userId = data.client_reference_id;
             const paymentTrackingId = data.paymentTrackingId; 
+            const isPaymentDone = true; 
 
+            localStorage.setItem("isPaymentDone", isPaymentDone);
+            localStorage.setItem("paymentTrackingId", data.paymentTrackingId);
+          
             axios.post('http://localhost:3333/shared/update-payment-status', { userId, paymentTrackingId })
               .then(() => {
                 setCustomSuccessMessage('Payment successfully completed!');
