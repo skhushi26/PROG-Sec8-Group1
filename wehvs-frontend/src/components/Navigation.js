@@ -52,14 +52,16 @@ const Navbar = () => {
                                             {userRole === "User" && (
                                                 <>
                                                     <li><Link to="/user/apply-certificate">User Request</Link></li>
+                                                    <li><Link to="/user/jobs">Job Openings</Link></li>
                                                 </>
                                             )}
                                             {userRole === "Employer" && (
                                                 <>
                                                     <li><Link to="/user-request">User Request List</Link></li>
+                                                    <li><Link to="/job-list">Job Dashboard</Link></li>
                                                 </>
                                             )}
-                                            <li><a href="/job-list">Job Dashboard</a></li>
+
                                         </ul>
                                     </nav>
                                 </div>
