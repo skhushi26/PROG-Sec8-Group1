@@ -241,7 +241,7 @@ class EmployerProfile extends Component {
       telephoneError
     } = this.state;
 
-    let profilePhotoUrl = "";
+    let profilePhotoUrl = "images/default-profile.png";
 
     if (this.state.uploadedPhoto) {
       console.log("this.state.employer", this.state.employer);
@@ -288,7 +288,7 @@ class EmployerProfile extends Component {
                 <div className="row">
                   <div className="col-md-3 border-right">
                     <div className="d-flex flex-column align-items-center text-center p-3 py-5">
-                      <img className="rounded-circle" width="150px" height="150px" src={profilePhotoUrl} alt="Profile"></img>
+                      <img className="rounded-circle" width="150px" height="150px" src={profilePhotoUrl} alt="Profile Photo"></img>
                       <label htmlFor="fileInput" className="button button-contactForm btn-change-picture boxed-btn mt-4" >
                         Change Profile Photo
                         <input type="file" id="fileInput" name="profilePhoto" accept=".jpg, .jpeg, .png" onChange={this.handleFileChange} style={{ display: "none" }} />
