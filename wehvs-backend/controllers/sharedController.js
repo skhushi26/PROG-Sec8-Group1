@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const responseBuilder = require("../utils/response");
 const bcrypt = require("bcrypt");
 const Credentials = require("../models/Credentials");
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 exports.login = async (req, res) => {
   const { email, password } = req.body;
@@ -98,7 +98,6 @@ exports.getVerified = async (req, res) => {
   }
 };
 
-
 exports.updatePaymentStatus = async (req, res) => {
   const { userId, paymentTrackingId } = req.body;
 
@@ -121,7 +120,7 @@ exports.updatePaymentStatus = async (req, res) => {
       res.status(404).send("User not found");
     }
   } catch (error) {
-    console.error('Error updating user:', error);
+    console.error("Error updating user:", error);
     res.status(500).end();
   }
 };

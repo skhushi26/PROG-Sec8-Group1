@@ -7,13 +7,14 @@ const Credentials = require("../models/Credentials");
 const responseBuilder = require("../utils/response");
 const sendMailHandler = require("../utils/sendMailHandler");
 const PDFDocument = require("pdfkit");
+const moment = require("moment");
 
 exports.UserRequestList = async (req, res) => {
   try {
     const userRequests = await UserRequest.find().populate("userId", "firstName lastName");
     const userRequestsData = userRequests.map((request) => ({
       ...request.toObject(),
-      userFullName: request.userId ? (request.userId.firstName + " " + request.userId.lastName) : "",
+      userFullName: request.userId ? request.userId.firstName + " " + request.userId.lastName : "",
     }));
     responseBuilder(res, null, userRequestsData, "User Requests retrieved successfully", 200);
   } catch (error) {
@@ -206,17 +207,19 @@ exports.DenyRequest = async (req, res) => {
   }
 };
 
-function generateCertificate(userData) {
+function generateCertificate(userData, employerData, userRequestDetails) {
   return new Promise((resolve, reject) => {
     try {
       const doc = new PDFDocument({ size: "A4", margin: 50 });
 
-      // Register custom fonts if needed
-      // For example, loading fonts from file
-      // doc.font('path/to/your/font.ttf');
+      // Load your logo - Replace 'path/to/your/logo.png' with the actual path to your logo file
+      const logo = fs.readFileSync("./images/wehvs-logo-1.jpeg"); // Replace this line
+
+      // Logo on the top left corner
+      doc.image(logo, 50, 50, { width: 100 });
 
       // Set font size, color, and text for the certificate
-      doc.fontSize(32).fillColor("#5469d4").text("CERTIFICATE", { align: "center" });
+      doc.fontSize(32).fillColor("black").text("CERTIFICATE", { align: "center" });
       doc.moveDown().fontSize(24).text("WORLD EMPLOYMENT VERIFICATION", { align: "center" });
 
       doc.moveDown(2).fontSize(18).text("This Certificate is Presented To:", { align: "center" });
@@ -230,14 +233,21 @@ function generateCertificate(userData) {
         .moveDown(2)
         .fontSize(18)
         .text(
-          `This is to certify that her employment at XYZ, Turkey, during her tenure from 2012 to 2016 is valid.`,
+          `This is to certify that his/her employment at ${
+            employerData.companyName
+          }, during his/her tenure from ${moment(userRequestDetails.startDate).format(
+            "L"
+          )} to ${moment(userRequestDetails.endDate).format("L")} is valid.`,
           { align: "center" }
         );
 
-      doc.moveDown(2).fontSize(18).fillColor("#fb246a").text("MATT ZHANG", { align: "center" });
-      doc.moveDown().fontSize(18).fillColor("#5469d4").text("TITLE", { align: "center" });
-      doc.moveDown().fontSize(18).fillColor("#fb246a").text("NEIL TRAN", { align: "center" });
-      doc.moveDown().fontSize(18).fillColor("#5469d4").text("TITLE", { align: "center" });
+      // Endorsement signatures
+
+      doc.moveDown(2).text("Wehvs Team", {
+        align: "left",
+      });
+
+      doc.moveDown(0.3).lineWidth(1).moveTo(50, doc.y).lineTo(150, doc.y).stroke();
 
       const buffers = [];
       doc.on("data", buffers.push.bind(buffers));
@@ -253,17 +263,19 @@ function generateCertificate(userData) {
     }
   });
 }
-
 // Assuming '/generateCertificate' is your endpoint to trigger certificate generation
 exports.generateCertificate = async (req, res) => {
   try {
     // const userId = req.user.id;
     const userId = "657281ee453b6086a02bf072";
 
+    const userRequestDetails = await UserRequest.findOne({ userId });
+
+    const employerData = await Employer.findById({ _id: userRequestDetails.employerId });
+
     // Fetch user data based on the userId
     const userData = await User.findById(userId);
-
-    const pdfData = await generateCertificate(userData);
+    const pdfData = await generateCertificate(userData, employerData, userRequestDetails);
 
     // Set the response content type to application/pdf
     res.contentType("application/pdf");
