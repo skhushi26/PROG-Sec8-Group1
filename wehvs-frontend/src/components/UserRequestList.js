@@ -248,9 +248,23 @@ const UserRequestList = () => {
 
       {/* Modal for Approval */}
       <Modal show={showApproveModal} onHide={handleCloseApproveModal}>
-        <Modal.Header closeButton>
+        {/* <Modal.Header for="Button" closeButton className="bg-light">
           <Modal.Title>Add Comment</Modal.Title>
-        </Modal.Header>
+        </Modal.Header> */}
+        <div className="modal-header">
+          <h5 className="modal-title" id="addCommentModalLabel">
+            Add Comment
+          </h5>
+          <button
+            type="button"
+            className="btn-popup bg-light"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+            onClick={handleCloseApproveModal}
+          >
+            X
+          </button>
+        </div>
         <Modal.Body>
           <Form.Group controlId="comment">
             <Form.Label>Comment:</Form.Label>
@@ -274,9 +288,23 @@ const UserRequestList = () => {
 
       {/* Modal for Approval */}
       <Modal show={showDenyModal} onHide={handleCloseDenyModal}>
-        <Modal.Header closeButton>
+        {/* <Modal.Header closeButton>
           <Modal.Title>Add Comment</Modal.Title>
-        </Modal.Header>
+        </Modal.Header> */}
+        <div className="modal-header">
+          <h5 className="modal-title" id="addCommentModalLabel">
+            Add Comment
+          </h5>
+          <button
+            type="button"
+            className="btn-popup bg-light"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+            onClick={handleCloseDenyModal}
+          >
+            X
+          </button>
+        </div>
         <Modal.Body>
           <Form.Group controlId="comment">
             <Form.Label>Comment:</Form.Label>

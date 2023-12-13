@@ -89,7 +89,10 @@ exports.registerUser = async (req, res) => {
             expiresIn: 600,
           });
           // newHtml = html.replace("{{{link}}}}", `http://${req.get("host")}/shared/verify/${token}`);
-          newHtml = html.replace("{{{link}}}}", `https://wehvs-frontend.onrender.com/verify/${token}`);
+          newHtml = html.replace(
+            "{{{link}}}}",
+            `https://wehvs-frontend.onrender.com/verify/${token}`
+          );
           sendMailHandler(
             "wehvs2023@gmail.com",
             credentialsData.email,
@@ -268,7 +271,7 @@ exports.forgotPassword = async (req, res) => {
       // sends response if user doesn't exists
       res.send(responseBuilder(null, null, "User doesn't exists", 400));
     } else {
-      const existUser = await User.findById(isExists.userId)
+      const existUser = await User.findById(isExists.userId);
       name = existUser.firstName + " " + existUser.lastName;
       // sets the user's resetToken and expiryToken
       isExists.resetToken = rand;
@@ -296,7 +299,7 @@ exports.forgotPassword = async (req, res) => {
       // sends response if employer doesn't exists
       res.send(responseBuilder(null, null, "Employer doesn't exists", 400));
     } else {
-      const existEmployer = await User.findById(isExists.userId)
+      const existEmployer = await Employer.findById(isExists.userId);
       name = existEmployer.companyName;
       // sets the user's resetToken and expiryToken
       isExists.resetToken = rand;
@@ -319,7 +322,10 @@ exports.forgotPassword = async (req, res) => {
     if (err) {
       console.log("Error in sending mail", err);
     } else {
-      newHtml = html.replace("{{{resetlink}}}", `http://localhost:3000/reset-password/${rand}`);
+      newHtml = html.replace(
+        "{{{resetlink}}}",
+        `https://wehvs-frontend.onrender.com/reset-password/${rand}`
+      );
       newHtml = newHtml.replace("{{{name}}}", name);
       sendMailHandler("wehvs2023@gmail.com", email, "Reset Password", newHtml);
     }

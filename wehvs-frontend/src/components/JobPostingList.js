@@ -262,9 +262,23 @@ const JobPostingList = () => {
       </div>
       <Button onClick={handleAddJobClick}>Add Job</Button>
       <Modal show={showModal} onHide={handleCloseModal}>
-        <Modal.Header closeButton>
+        {/* <Modal.Header closeButton>
           <Modal.Title>{editMode ? "Update Job" : "Add Job"}</Modal.Title>
-        </Modal.Header>
+        </Modal.Header> */}
+        <div className="modal-header">
+          <h5 className="modal-title" id="addCommentModalLabel">
+            {editMode ? "Update Job" : "Add Job"}
+          </h5>
+          <button
+            type="button"
+            className="btn-popup bg-light"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+            onClick={handleCloseModal}
+          >
+            X
+          </button>
+        </div>
         <Modal.Body>
           <Form>
             <Form.Group controlId="jobTitle">
