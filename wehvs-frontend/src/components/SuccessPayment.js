@@ -112,7 +112,7 @@ const SuccessPayment = () => {
                   <h4>Contact Info</h4>
                   <ul>
                     <li>
-                      <p>60 Frederick St Kitchener, ON.</p>
+                      <p>Waterloo, ON.</p>
                     </li>
                     <li>
                       <a href="#">Phone : +8880 44338899</a>
