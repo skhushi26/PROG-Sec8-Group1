@@ -13,10 +13,10 @@ const Address = require("../models/Address");
 
 exports.addJobPost = async (req, res) => {
   try {
-    const { jobTitle, jobDescription, jobTypeId, address, salary, jobExperienceLevelId } = req.body;
+    const { employerId, jobTitle, jobDescription, jobTypeId, address, salary, jobExperienceLevelId } = req.body;
     // const userId = req.user.id;
     // const employer = await Employer.findById({_id: userId});
-    const employer = await Employer.findById("6554e5f1881bd81831c78420");
+    const employer = await Employer.findById(employerId);
     console.log("employer: ", employer);
     console.log("reqbody:", req.body);
     if (!employer) {
@@ -231,9 +231,8 @@ exports.getAllJobListUser = async (req, res) => {
 };
 exports.getAllJobListEmployer = async (req, res) => {
   try {
-    // const userId = req.user.id;
-    // const employer = await Employer.findById({ _id: userId });
-    const employer = await Employer.findById("6554e5f1881bd81831c78420");
+    const userId = req.params.id;
+    const employer = await Employer.findById(userId);
     const getAllJobListDetails = await JobPost.find({ employerId: employer._id });
     responseBuilder(res, null, getAllJobListDetails, "Job Lists found successfully", 200);
   } catch (error) {

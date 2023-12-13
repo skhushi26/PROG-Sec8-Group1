@@ -245,6 +245,34 @@ button:disabled {
   padding-top: 50px;
 }
 
+/* .tabs {
+  display: flex;
+  margin-bottom: 20px;
+} */
+
+.tab {
+  padding: 10px 20px;
+  cursor: pointer;
+  border: 1px solid #ccc;
+  border-radius: 5px 5px 0 0;
+  background-color: #f2f2f2;
+  width:33%
+}
+
+.tabs {
+  display: flex;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #cccccc;
+  justify-content: center;
+  margin-top: 41px;
+}
+
+
+.active-tab {
+  background-color: #fff;
+  border-bottom: 1px solid #fff;
+}
+
 @keyframes loading {
   0% {
     -webkit-transform: rotate(0deg);

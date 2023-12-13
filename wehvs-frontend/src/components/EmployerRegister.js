@@ -221,6 +221,7 @@ const EmployerRegister = () => {
                     <img
                       className="rounded-circle"
                       width="150px"
+                      height="150px"
                       src={URL.createObjectURL(selectedFile)}
                       alt="Profile Photo"
                     />

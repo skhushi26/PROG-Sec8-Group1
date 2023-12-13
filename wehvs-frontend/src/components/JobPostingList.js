@@ -27,7 +27,8 @@ const JobPostingList = () => {
 
   
   useEffect(() => {
-    fetch("http://localhost:3333/job-post/get-all-for-employer")
+    const id = localStorage.getItem("userId");
+    fetch(`http://localhost:3333/job-post/get-all-for-employer/${id}`)
       .then((response) => response.json())
       .then((data) => {
         // console.log("data.data", data.data);
@@ -163,7 +164,9 @@ const JobPostingList = () => {
         ? `http://localhost:3333/job-post/update/${editId}`
         : "http://localhost:3333/job-post/add";
 
+    const employerId = localStorage.getItem("userId");
       const requestBody = {
+        employerId,
         jobTitle,
         salary,
         jobDescription,

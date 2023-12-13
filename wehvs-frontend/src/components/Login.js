@@ -72,7 +72,7 @@ const Login = () => {
       }
     } catch (error) {
       console.log(error);
-      setState({ ...state, errorMessage: "Something went wrong, please try again!" });
+      setState({ ...state, errorMessage: "User not exist, please sign up first!" });
     }
   };
 

@@ -14,6 +14,6 @@ router.get("/experience-level", jobPostController.getAllExperienceLevels);
 router.get("/job-types", jobPostController.getAllJobTypes);
 // router.get("/job-type/find/:id", jobPostController.getAllJobTypes);
 router.get("/get-all-for-user", jobPostController.getAllJobListUser);
-router.get("/get-all-for-employer", jobPostController.getAllJobListEmployer);
+router.get("/get-all-for-employer/:id", jobPostController.getAllJobListEmployer);
 
 module.exports = router;

@@ -31,6 +31,6 @@ router.put(
   userRequestController.DenyRequest
 );
 
-router.get("/generate-certificate", userRequestController.generateCertificate);
+router.get("/generate-certificate/:id", userRequestController.generateCertificate);
 
 module.exports = router;
