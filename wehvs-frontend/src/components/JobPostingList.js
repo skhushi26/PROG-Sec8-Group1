@@ -25,7 +25,6 @@ const JobPostingList = () => {
   const [editId, setEditId] = useState(null);
   const [requests, setJoblist] = useState([]);
 
-  
   useEffect(() => {
     const id = localStorage.getItem("userId");
     fetch(`http://localhost:3333/job-post/get-all-for-employer/${id}`)
@@ -164,7 +163,7 @@ const JobPostingList = () => {
         ? `http://localhost:3333/job-post/update/${editId}`
         : "http://localhost:3333/job-post/add";
 
-    const employerId = localStorage.getItem("userId");
+      const employerId = localStorage.getItem("userId");
       const requestBody = {
         employerId,
         jobTitle,
@@ -235,32 +234,32 @@ const JobPostingList = () => {
     <div>
       {/* <div className="jobportal"><h2><strong>Welcome to Job Portal Database</strong></h2></div> */}
       <div className="containertable">
-      <Table striped bordered hover>
-        <thead>
-          <tr>
-            <th>Job Title</th>
-            <th>Job Description</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {requests &&
-          requests.map((job) => (
-            <tr key={job._id}>
-              <td>{job.jobTitle}</td>
-              <td>{job.jobDescription}</td>
-              <td>
-                <Button onClick={() => handleEdit(job._id)}>Edit</Button>
-                <Button variant="danger" onClick={() => handleDelete(job._id)}>Delete</Button>
-              </td>
+        <Table striped bordered hover>
+          <thead>
+            <tr>
+              <th>Job Title</th>
+              <th>Job Description</th>
+              <th>Action</th>
             </tr>
-          ))}
-        </tbody>
-      </Table>
+          </thead>
+          <tbody>
+            {requests &&
+              requests.map((job) => (
+                <tr key={job._id}>
+                  <td>{job.jobTitle}</td>
+                  <td>{job.jobDescription}</td>
+                  <td>
+                    <Button onClick={() => handleEdit(job._id)}>Edit</Button>
+                    <Button variant="danger" onClick={() => handleDelete(job._id)}>
+                      Delete
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+          </tbody>
+        </Table>
       </div>
-      <Button onClick={handleAddJobClick}>
-        Add Job
-      </Button>
+      <Button onClick={handleAddJobClick}>Add Job</Button>
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
           <Modal.Title>{editMode ? "Update Job" : "Add Job"}</Modal.Title>
@@ -367,13 +366,11 @@ const JobPostingList = () => {
           <Button variant="secondary" onClick={handleCloseModal}>
             Close
           </Button>
-          <Button onClick={handleAddJob}>
-            {editMode ? "Update Job" : "Add Job"}
-          </Button>
+          <Button onClick={handleAddJob}>{editMode ? "Update Job" : "Add Job"}</Button>
         </Modal.Footer>
       </Modal>
       {/* FOOTER */}
-     <FooterMenu />
+      <FooterMenu />
     </div>
   );
 };
