@@ -30,7 +30,7 @@ const EmailApproval = () => {
   return (
     <>
       <div className="container mt-5 mb-5">
-        <div className="col-sm-10 m-auto">
+        <div className="col-sm-10 m-auto mt-5">
           {success !== null &&
             (success ? (
               <div className="alert alert-success" role="alert" bis_skin_checked="1">
@@ -42,7 +42,7 @@ const EmailApproval = () => {
               </div>
             ))}
         </div>
-        <Link to="/login" className="boxed-btn">
+        <Link to="/login" className="button button-contactForm boxed-btn btn-login mr-3 mt-4">
           Go to Login Page
         </Link>
       </div>

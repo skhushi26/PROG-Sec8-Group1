@@ -32,6 +32,7 @@ const AllJobList = () => {
 
   useEffect(() => {
     // Fetch job list based on selected job types and job experience levels
+    const id = localStorage.getItem("userId");
     fetch("http://localhost:3333/job-post/get-all-for-user")
       .then((response) => response.json())
       .then((data) => {

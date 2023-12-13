@@ -3,6 +3,8 @@ import Table from "react-bootstrap/Table";
 import moment from "moment";
 import { Button, Modal, Form } from "react-bootstrap";
 import { toast } from "react-toastify";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 const UserRequestList = () => {
   const [requests, setRequests] = useState([]);
@@ -10,6 +12,8 @@ const UserRequestList = () => {
   const [showDenyModal, setShowDenyModal] = useState(false);
   const [comment, setComment] = useState("");
   const [selectedRequestId, setSelectedRequestId] = useState(null);
+
+  const [activeTab, setActiveTab] = useState("pending"); // "pending" or "approved"
 
   useEffect(() => {
     fetch("http://localhost:3333/user-request")
@@ -49,8 +53,10 @@ const UserRequestList = () => {
       return;
     }
 
+    const employerId = localStorage.getItem("userId");
     const requestBody = {
       comment: comment || "",
+      employerId: employerId
     };
 
     console.log("requestBody", requestBody);
@@ -148,8 +154,36 @@ const UserRequestList = () => {
     }
   };
 
+  const filteredRequests = activeTab === "approved"
+    ? requests.filter(request => request.requestStatus === "Approved")
+    : activeTab === "denied"
+      ? requests.filter(request => request.requestStatus === "Denied")
+      : requests.filter(request => request.requestStatus === "Pending");
+
   return (
-    <div className="container mt-4">
+    <div className="container mt-4 col-md-10">
+
+      <div className="tabs">
+        <div
+          className={`tab ${activeTab === "pending" ? "active-tab" : ""}`}
+          onClick={() => setActiveTab("pending")}
+        >
+          Pending Requests
+        </div>
+        <div
+          className={`tab ${activeTab === "approved" ? "active-tab" : ""}`}
+          onClick={() => setActiveTab("approved")}
+        >
+          Approved Requests
+        </div>
+        <div
+          className={`tab ${activeTab === "denied" ? "active-tab" : ""}`}
+          onClick={() => setActiveTab("denied")}
+        >
+          Denied Requests
+        </div>
+      </div>
+
       <Table striped bordered hover>
         <thead>
           <tr>
@@ -158,34 +192,60 @@ const UserRequestList = () => {
             <th>Start Date</th>
             <th>End Date</th>
             <th>Request date</th>
-            <th>Status</th>
+            {/* <th>Status</th> */}
             <th>Comment</th>
-            <th>Actions</th>
+            {activeTab === "pending" && (
+              <th>Approve/Deny</th>
+            )}
           </tr>
         </thead>
         <tbody>
-          {requests &&
-            requests.map((request, index) => (
+          {filteredRequests &&
+            filteredRequests.map((request, index) => (
               <tr key={index}>
                 <td>{request.userFullName}</td>
                 <td>{request.jobTitle}</td>
                 <td>{moment(request.startDate).format("LL")}</td>
                 <td>{moment(request.endDate).format("LL")}</td>
                 <td>{moment(request.requestDate).format("LL")}</td>
-                <td>{request.requestStatus}</td>
+                {/* <td>{request.requestStatus}</td> */}
                 <td>{request.comment}</td>
-                <td>
-                  <Button variant="success" onClick={() => openApproveModal(request._id)}>
-                    Approve
+                {activeTab === "pending" && (
+                  <td className="d-flex justify-content-center">
+                    <div className="row">
+                      <Button
+                        variant="success"
+                        onClick={() => openApproveModal(request._id)}
+                        className="btn-popup mt-1 mx-1"
+                      >
+                        <FontAwesomeIcon icon={faCheck} />
+                      </Button>
+                      <Button
+                        variant="danger"
+                        onClick={() => openDenyModal(request._id)}
+                        className="btn-popup mt-1 mx-1"
+                      >
+                        <FontAwesomeIcon icon={faTimes} />
+                      </Button>
+                    </div>
+                  </td>
+                )}
+                {/* <td>
+                  <div className="row">
+                  <Button variant="success" onClick={() => openApproveModal(request._id)}
+                  className="mt-1">
+                  <FontAwesomeIcon icon={faCheck} className="mr-1" />
                   </Button>
                   <Button
                     variant="danger"
                     onClick={() => openDenyModal(request._id)}
-                    className="mt-2"
+                    className="mt-1"
                   >
-                    Deny
+                    <FontAwesomeIcon icon={faTimes} className="mr-1" />
                   </Button>
-                </td>
+                  </div>
+                </td> */}
+
               </tr>
             ))}
         </tbody>

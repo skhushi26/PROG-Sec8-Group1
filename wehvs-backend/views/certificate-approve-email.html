@@ -96,48 +96,7 @@
     </style>
   </head>
   <body style="background-color: #f4f4f4; margin: 0 !important; padding: 0 !important">
-    <!-- <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        document
-          .getElementById("downloadCertificateButton")
-          .addEventListener("click", function (event) {
-            event.preventDefault(); // Prevents the default behavior of anchor tag
 
-            // Make an API call to trigger certificate download
-            fetch("http://localhost:3333/user-request/generate-certificate", {
-              method: "GET",
-              headers: {
-                "Content-Type": "application/json",
-                // Add any necessary headers, such as authentication tokens
-              },
-            })
-              .then((response) => {
-                // Check if the response is successful
-                if (response.ok) {
-                  // Initiating the download by creating a Blob and URL
-                  return response.blob();
-                } else {
-                  throw new Error("Failed to download certificate");
-                }
-              })
-              .then((blob) => {
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement("a");
-                console.log("url", url);
-                a.href = url;
-                a.download = "certificate.pdf"; // Set the filename for the downloaded file
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-              })
-              .catch((error) => {
-                console.error("Certificate download failed:", error);
-                // Handle the error, e.g., show an error message to the user
-              });
-          });
-      });
-    </script> -->
     <!-- HIDDEN PREHEADER TEXT -->
     <div
       style="
@@ -229,7 +188,7 @@
                         <tr>
                           <td align="center" style="border-radius: 3px" bgcolor="#3f63af">
                             <a
-                              href="http://localhost:3333/user-request/generate-certificate"
+                              href="http://localhost:3333/user-request/generate-certificate/{{userRequestId}}"
                               id="downloadCertificateButton"
                               target="_blank"
                               download
