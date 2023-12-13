@@ -16,7 +16,7 @@ const jobPostRoute = require("./routes/jobPostRoutes");
 const app = express();
 
 const corsOptions = {
-  origin: ["http://localhost:3000"],
+  origin: ["http://localhost:3000", "https://wehvs-frontend.onrender.com"],
 };
 
 app.use(cors(corsOptions));
