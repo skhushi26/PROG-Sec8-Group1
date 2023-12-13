@@ -20,12 +20,13 @@ exports.registerUser = async (req, res) => {
       password,
       dateOfBirth,
       address,
+      country,
       city,
       province,
       zipCode,
       telephone,
       contactEmail,
-      mobileNumber,
+      // mobileNumber,
     } = req.body;
 
     console.log("req.body", req.body);
@@ -37,6 +38,7 @@ exports.registerUser = async (req, res) => {
       profilePhotoPath = req.file ? req.file.path : "";
       const addressData = await Address.create({
         address,
+        country,
         city,
         province,
         zipCode,
@@ -44,7 +46,7 @@ exports.registerUser = async (req, res) => {
       const contactData = await Contact.create({
         telephone,
         contactEmail,
-        mobileNumber,
+        // mobileNumber,
       });
 
       const userData = await User.create({
@@ -113,7 +115,7 @@ exports.registerUser = async (req, res) => {
       responseBuilder(res, null, null, "User already exists!", 400);
     }
   } catch (error) {
-    responseBuilder(res, error, null, "Something went wrong in registering user!", 500);
+     responseBuilder(res, error, null, "Something went wrong in registering user!", 500);
   }
 };
 

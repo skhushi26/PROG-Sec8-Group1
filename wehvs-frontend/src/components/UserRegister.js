@@ -20,7 +20,7 @@ const UserRegister = () => {
   const [zipCode, setZipCode] = useState("");
   const [telephone, setTelephone] = useState("");
   const [contactEmail, setContactEmail] = useState("");
-  const [mobileNumber, setMobileNumber] = useState("");
+  // const [mobileNumber, setMobileNumber] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
 
   const handleFileChange = (event) => {
@@ -35,6 +35,7 @@ const UserRegister = () => {
   const [addressError, setAddressError] = useState("");
   const [countryError, setCountryError] = useState("");
   const [telephoneError, setTelephoneError] = useState("");
+  // const [mobileNumberError, setMobileNumberError] = useState("");
   const [contactEmailError, setContactEmailError] = useState("");
 
   const [message, setMessage] = useState("");
@@ -115,9 +116,9 @@ const UserRegister = () => {
       setCountryError("");
     }
 
-    // Telephone validation
+    // Mpbile Number validation
     if (telephone.trim() === "") {
-      setTelephoneError("Telephone is required");
+      setTelephoneError("Mobile Number is required");
       valid = false;
     } else {
       setTelephoneError("");
@@ -151,7 +152,7 @@ const UserRegister = () => {
         formData.append("zipCode", zipCode);
         formData.append("telephone", telephone);
         formData.append("contactEmail", contactEmail);
-        formData.append("mobileNumber", mobileNumber);
+        // formData.append("mobileNumber", mobileNumber);
         const response = await axios.post(`${DOMAIN_URI}/users/register`, formData, {
           headers: {
             "Content-Type": "multipart/form-data", // Set the content type to multipart form data
@@ -172,7 +173,7 @@ const UserRegister = () => {
         }
       } catch (error) {
         console.log("error>: " + error);
-        setMessage("Something went wrong in sending email verification link");
+        setMessage(error.response.data?.message);
         setSuccess(false);
       }
     }
@@ -191,7 +192,7 @@ const UserRegister = () => {
     setZipCode("");
     setTelephone("");
     setContactEmail("");
-    setMobileNumber("");
+    // setMobileNumber("");
     setSelectedFile(null);
   };
 
@@ -398,7 +399,7 @@ const UserRegister = () => {
                   </div>
 
                   <div className="col-sm-6  mt-4">
-                    <label htmlFor="telephone">Telephone</label>
+                    <label htmlFor="telephone">Mobile Number</label>
                     <input
                       className="form-control valid"
                       name="telephone"
@@ -425,7 +426,7 @@ const UserRegister = () => {
                     <span className="error-message text-danger">{contactEmailError}</span>
                   </div>
 
-                  <div className="col-sm-6  mt-4">
+                  {/* <div className="col-sm-6  mt-4">
                     <label htmlFor="mobileNumber">Mobile Number</label>
                     <input
                       className="form-control valid"
@@ -436,7 +437,8 @@ const UserRegister = () => {
                       value={mobileNumber}
                       onChange={(e) => setMobileNumber(e.target.value)}
                     />
-                  </div>
+                    <span className="error-message text-danger">{mobileNumberError}</span>
+                  </div> */}
 
                   <div className="col-12 form-group mt-5">
                     <button

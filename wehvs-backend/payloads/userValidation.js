@@ -15,7 +15,7 @@ function userRegistrationSchema(req, res, next) {
     zipCode: Joi.string(),
     telephone: Joi.string(),
     contactEmail: Joi.string(),
-    mobileNumber: Joi.string(),
+    mobileNumber: Joi.string().allow(''),
   };
 
   validateRequest(req, next, Joi.object(schemaRules));
@@ -33,7 +33,7 @@ function userProfileUpdateSchema(req, res, next) {
     zipCode: Joi.string(),
     telephone: Joi.string(),
     contactEmail: Joi.string(),
-    mobileNumber: Joi.string(),
+    mobileNumber: Joi.string().allow(''),
   };
 
   validateRequest(req, next, Joi.object(schemaRules));
