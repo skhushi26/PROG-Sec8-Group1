@@ -185,7 +185,7 @@ const UserRequestList = () => {
       <Table striped bordered hover>
         <thead>
           <tr>
-            <th>User Fullname</th>
+            <th>User Name</th>
             <th>Job Title</th>
             <th>Start Date</th>
             <th>End Date</th>
