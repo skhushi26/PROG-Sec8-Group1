@@ -11,62 +11,68 @@ exports.login = async (req, res) => {
   let details = await Credentials.findOne({ email });
   let token = "";
   try {
-    if (details.role == "User") {
-      // const userData = await User.findOne({ email });
-      if (!details) {
-        responseBuilder(res, null, null, "User not found!", 404);
-      } else if (!details.isActive) {
-        responseBuilder(res, null, null, "Email verification is pending, please check your email to activate your account!", 400);
-      } else {
-        const isPasswordMatch = await bcrypt.compare(password, details.password);
-        if (isPasswordMatch) {
-          token = await jwt.sign(
-            { id: details.userId, role: details.role },
-            "wehvsLoginSecretKey",
-            {
-              expiresIn: "9h",
-            }
-          );
-          let userData = await details.toJSON();
-          delete userData.password;
-          responseBuilder(res, null, { ...userData, token }, "User logged in successfully", 200);
+
+    if (details != null) {
+      if (details.role == "User") {
+        // const userData = await User.findOne({ email });
+        if (!details) {
+          responseBuilder(res, null, null, "User not found!", 404);
+        } else if (!details.isActive) {
+          responseBuilder(res, null, null, "Email verification is pending, please check your email to activate your account!", 400);
         } else {
-          responseBuilder(res, null, null, "Invalid credentails", 400);
+          const isPasswordMatch = await bcrypt.compare(password, details.password);
+          if (isPasswordMatch) {
+            token = await jwt.sign(
+              { id: details.userId, role: details.role },
+              "wehvsLoginSecretKey",
+              {
+                expiresIn: "9h",
+              }
+            );
+            let userData = await details.toJSON();
+            delete userData.password;
+            responseBuilder(res, null, { ...userData, token }, "User logged in successfully", 200);
+          } else {
+            responseBuilder(res, null, null, "Invalid credentails", 400);
+          }
         }
-      }
-    } else {
-      // const employerData = await Employer.findOne({ email });
-      if (!details) {
-        responseBuilder(res, null, null, "Employer not found!", 404);
-      } else if (!details.isActive) {
-        responseBuilder(res, null, null, "Email verification is pending, please check your email to activate your account!", 400);
-      }  else {
-        const isPasswordMatch = await bcrypt.compare(password, details.password);
-        if (isPasswordMatch) {
-          token = await jwt.sign(
-            { id: details.userId, role: details.role },
-            "wehvsLoginSecretKey",
-            {
-              expiresIn: "9h",
-            }
-          );
-          let employerData = await details.toJSON();
-          delete employerData.password;
-          responseBuilder(
-            res,
-            null,
-            { ...employerData, token },
-            "Employer logged in successfully",
-            200
-          );
+      } else {
+        // const employerData = await Employer.findOne({ email });
+        if (!details) {
+          responseBuilder(res, null, null, "Employer not found!", 404);
+        } else if (!details.isActive) {
+          responseBuilder(res, null, null, "Email verification is pending, please check your email to activate your account!", 400);
         } else {
-          responseBuilder(res, null, null, "Invalid credentails", 400);
+          const isPasswordMatch = await bcrypt.compare(password, details.password);
+          if (isPasswordMatch) {
+            token = await jwt.sign(
+              { id: details.userId, role: details.role },
+              "wehvsLoginSecretKey",
+              {
+                expiresIn: "9h",
+              }
+            );
+            let employerData = await details.toJSON();
+            delete employerData.password;
+            responseBuilder(
+              res,
+              null,
+              { ...employerData, token },
+              "Employer logged in successfully",
+              200
+            );
+          } else {
+            responseBuilder(res, null, null, "Invalid credentails", 400);
+          }
         }
       }
     }
+    else {
+      responseBuilder(res, null, null, "User not found, please regirster first!", 404);
+    }
   } catch (error) {
-    responseBuilder(res, error, null, "Something went wrong in logging in", 500);
-  }
+  responseBuilder(res, error, null, "Something went wrong in logging in", 500);
+}
 };
 
 exports.getVerified = async (req, res) => {
