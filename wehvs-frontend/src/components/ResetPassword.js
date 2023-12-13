@@ -1,12 +1,17 @@
 import React, { useState } from "react";
+import { useParams } from "react-router-dom";
 
 const ResetPassword = () => {
+  const { token } = useParams();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
+  // const [resetMessage, setResetMessage] = useState("");
+  const [message, setMessage] = useState("");
+  const [success, setSuccess] = useState(null);
 
-  const validateUser = (e) => {
+  const validateUser = async (e) => {
     e.preventDefault();
 
     let valid = true;
@@ -33,9 +38,35 @@ const ResetPassword = () => {
       setConfirmPasswordError("");
     }
 
-    // If all validations pass, you can proceed with further action
     if (valid) {
-      // Perform your action here (e.g., submit the form)
+      try {
+        const response = await fetch("http://localhost:3333/users/reset-password", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            newPassword: password,
+            confirmPassword,
+            sentToken: token, // Use the token from URL params
+          }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          setMessage(data.message); // Set success message
+          setSuccess(true);
+          // Further actions on successful password reset
+        } else {
+          setMessage(data.message); // Set error message
+          setSuccess(false);
+        }
+      } catch (error) {
+        console.error("Error updating password:", error.message);
+        setMessage("Something went wrong! Can't update"); // Set generic error message\
+        setSuccess(false);
+      }
     }
   };
 
@@ -43,6 +74,7 @@ const ResetPassword = () => {
     <div>
       {/* CONTENT */}
       <div className="row d-flex justify-content-center">
+        {/* <span className="alert alert-success">{resetMessage}</span> */}
         <div className="col-lg-8 mt-5">
           <form
             name="resetForm"
@@ -55,7 +87,18 @@ const ResetPassword = () => {
               <div className="col-12">
                 <h2 className="contact-title">Reset Password</h2>
               </div>
-
+              <div className="col-sm-10 m-auto">
+                {success !== null && // Change condition to only render if success is not null
+                  (success ? (
+                    <div className="alert alert-success" role="alert" bis_skin_checked="1">
+                      {message}
+                    </div>
+                  ) : (
+                    <div className="alert alert-danger" role="alert" bis_skin_checked="1">
+                      {message}
+                    </div>
+                  ))}
+              </div>
               <div className="col-sm-10 m-auto mb-5">
                 <div className="form-group">
                   <label htmlFor="password">Password</label>

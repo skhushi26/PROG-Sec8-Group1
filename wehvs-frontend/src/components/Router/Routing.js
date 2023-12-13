@@ -31,7 +31,7 @@ export default function Routing() {
           <Route path="/login" element={<Login />} />
           <Route path="/employer/profile" element={<EmployerProfile />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
           <Route path="/user-request" element={<UserRequestList />} />
           <Route path="/user/apply-certificate" element={<UserCertificateRequest />} />
           <Route path="/verify/:token" element={<EmailApproval />} />
