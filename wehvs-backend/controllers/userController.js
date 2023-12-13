@@ -316,7 +316,7 @@ exports.forgotPassword = async (req, res) => {
     if (err) {
       console.log("Error in sending mail", err);
     } else {
-      newHtml = html.replace("{{{resetlink}}}", `http://${req.get("host")}/reset-password/${rand}`);
+      newHtml = html.replace("{{{resetlink}}}", `http://localhost:3000/reset-password/${rand}`);
       newHtml = newHtml.replace("{{{name}}}", name);
       sendMailHandler("wehvs2023@gmail.com", email, "Reset Password", newHtml);
     }
@@ -327,72 +327,46 @@ exports.resetPassword = async (req, res) => {
   try {
     const { newPassword, confirmPassword, sentToken } = req.body;
     // finds user by resetToken and expiryToken greater than current date
-    const user = await User.findOne({
+    const user = await Credentials.findOne({
       resetToken: sentToken,
       expiryToken: { $gt: Date.now() },
     });
+    console.log("user", user);
     // checks if user exists or not
     if (!user) {
       // sends response if user doesn't exists
-      return res.send(response(null, null, "User not found", 500));
-    }
-    // checks whether newPassword and confirmPassword matches or not
-    if (newPassword === confirmPassword) {
-      // bcrypts the newPassword
-      const hashPassword = await bcrypt.hash(newPassword, 10);
-      // finds user by _id and updates currentpassword with the new password
-      const updatedData = await User.findByIdAndUpdate(
-        { _id: user._id },
-        {
-          $set: {
-            password: hashPassword,
-            resetToken: null,
-            expiryToken: null,
-          },
-        },
-        {
-          new: true,
-          upsert: true,
-          timestamps: { createdAt: false, updatedAt: true },
-        }
-      );
-      const fromMail = `${process.env.SENDER_EMAIL}`;
-      const toMail = `${user.email}`;
-      const subject = "Email Verification";
-      const text = "Hello,<br> Your password has been updated.<br>";
-      const transporter = nodemailer.createTransport({
-        service: "gmail",
-        secure: false,
-        auth: {
-          user: `${process.env.SENDER_EMAIL}`,
-          pass: `${process.env.SENDER_PASSWORD}`,
-        },
-        tls: {
-          rejectUnauthorized: false,
-        },
-      });
-      const mailOptions = {
-        from: fromMail,
-        to: toMail,
-        subject,
-        html: text,
-      };
-      transporter.sendMail(mailOptions, (error, response1) => {
-        if (error) {
-          console.log(error);
-        }
-        console.log(response1);
-      });
-
-      // eslint-disable-next-line quote-props
-      res.send(response(null, { user: updatedData }, "Password Updated", 200));
+      responseBuilder(res, null, null, "User not found", 500);
     } else {
-      // sends response if password and confirm password doesn't match
-      res.send(response(null, null, "Password and confirm password doesn't match", 500));
+      // checks whether newPassword and confirmPassword matches or not
+      if (newPassword === confirmPassword) {
+        // bcrypts the newPassword
+        const hashPassword = await bcrypt.hash(newPassword, 10);
+        // finds user by _id and updates currentpassword with the new password
+        const updatedData = await Credentials.findByIdAndUpdate(
+          { _id: user._id },
+          {
+            $set: {
+              password: hashPassword,
+              resetToken: null,
+              expiryToken: null,
+            },
+          },
+          {
+            new: true,
+            upsert: true,
+            timestamps: { createdAt: false, updatedAt: true },
+          }
+        );
+
+        responseBuilder(res, null, { user: updatedData }, "Password Updated", 200);
+      } else {
+        // sends response if password and confirm password doesn't match
+        responseBuilder(res, null, null, "Password and confirm password doesn't match", 400);
+      }
     }
   } catch (error) {
     // sends response if error occurred in updating password
-    res.send(response(error, null, "Something went wrong!!Can't update", 500));
+    responseBuilder(res, error, null, "Something went wrong!!Can't update", 500);
   }
   return null;
 };

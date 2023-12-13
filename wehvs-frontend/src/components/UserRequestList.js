@@ -3,8 +3,9 @@ import Table from "react-bootstrap/Table";
 import moment from "moment";
 import { Button, Modal, Form } from "react-bootstrap";
 import { toast } from "react-toastify";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { DOMAIN_URI } from "../config";
 
 const UserRequestList = () => {
   const [requests, setRequests] = useState([]);
@@ -16,7 +17,7 @@ const UserRequestList = () => {
   const [activeTab, setActiveTab] = useState("pending"); // "pending" or "approved"
 
   useEffect(() => {
-    fetch("http://localhost:3333/user-request")
+    fetch(`${DOMAIN_URI}/user-request`)
       .then((response) => response.json())
       .then((data) => {
         console.log("data.data", data.data);
@@ -56,22 +57,19 @@ const UserRequestList = () => {
     const employerId = localStorage.getItem("userId");
     const requestBody = {
       comment: comment || "",
-      employerId: employerId
+      employerId: employerId,
     };
 
     console.log("requestBody", requestBody);
 
     try {
-      const response = await fetch(
-        `http://localhost:3333/user-request/approve/${selectedRequestId}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(requestBody),
-        }
-      );
+      const response = await fetch(`${DOMAIN_URI}/user-request/approve/${selectedRequestId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestBody),
+      });
 
       const responseData = await response.json();
 
@@ -115,7 +113,7 @@ const UserRequestList = () => {
     };
 
     try {
-      const response = await fetch(`http://localhost:3333/user-request/deny/${selectedRequestId}`, {
+      const response = await fetch(`${DOMAIN_URI}/user-request/deny/${selectedRequestId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -154,15 +152,15 @@ const UserRequestList = () => {
     }
   };
 
-  const filteredRequests = activeTab === "approved"
-    ? requests.filter(request => request.requestStatus === "Approved")
-    : activeTab === "denied"
-      ? requests.filter(request => request.requestStatus === "Denied")
-      : requests.filter(request => request.requestStatus === "Pending");
+  const filteredRequests =
+    activeTab === "approved"
+      ? requests.filter((request) => request.requestStatus === "Approved")
+      : activeTab === "denied"
+      ? requests.filter((request) => request.requestStatus === "Denied")
+      : requests.filter((request) => request.requestStatus === "Pending");
 
   return (
     <div className="container mt-4 col-md-10">
-
       <div className="tabs">
         <div
           className={`tab ${activeTab === "pending" ? "active-tab" : ""}`}
@@ -194,9 +192,7 @@ const UserRequestList = () => {
             <th>Request date</th>
             {/* <th>Status</th> */}
             <th>Comment</th>
-            {activeTab === "pending" && (
-              <th>Approve/Deny</th>
-            )}
+            {activeTab === "pending" && <th>Approve/Deny</th>}
           </tr>
         </thead>
         <tbody>
@@ -245,7 +241,6 @@ const UserRequestList = () => {
                   </Button>
                   </div>
                 </td> */}
-
               </tr>
             ))}
         </tbody>

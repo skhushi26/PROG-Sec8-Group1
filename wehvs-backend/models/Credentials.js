@@ -31,6 +31,12 @@ const CredentialsSchema = new mongoose.Schema(
       type: mongoose.Types.ObjectId,
       required: true,
     },
+    resetToken: {
+      type: String,
+    },
+    expiryToken: {
+      type: String,
+    },
   },
   { timestamps: true }
 );

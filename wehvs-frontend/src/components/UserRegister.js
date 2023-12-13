@@ -4,6 +4,7 @@ import withRouter from "./Router/withRouter";
 import FooterMenu from "./Footer";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { DOMAIN_URI } from "../config";
 
 const UserRegister = () => {
   const role = "User";
@@ -13,6 +14,7 @@ const UserRegister = () => {
   const [password, setPassword] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
   const [address, setAddress] = useState("");
+  const [country, setCountry] = useState("");
   const [city, setCity] = useState("");
   const [province, setProvince] = useState("");
   const [zipCode, setZipCode] = useState("");
@@ -31,6 +33,7 @@ const UserRegister = () => {
   const [passwordError, setPasswordError] = useState("");
   const [dateOfBirthError, setDateOfBirthError] = useState("");
   const [addressError, setAddressError] = useState("");
+  const [countryError, setCountryError] = useState("");
   const [telephoneError, setTelephoneError] = useState("");
   const [contactEmailError, setContactEmailError] = useState("");
 
@@ -104,6 +107,14 @@ const UserRegister = () => {
       setAddressError("");
     }
 
+    // Country validation
+    if (country.trim() === "") {
+      setCountryError("Country is required");
+      valid = false;
+    } else {
+      setCountryError("");
+    }
+
     // Telephone validation
     if (telephone.trim() === "") {
       setTelephoneError("Telephone is required");
@@ -134,13 +145,14 @@ const UserRegister = () => {
         formData.append("password", password);
         formData.append("dateOfBirth", dateOfBirth);
         formData.append("address", address);
+        formData.append("country", country);
         formData.append("city", city);
         formData.append("province", province);
         formData.append("zipCode", zipCode);
         formData.append("telephone", telephone);
         formData.append("contactEmail", contactEmail);
         formData.append("mobileNumber", mobileNumber);
-        const response = await axios.post("http://localhost:3333/users/register", formData, {
+        const response = await axios.post(`${DOMAIN_URI}/users/register`, formData, {
           headers: {
             "Content-Type": "multipart/form-data", // Set the content type to multipart form data
           },
@@ -148,6 +160,7 @@ const UserRegister = () => {
         console.log("response", response);
         if (response.data.statusCode === 200) {
           setMessage(response.data.message);
+          resetUserRegisterForm();
           // navigate("/login", { state: { message: response.data.message } });
           setSuccess(true);
         } else if (response.data.statusCode === 400) {
@@ -163,6 +176,23 @@ const UserRegister = () => {
         setSuccess(false);
       }
     }
+  };
+
+  const resetUserRegisterForm = () => {
+    setFirstName("");
+    setLastName("");
+    setEmail("");
+    setPassword("");
+    setDateOfBirth("");
+    setAddress("");
+    setCountry("");
+    setCity("");
+    setProvince("");
+    setZipCode("");
+    setTelephone("");
+    setContactEmail("");
+    setMobileNumber("");
+    setSelectedFile(null);
   };
 
   return (
@@ -312,6 +342,20 @@ const UserRegister = () => {
                       onChange={(e) => setAddress(e.target.value)}
                     />
                     <span className="error-message text-danger">{addressError}</span>
+                  </div>
+
+                  <div className="col-sm-6  mt-4">
+                    <label htmlFor="country">Country</label>
+                    <input
+                      className="form-control valid"
+                      name="country"
+                      id="country"
+                      type="text"
+                      placeholder="Address"
+                      value={country}
+                      onChange={(e) => setCountry(e.target.value)}
+                    />
+                    <span className="error-message text-danger">{countryError}</span>
                   </div>
 
                   <div className="col-sm-6  mt-4">

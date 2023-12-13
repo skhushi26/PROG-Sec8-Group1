@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import FooterMenu from "./Footer";
 import { Table, Button, Modal, Form } from "react-bootstrap";
 import { toast } from "react-toastify";
+import { DOMAIN_URI } from "../config";
 
 const JobPostingList = () => {
   const [showModal, setShowModal] = useState(false);
@@ -25,26 +26,25 @@ const JobPostingList = () => {
   const [editId, setEditId] = useState(null);
   const [requests, setJoblist] = useState([]);
 
-  
   useEffect(() => {
     const id = localStorage.getItem("userId");
-    fetch(`http://localhost:3333/job-post/get-all-for-employer/${id}`)
+    fetch(`${DOMAIN_URI}/job-post/get-all-for-employer/${id}`)
       .then((response) => response.json())
       .then((data) => {
         // console.log("data.data", data.data);
         setJoblist(data.data);
       })
       .catch((error) => console.error("Error fetching data:", error));
-  }, [requests]);
+  }, []);
 
   const fetchExperienceLevels = async () => {
-    const response = await fetch("http://localhost:3333/job-post/experience-level");
+    const response = await fetch(`${DOMAIN_URI}/job-post/experience-level`);
     const data = await response.json();
     setExperienceLevels(data.data);
   };
 
   const fetchJobTypes = async () => {
-    const response = await fetch("http://localhost:3333/job-post/job-types");
+    const response = await fetch(`${DOMAIN_URI}/job-post/job-types`);
     const data = await response.json();
     setJobTypes(data.data);
   };
@@ -76,7 +76,7 @@ const JobPostingList = () => {
 
   const fetchJobDataById = async (id) => {
     try {
-      const response = await fetch(`http://localhost:3333/job-post/find/${id}`);
+      const response = await fetch(`${DOMAIN_URI}/job-post/find/${id}`);
       const data = await response.json();
       return data.data;
     } catch (error) {
@@ -161,10 +161,10 @@ const JobPostingList = () => {
 
     if (valid) {
       const apiUrl = editMode
-        ? `http://localhost:3333/job-post/update/${editId}`
-        : "http://localhost:3333/job-post/add";
+        ? `${DOMAIN_URI}/job-post/update/${editId}`
+        : `${DOMAIN_URI}/job-post/add`;
 
-    const employerId = localStorage.getItem("userId");
+      const employerId = localStorage.getItem("userId");
       const requestBody = {
         employerId,
         jobTitle,
@@ -214,7 +214,7 @@ const JobPostingList = () => {
 
     if (confirmDelete) {
       try {
-        const response = await fetch(`http://localhost:3333/job-post/delete/${id}`, {
+        const response = await fetch(`${DOMAIN_URI}/job-post/delete/${id}`, {
           method: "DELETE",
         });
 
@@ -235,32 +235,32 @@ const JobPostingList = () => {
     <div>
       {/* <div className="jobportal"><h2><strong>Welcome to Job Portal Database</strong></h2></div> */}
       <div className="containertable">
-      <Table striped bordered hover>
-        <thead>
-          <tr>
-            <th>Job Title</th>
-            <th>Job Description</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {requests &&
-          requests.map((job) => (
-            <tr key={job._id}>
-              <td>{job.jobTitle}</td>
-              <td>{job.jobDescription}</td>
-              <td>
-                <Button onClick={() => handleEdit(job._id)}>Edit</Button>
-                <Button variant="danger" onClick={() => handleDelete(job._id)}>Delete</Button>
-              </td>
+        <Table striped bordered hover>
+          <thead>
+            <tr>
+              <th>Job Title</th>
+              <th>Job Description</th>
+              <th>Action</th>
             </tr>
-          ))}
-        </tbody>
-      </Table>
+          </thead>
+          <tbody>
+            {requests &&
+              requests.map((job) => (
+                <tr key={job._id}>
+                  <td>{job.jobTitle}</td>
+                  <td>{job.jobDescription}</td>
+                  <td>
+                    <Button onClick={() => handleEdit(job._id)}>Edit</Button>
+                    <Button variant="danger" onClick={() => handleDelete(job._id)}>
+                      Delete
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+          </tbody>
+        </Table>
       </div>
-      <Button onClick={handleAddJobClick}>
-        Add Job
-      </Button>
+      <Button onClick={handleAddJobClick}>Add Job</Button>
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
           <Modal.Title>{editMode ? "Update Job" : "Add Job"}</Modal.Title>
@@ -367,13 +367,11 @@ const JobPostingList = () => {
           <Button variant="secondary" onClick={handleCloseModal}>
             Close
           </Button>
-          <Button onClick={handleAddJob}>
-            {editMode ? "Update Job" : "Add Job"}
-          </Button>
+          <Button onClick={handleAddJob}>{editMode ? "Update Job" : "Add Job"}</Button>
         </Modal.Footer>
       </Modal>
       {/* FOOTER */}
-     <FooterMenu />
+      <FooterMenu />
     </div>
   );
 };

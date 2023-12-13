@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import FooterMenu from "./Footer";
-
+import { DOMAIN_URI } from "../config";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
@@ -29,7 +29,7 @@ const ForgotPassword = () => {
     // If all validations pass, you can proceed with further action
     if (valid) {
       try {
-        const response = await axios.post("http://localhost:3333/users/forgot-password", {
+        const response = await axios.post(`${DOMAIN_URI}/users/forgot-password`, {
           email,
         });
         console.log("response", response);
@@ -66,8 +66,8 @@ const ForgotPassword = () => {
                 <h2 className="contact-title">Forgot your password?</h2>
               </div>
               <p>
-                Reset password link will be send to the entered email id. This link will be
-                valid for 10 minutes!
+                Reset password link will be send to the entered email id. This link will be valid
+                for 10 minutes!
               </p>
               <div className="col-sm-10 m-auto">
                 {success !== null && // Change condition to only render if success is not null

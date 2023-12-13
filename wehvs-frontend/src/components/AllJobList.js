@@ -4,6 +4,7 @@ import FooterMenu from "./Footer";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Link, useParams } from "react-router-dom";
+import { DOMAIN_URI } from "../config";
 
 const AllJobList = () => {
   const { token } = useParams();
@@ -15,17 +16,17 @@ const AllJobList = () => {
 
   useEffect(() => {
     // Fetch job types and job experience levels when the component mounts
-    fetch("http://localhost:3333/job-post/job-types")
+    fetch(`${DOMAIN_URI}/job-post/job-types`)
       .then((response) => response.json())
       .then((data) => {
-          setJobTypes(data.data);
+        setJobTypes(data.data);
       })
       .catch((error) => console.error("Error fetching job types:", error));
 
-    fetch("http://localhost:3333/job-post/experience-level")
+    fetch(`${DOMAIN_URI}/job-post/experience-level`)
       .then((response) => response.json())
       .then((data) => {
-          setJobExperienceLevels(data.data);
+        setJobExperienceLevels(data.data);
       })
       .catch((error) => console.error("Error fetching job experience levels:", error));
   }, []); // Empty dependency array means it runs only once when the component mounts
@@ -33,7 +34,7 @@ const AllJobList = () => {
   useEffect(() => {
     // Fetch job list based on selected job types and job experience levels
     const id = localStorage.getItem("userId");
-    fetch("http://localhost:3333/job-post/get-all-for-user")
+    fetch(`${DOMAIN_URI}/job-post/get-all-for-user`)
       .then((response) => response.json())
       .then((data) => {
         setJoblist(data.data);
@@ -126,9 +127,7 @@ const AllJobList = () => {
                             experienceLevel.jobExperienceLevel
                           )}
                           onChange={() =>
-                            handleJobExperienceLevelChange(
-                              experienceLevel.jobExperienceLevel
-                            )
+                            handleJobExperienceLevelChange(experienceLevel.jobExperienceLevel)
                           }
                         />
                         <span className="checkmark"></span>
@@ -144,7 +143,7 @@ const AllJobList = () => {
                   <div className="row">
                     <div className="count-job mb-35">
                       <div className="select-job-items">
-                        <div style={{ display: 'none' }}>
+                        <div style={{ display: "none" }}>
                           <span className="current">None</span>
                           <ul className="list">
                             <li data-value="" className="option selected">
@@ -169,17 +168,11 @@ const AllJobList = () => {
                       .filter(filterJobsByJobType)
                       .filter(filterJobsByJobExperienceLevel)
                       .map((request, index) => (
-                        <div
-                          className="single-job-items mb-30 custom-job-item"
-                          key={index}
-                        >
+                        <div className="single-job-items mb-30 custom-job-item" key={index}>
                           <div className="job-items">
                             <div className="company-img">
                               <a href="#">
-                                <img
-                                  src="assets/img/icon/job-list1.png"
-                                  alt=""
-                                />
+                                <img src="assets/img/icon/job-list1.png" alt="" />
                               </a>
                             </div>
                             <div className="job-tittle job-tittle2">
@@ -192,17 +185,13 @@ const AllJobList = () => {
                                   {request.address}
                                 </li>
                                 <li>{request.jobType.jobType}</li>
-                                <li>
-                                  {request.jobExperienceLevel.jobExperienceLevel}
-                                </li>
+                                <li>{request.jobExperienceLevel.jobExperienceLevel}</li>
                                 {/* <li>{request.salary} CAD yearly</li> */}
                               </ul>
                             </div>
                           </div>
                           <div className="items-link items-link2 f-right">
-                            <a href={`/job-list/${request._id}`}>
-                              Apply now
-                            </a>
+                            <a href={`/job-list/${request._id}`}>Apply now</a>
                           </div>
                         </div>
                       ))}
