@@ -1,31 +1,25 @@
 import React, { useState, useEffect } from "react";
 import withRouter from "./Router/withRouter";
-import { loadStripe } from '@stripe/stripe-js';
-import {
-  EmbeddedCheckoutProvider,
-  EmbeddedCheckout
-} from '@stripe/react-stripe-js';
-import {
-  BrowserRouter as Router,
-  Route,
-  Routes,
-  Navigate
-} from "react-router-dom";
+import { loadStripe } from "@stripe/stripe-js";
+import { EmbeddedCheckoutProvider, EmbeddedCheckout } from "@stripe/react-stripe-js";
+import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import axios from "axios";
-
+import { DOMAIN_URI } from "../config";
 
 // This is the test public API key.
-const stripePromise = loadStripe("pk_test_51OCrEYIlWqny1x6ygARX3qSIhgszDPo1Ay7SQ9B3eIg4WfONaGM5pz59RQ6Et2DFctHQ9OYTb2orevc8hU5Qnlmw000ZltpXqk");
+const stripePromise = loadStripe(
+  "pk_test_51OCrEYIlWqny1x6ygARX3qSIhgszDPo1Ay7SQ9B3eIg4WfONaGM5pz59RQ6Et2DFctHQ9OYTb2orevc8hU5Qnlmw000ZltpXqk"
+);
 
 const CheckoutForm = () => {
-  const [clientSecret, setClientSecret] = useState('');
+  const [clientSecret, setClientSecret] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
-     const userId = localStorage.getItem("userId");
+      const userId = localStorage.getItem("userId");
 
       // Create a Checkout Session as soon as the page loads
-      const response = await fetch("http://localhost:3333/checkout/create-checkout-session", {
+      const response = await fetch(`${DOMAIN_URI}/checkout/create-checkout-session`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -45,96 +39,88 @@ const CheckoutForm = () => {
         console.error(error);
       }
     };
-  
-      fetchData();
-    }, []);
+
+    fetchData();
+  }, []);
 
   return (
     <div id="checkout">
       {clientSecret && (
-        <EmbeddedCheckoutProvider
-          stripe={stripePromise}
-          options={{ clientSecret }}
-        >
+        <EmbeddedCheckoutProvider stripe={stripePromise} options={{ clientSecret }}>
           <EmbeddedCheckout />
         </EmbeddedCheckoutProvider>
       )}
     </div>
-  )
-}
-
+  );
+};
 
 const cancelSubscription = async () => {
   try {
-    const paymentTrackingId = localStorage.getItem('paymentTrackingId');
-    const response = await axios.post('http://localhost:3333/checkout/cancel-subscription', { paymentTrackingId });
+    const paymentTrackingId = localStorage.getItem("paymentTrackingId");
+    const response = await axios.post(`${DOMAIN_URI}/checkout/cancel-subscription`, {
+      paymentTrackingId,
+    });
 
     // Handle successful subscription cancellation
     console.log(response.data.message);
   } catch (error) {
     // Handle errors
-    console.error('Error canceling subscription:', error);
+    console.error("Error canceling subscription:", error);
   }
 };
 
-
 const Return = () => {
   const [status, setStatus] = useState(null);
-  const [customerEmail, setCustomerEmail] = useState('');
-  const [customSuccessMessage, setCustomSuccessMessage] = useState('');
+  const [customerEmail, setCustomerEmail] = useState("");
+  const [customSuccessMessage, setCustomSuccessMessage] = useState("");
 
   useEffect(() => {
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
-    const sessionId = urlParams.get('session_id');
+    const sessionId = urlParams.get("session_id");
 
-    fetch(`http://localhost:3333/checkout/session-status?session_id=${sessionId}`)
+    fetch(`${DOMAIN_URI}/checkout/session-status?session_id=${sessionId}`)
       .then((res) => res.json())
       .then((data) => {
         setStatus(data.status);
-        setCustomerEmail(data.customer_email); 
+        setCustomerEmail(data.customer_email);
 
-           // Check if payment is successful and update IsPaymentDone value
-           if (data.status === 'complete') {
-            // Make a request to update IsPaymentDone in your backend
-            const userId = data.client_reference_id;
-            const paymentTrackingId = data.paymentTrackingId; 
-            const isPaymentDone = true; 
+        // Check if payment is successful and update IsPaymentDone value
+        if (data.status === "complete") {
+          // Make a request to update IsPaymentDone in your backend
+          const userId = data.client_reference_id;
+          const paymentTrackingId = data.paymentTrackingId;
+          const isPaymentDone = true;
 
-            localStorage.setItem("isPaymentDone", isPaymentDone);
-            localStorage.setItem("paymentTrackingId", data.paymentTrackingId);
-          
-            axios.post('http://localhost:3333/shared/update-payment-status', { userId, paymentTrackingId })
-              .then(() => {
-                setCustomSuccessMessage('Payment successfully completed!');
-                const stripe =  stripePromise;
+          localStorage.setItem("isPaymentDone", isPaymentDone);
+          localStorage.setItem("paymentTrackingId", data.paymentTrackingId);
 
-                const { error } = stripe.redirectToCheckout({
+          axios
+            .post("${DOMAIN_URI}/shared/update-payment-status", { userId, paymentTrackingId })
+            .then(() => {
+              setCustomSuccessMessage("Payment successfully completed!");
+              const stripe = stripePromise;
+
+              const { error } = stripe.redirectToCheckout({
                 sessionId: data.sessionId,
               });
 
               Navigate("/success-payment");
-              })
-              .catch((error) => {
-                console.error('Error updating payment status:', error);
-              });
-
-
-             
-          }
-
+            })
+            .catch((error) => {
+              console.error("Error updating payment status:", error);
+            });
+        }
       });
   }, []);
 
-  if (status === 'open') {
-    return (
-      <Navigate to="/checkout" />
-    )
+  if (status === "open") {
+    return <Navigate to="/checkout" />;
   }
 
   return (
     <div>
-      {status === 'complete' && (
+      {status === "complete" && (
         <div>
           <p>Payment successful!</p>
           <p>Email: {customerEmail}</p>
@@ -145,7 +131,7 @@ const Return = () => {
     </div>
   );
   // return null;
-}
+};
 
 const App = () => {
   return (
@@ -157,8 +143,7 @@ const App = () => {
         </Routes>
       </Router>
     </div>
-  )
-}
+  );
+};
 
 export default withRouter(CheckoutForm);
-

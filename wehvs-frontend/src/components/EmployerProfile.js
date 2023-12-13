@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import withRouter from "./Router/withRouter";
 import FooterMenu from "./Footer";
 import axios from "axios";
+import { DOMAIN_URI } from "../config";
 class EmployerProfile extends Component {
   constructor() {
     super();
@@ -27,7 +28,7 @@ class EmployerProfile extends Component {
       telephoneError: "",
       successMessage: "",
       errorMessage: "",
-      loading: false
+      loading: false,
     };
   }
 
@@ -40,7 +41,7 @@ class EmployerProfile extends Component {
 
     // Make an API request to get the user data
     axios
-      .get(`http://localhost:3333/employers/getById/${employerId}`)
+      .get(`${DOMAIN_URI}/employers/getById/${employerId}`)
       .then((response) => {
         const employer = { ...response.data.data };
         employer.foundedDate = employer.foundedDate
@@ -91,7 +92,6 @@ class EmployerProfile extends Component {
       valid = false;
     } else {
       this.setState({ contactEmailError: "" });
-
     }
 
     // Founded Date validation
@@ -118,7 +118,6 @@ class EmployerProfile extends Component {
     } else {
       this.setState({ telephoneError: "" });
     }
-
 
     if (valid) {
       this.handleSubmit();
@@ -162,11 +161,15 @@ class EmployerProfile extends Component {
       formData.append("profilePhoto", profilePhoto);
 
       console.log("formData", formData);
-      const response = await axios.put(`http://localhost:3333/employers/updateEmployer/${userId}`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await axios.put(
+        `${DOMAIN_URI}/employers/updateEmployer/${userId}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
       console.log("response", response);
       if (response.data.statusCode === 200) {
         this.setState({ successMessage: "Employer updated successfully!" });
@@ -177,8 +180,6 @@ class EmployerProfile extends Component {
       this.setState({ errorMessage: "Something went wrong, please try again!" });
     }
   };
-
-
 
   handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -238,7 +239,7 @@ class EmployerProfile extends Component {
       companyNameError,
       foundedDateError,
       addressError,
-      telephoneError
+      telephoneError,
     } = this.state;
 
     let profilePhotoUrl = "images/default-profile.png";
@@ -250,7 +251,7 @@ class EmployerProfile extends Component {
         : "images/default-profile.png";
     } else {
       profilePhotoUrl = employer.profilePhoto
-        ? `http://localhost:3333/${employer.profilePhoto}`
+        ? `${DOMAIN_URI}/${employer.profilePhoto}`
         : "images/default-profile.png";
     }
     console.log("profilePhotoUrl: ", profilePhotoUrl);
@@ -288,10 +289,26 @@ class EmployerProfile extends Component {
                 <div className="row">
                   <div className="col-md-3 border-right">
                     <div className="d-flex flex-column align-items-center text-center p-3 py-5">
-                      <img className="rounded-circle" width="150px" height="150px" src={profilePhotoUrl} alt="Profile Photo"></img>
-                      <label htmlFor="fileInput" className="button button-contactForm btn-change-picture boxed-btn mt-4" >
+                      <img
+                        className="rounded-circle"
+                        width="150px"
+                        height="150px"
+                        src={profilePhotoUrl}
+                        alt="Profile Photo"
+                      ></img>
+                      <label
+                        htmlFor="fileInput"
+                        className="button button-contactForm btn-change-picture boxed-btn mt-4"
+                      >
                         Change Profile Photo
-                        <input type="file" id="fileInput" name="profilePhoto" accept=".jpg, .jpeg, .png" onChange={this.handleFileChange} style={{ display: "none" }} />
+                        <input
+                          type="file"
+                          id="fileInput"
+                          name="profilePhoto"
+                          accept=".jpg, .jpeg, .png"
+                          onChange={this.handleFileChange}
+                          style={{ display: "none" }}
+                        />
                       </label>
 
                       <br></br>
@@ -495,7 +512,6 @@ class EmployerProfile extends Component {
         <FooterMenu />
       </div>
     );
-
   }
 }
 

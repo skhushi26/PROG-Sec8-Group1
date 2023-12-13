@@ -4,6 +4,7 @@ import withRouter from "./Router/withRouter";
 import FooterMenu from "./Footer";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { DOMAIN_URI } from "../config";
 
 const UserRegister = () => {
   const role = "User";
@@ -151,7 +152,7 @@ const UserRegister = () => {
         formData.append("telephone", telephone);
         formData.append("contactEmail", contactEmail);
         formData.append("mobileNumber", mobileNumber);
-        const response = await axios.post("http://localhost:3333/users/register", formData, {
+        const response = await axios.post(`${DOMAIN_URI}/users/register`, formData, {
           headers: {
             "Content-Type": "multipart/form-data", // Set the content type to multipart form data
           },

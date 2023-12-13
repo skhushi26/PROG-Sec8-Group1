@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import FooterMenu from "./Footer";
 import { Table, Button, Modal, Form } from "react-bootstrap";
 import { toast } from "react-toastify";
+import { DOMAIN_URI } from "../config";
 
 const JobPostingList = () => {
   const [showModal, setShowModal] = useState(false);
@@ -27,23 +28,23 @@ const JobPostingList = () => {
 
   useEffect(() => {
     const id = localStorage.getItem("userId");
-    fetch(`http://localhost:3333/job-post/get-all-for-employer/${id}`)
+    fetch(`${DOMAIN_URI}/job-post/get-all-for-employer/${id}`)
       .then((response) => response.json())
       .then((data) => {
         // console.log("data.data", data.data);
         setJoblist(data.data);
       })
       .catch((error) => console.error("Error fetching data:", error));
-  }, [requests]);
+  }, []);
 
   const fetchExperienceLevels = async () => {
-    const response = await fetch("http://localhost:3333/job-post/experience-level");
+    const response = await fetch(`${DOMAIN_URI}/job-post/experience-level`);
     const data = await response.json();
     setExperienceLevels(data.data);
   };
 
   const fetchJobTypes = async () => {
-    const response = await fetch("http://localhost:3333/job-post/job-types");
+    const response = await fetch(`${DOMAIN_URI}/job-post/job-types`);
     const data = await response.json();
     setJobTypes(data.data);
   };
@@ -75,7 +76,7 @@ const JobPostingList = () => {
 
   const fetchJobDataById = async (id) => {
     try {
-      const response = await fetch(`http://localhost:3333/job-post/find/${id}`);
+      const response = await fetch(`${DOMAIN_URI}/job-post/find/${id}`);
       const data = await response.json();
       return data.data;
     } catch (error) {
@@ -160,8 +161,8 @@ const JobPostingList = () => {
 
     if (valid) {
       const apiUrl = editMode
-        ? `http://localhost:3333/job-post/update/${editId}`
-        : "http://localhost:3333/job-post/add";
+        ? `${DOMAIN_URI}/job-post/update/${editId}`
+        : `${DOMAIN_URI}/job-post/add`;
 
       const employerId = localStorage.getItem("userId");
       const requestBody = {
@@ -213,7 +214,7 @@ const JobPostingList = () => {
 
     if (confirmDelete) {
       try {
-        const response = await fetch(`http://localhost:3333/job-post/delete/${id}`, {
+        const response = await fetch(`${DOMAIN_URI}/job-post/delete/${id}`, {
           method: "DELETE",
         });
 

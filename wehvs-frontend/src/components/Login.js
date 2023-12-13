@@ -3,6 +3,7 @@ import withRouter from "./Router/withRouter";
 import FooterMenu from "./Footer";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { DOMAIN_URI } from "../config";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -56,7 +57,7 @@ const Login = () => {
     const { email, password } = state;
 
     try {
-      const response = await axios.post("http://localhost:3333/shared/login", { email, password });
+      const response = await axios.post(`${DOMAIN_URI}/shared/login`, { email, password });
       if (response.data.statusCode === 200) {
         // Login successful, store the token in localStorage or a global state
         const result = response.data.data;
@@ -94,7 +95,7 @@ const Login = () => {
                 <h2 className="contact-title">Login</h2>
               </div>
               <div className="col-sm-10 m-auto">
-              {/* {successMessage !== null && (
+                {/* {successMessage !== null && (
                   <div className="alert alert-danger" role="alert" bis_skin_checked="1">
                     { successMessage }
                   </div>
@@ -132,7 +133,9 @@ const Login = () => {
                     onChange={handleInputChange}
                     placeholder="Password"
                   />
-                  <p className="forgotpassword"><a href="/forgot-password">Forgot Password?</a></p>
+                  <p className="forgotpassword">
+                    <a href="/forgot-password">Forgot Password?</a>
+                  </p>
                   {passwordError && (
                     <div className="invalid-feedback">
                       <span className="text-danger float-left">{passwordError}</span>
@@ -156,7 +159,7 @@ const Login = () => {
           </form>
         </div>
       </div>
-     {/* FOOTER */}
+      {/* FOOTER */}
       <FooterMenu />
     </div>
   );

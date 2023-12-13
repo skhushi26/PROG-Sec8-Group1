@@ -1,41 +1,44 @@
 import React, { useState, useEffect } from "react";
 import withRouter from "./Router/withRouter";
-import { loadStripe } from '@stripe/stripe-js';
+import { loadStripe } from "@stripe/stripe-js";
 import { Link, Navigate } from "react-router-dom";
 import axios from "axios";
-
+import { DOMAIN_URI } from "../config";
 
 const SuccessPayment = () => {
   const [status, setStatus] = useState(null);
-  const [customerEmail, setCustomerEmail] = useState('');
-  const [customSuccessMessage, setCustomSuccessMessage] = useState('');
+  const [customerEmail, setCustomerEmail] = useState("");
+  const [customSuccessMessage, setCustomSuccessMessage] = useState("");
 
   useEffect(() => {
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
-    const sessionId = urlParams.get('session_id');
+    const sessionId = urlParams.get("session_id");
 
-    const stripePromise = loadStripe("pk_test_51OCrEYIlWqny1x6ygARX3qSIhgszDPo1Ay7SQ9B3eIg4WfONaGM5pz59RQ6Et2DFctHQ9OYTb2orevc8hU5Qnlmw000ZltpXqk");
-    
-    fetch(`http://localhost:3333/checkout/session-status?session_id=${sessionId}`)
+    const stripePromise = loadStripe(
+      "pk_test_51OCrEYIlWqny1x6ygARX3qSIhgszDPo1Ay7SQ9B3eIg4WfONaGM5pz59RQ6Et2DFctHQ9OYTb2orevc8hU5Qnlmw000ZltpXqk"
+    );
+
+    fetch(`${DOMAIN_URI}/checkout/session-status?session_id=${sessionId}`)
       .then((res) => res.json())
       .then((data) => {
         setStatus(data.status);
         setCustomerEmail(data.customer_email);
 
         // Check if payment is successful and update IsPaymentDone value
-        if (data.status === 'complete') {
+        if (data.status === "complete") {
           // Make a request to update IsPaymentDone in your backend
           const userId = data.userId;
           const paymentTrackingId = data.paymentTrackingId;
-          
+
           localStorage.setItem("isPaymentDone", true);
           localStorage.setItem("paymentTrackingId", paymentTrackingId);
 
-          axios.post('http://localhost:3333/shared/update-payment-status', { userId, paymentTrackingId })
+          axios
+            .post(`${DOMAIN_URI}/shared/update-payment-status`, { userId, paymentTrackingId })
             .then(() => {
-              setCustomSuccessMessage('Payment successfully completed!');
-              const stripe =  stripePromise;
+              setCustomSuccessMessage("Payment successfully completed!");
+              const stripe = stripePromise;
 
               const { error } = stripe.redirectToCheckout({
                 sessionId: data.sessionId,
@@ -44,36 +47,42 @@ const SuccessPayment = () => {
               if (error) {
                 console.error(error);
               }
-              
+
               Navigate("/success-payment");
             })
             .catch((error) => {
-              console.error('Error updating payment status:', error);
+              console.error("Error updating payment status:", error);
             });
         }
       });
   }, []);
 
-
-  if (status === 'open') {
-    return (
-      <Navigate to="/checkout" />
-    )
+  if (status === "open") {
+    return <Navigate to="/checkout" />;
   }
-
 
   return (
     <div>
       {/* CONTENT */}
       <div className="row d-flex justify-content-center">
         <div className="col-lg-8 mt-1 my-3 mt-1">
-          <div className="d-flex flex-column align-items-center text-center p-3 pt-5"><img className="rounded-circle" width="120px" src="/images/checklist.png"></img></div>
+          <div className="d-flex flex-column align-items-center text-center p-3 pt-5">
+            <img className="rounded-circle" width="120px" src="/images/checklist.png"></img>
+          </div>
 
           <h1 className="my-3">Thanks for your subscription!</h1>
-          <p> We appreciate for your interest! <br />
-            If you have any questions, please email <a href="mailto:orders@example.com">wevhs2023@gmail.com</a>.
+          <p>
+            {" "}
+            We appreciate for your interest! <br />
+            If you have any questions, please email{" "}
+            <a href="mailto:orders@example.com">wevhs2023@gmail.com</a>.
             <br />
-            <Link to="/user/apply-certificate" className="button button-contactForm boxed-btn btn-login mr-3 my-4">Go Back and Complete Request</Link>
+            <Link
+              to="/user/apply-certificate"
+              className="button button-contactForm boxed-btn btn-login mr-3 my-4"
+            >
+              Go Back and Complete Request
+            </Link>
           </p>
         </div>
       </div>

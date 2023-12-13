@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import withRouter from "./Router/withRouter";
 import FooterMenu from "./Footer";
 import axios from "axios";
+import { DOMAIN_URI } from "../config";
 
 class UserProfile extends Component {
   constructor() {
@@ -57,7 +58,7 @@ class UserProfile extends Component {
 
     // Make an API request to get the user data
     axios
-      .get(`http://localhost:3333/users/getById/${userId}`)
+      .get(`${DOMAIN_URI}/users/getById/${userId}`)
       .then((response) => {
         const user = { ...response.data.data };
         user.dateOfBirth = user.dateOfBirth
@@ -186,7 +187,7 @@ class UserProfile extends Component {
       formData.append("profilePhoto", profilePhoto);
 
       console.log("formData", formData);
-      const response = await axios.put(`http://localhost:3333/users/update/${userId}`, formData, {
+      const response = await axios.put(`${DOMAIN_URI}/users/update/${userId}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -236,8 +237,6 @@ class UserProfile extends Component {
     }));
   };
 
-
-
   toggleCancelSubscriptionModal = (e) => {
     e.preventDefault();
     this.setState((prevState) => ({
@@ -253,20 +252,32 @@ class UserProfile extends Component {
 
   cancelSubscription = async () => {
     try {
-      const userId = localStorage.getItem('userId');
-      const paymentTrackingId = localStorage.getItem('paymentTrackingId');
-      const response = await axios.post('http://localhost:3333/checkout/cancel-subscription', { paymentTrackingId, userId });
+      const userId = localStorage.getItem("userId");
+      const paymentTrackingId = localStorage.getItem("paymentTrackingId");
+      const response = await axios.post(`${DOMAIN_URI}/checkout/cancel-subscription`, {
+        paymentTrackingId,
+        userId,
+      });
       // Handle successful subscription cancellation
-      if (response.status == 200){
-      console.log(response.data.message);
-      localStorage.setItem('isPaymentDone', false);
-      localStorage.setItem('paymentTrackingId', paymentTrackingId);
-      this.setState({ successMessage: response.data.message, isPaymentDone: false, errorMessage: null, isCancelSubscriptionModalOpen: false });
-    }
+      if (response.status == 200) {
+        console.log(response.data.message);
+        localStorage.setItem("isPaymentDone", false);
+        localStorage.setItem("paymentTrackingId", paymentTrackingId);
+        this.setState({
+          successMessage: response.data.message,
+          isPaymentDone: false,
+          errorMessage: null,
+          isCancelSubscriptionModalOpen: false,
+        });
+      }
     } catch (error) {
       // Handle errors for canceling subscription
-      console.error('Error canceling subscription:', error);
-      this.setState({ errorMessage: 'Unable to cancel subscription', successMessage: null, isCancelSubscriptionModalOpen: false });
+      console.error("Error canceling subscription:", error);
+      this.setState({
+        errorMessage: "Unable to cancel subscription",
+        successMessage: null,
+        isCancelSubscriptionModalOpen: false,
+      });
     }
   };
 
@@ -291,17 +302,15 @@ class UserProfile extends Component {
         : "images/default-profile.png";
     } else {
       profilePhotoUrl = user.profilePhoto
-        ? `http://localhost:3333/${user.profilePhoto}`
+        ? `${DOMAIN_URI}/${user.profilePhoto}`
         : "images/default-profile.png";
     }
 
     return (
       <div>
-
         {/* Confirm Cancel Subscription Modal */}
         <div
-          className={`modal fade ${isCancelSubscriptionModalOpen ? "show fade-in" : ""
-            }`}
+          className={`modal fade ${isCancelSubscriptionModalOpen ? "show fade-in" : ""}`}
           style={{
             display: isCancelSubscriptionModalOpen ? "block" : "none",
           }}
@@ -322,11 +331,11 @@ class UserProfile extends Component {
                   data-bs-dismiss="modal"
                   aria-label="Close"
                   onClick={(e) => this.toggleCancelSubscriptionModal(e)}
-                >X</button>
+                >
+                  X
+                </button>
               </div>
-              <div className="modal-body py-4">
-                Do you want to cancel the subscription?
-              </div>
+              <div className="modal-body py-4">Do you want to cancel the subscription?</div>
               <div className="modal-footer">
                 <button
                   type="button"
@@ -379,18 +388,39 @@ class UserProfile extends Component {
                 <div className="row">
                   <div className="col-md-3 border-right">
                     <div className="d-flex flex-column align-items-center text-center p-3 py-5">
-                      <img className="rounded-circle" width="150px" height="150px" src={profilePhotoUrl} alt="Profile"></img>
-                      <label htmlFor="fileInput" className="button button-contactForm btn-change-picture boxed-btn mt-4" >
+                      <img
+                        className="rounded-circle"
+                        width="150px"
+                        height="150px"
+                        src={profilePhotoUrl}
+                        alt="Profile"
+                      ></img>
+                      <label
+                        htmlFor="fileInput"
+                        className="button button-contactForm btn-change-picture boxed-btn mt-4"
+                      >
                         Change Profile Photo
-                        <input type="file" id="fileInput" name="profilePhoto" accept=".jpg, .jpeg, .png" onChange={this.handleFileChange} style={{ display: "none" }} />
+                        <input
+                          type="file"
+                          id="fileInput"
+                          name="profilePhoto"
+                          accept=".jpg, .jpeg, .png"
+                          onChange={this.handleFileChange}
+                          style={{ display: "none" }}
+                        />
                       </label>
 
                       <br></br>
                       <div className="col-md-12 border-bottom mt-4 mb-2"></div>
 
-                      {isPaymentDone == "true" ?
-                        <button className="button button-contactForm btn-change-picture boxed-btn mt-4" onClick={(e) => this.toggleCancelSubscriptionModal(e)}>Cancel Subscription</button> : null
-                      }
+                      {isPaymentDone == "true" ? (
+                        <button
+                          className="button button-contactForm btn-change-picture boxed-btn mt-4"
+                          onClick={(e) => this.toggleCancelSubscriptionModal(e)}
+                        >
+                          Cancel Subscription
+                        </button>
+                      ) : null}
 
                       {/* <button className="button button-contactForm btn-change-picture boxed-btn mt-4" onClick={this.cancelSubscription}>Cancel Subscription</button> */}
                     </div>
@@ -565,7 +595,7 @@ class UserProfile extends Component {
 
         {/* FOOTER */}
         <FooterMenu />
-      </div >
+      </div>
     );
   }
 }

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
+import { DOMAIN_URI } from "../config";
 
 const EmailApproval = () => {
   const { token } = useParams();
@@ -10,7 +11,7 @@ const EmailApproval = () => {
   useEffect(() => {
     const verifyToken = async () => {
       try {
-        const response = await fetch(`http://localhost:3333/shared/verify/${token}`);
+        const response = await fetch(`${DOMAIN_URI}/shared/verify/${token}`);
         console.log("response", response);
         if (response.ok) {
           setMessage("Your email has been approved");

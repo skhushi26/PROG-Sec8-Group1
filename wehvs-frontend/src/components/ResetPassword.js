@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
+import { DOMAIN_URI } from "../config";
 
 const ResetPassword = () => {
   const { token } = useParams();
@@ -40,7 +41,7 @@ const ResetPassword = () => {
 
     if (valid) {
       try {
-        const response = await fetch("http://localhost:3333/users/reset-password", {
+        const response = await fetch(`${DOMAIN_URI}/users/reset-password`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

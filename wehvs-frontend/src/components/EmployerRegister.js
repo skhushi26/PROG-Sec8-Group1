@@ -4,6 +4,7 @@ import withRouter from "./Router/withRouter";
 import { Link, useNavigate } from "react-router-dom";
 import FooterMenu from "./Footer";
 import axios from "axios";
+import { DOMAIN_URI } from "../config";
 
 const EmployerRegister = () => {
   const [companyName, setcompanyName] = useState("");
@@ -61,7 +62,6 @@ const EmployerRegister = () => {
       setlicenseNumberError("");
     }
 
-
     // Founded Date validation
     const inputDate = new Date(foundedDate);
     if (isNaN(inputDate)) {
@@ -113,7 +113,6 @@ const EmployerRegister = () => {
       settelephoneError("");
     }
 
-
     // Contact Email validation
     if (contactEmail.trim() === "") {
       setContactEmailError("Contact Email is required");
@@ -145,7 +144,7 @@ const EmployerRegister = () => {
         formData.append("contactEmail", contactEmail);
         formData.append("mobileNumber", mobileNumber);
 
-        const response = await axios.post("http://localhost:3333/employers/register", formData, {
+        const response = await axios.post(`${DOMAIN_URI}/employers/register`, formData, {
           headers: {
             "Content-Type": "multipart/form-data", // Set the content type to multipart form data
           },
@@ -172,7 +171,6 @@ const EmployerRegister = () => {
     }
   };
 
-
   const resetForm = () => {
     setcompanyName("");
     setlicenseNumber("");
@@ -189,15 +187,19 @@ const EmployerRegister = () => {
     setContactEmail("");
     setMobileNumber("");
     setSelectedFile(null);
-  }
+  };
 
   return (
     <div>
       {/* CONTENT */}
       <div className="row container">
         <div className="col-lg-12">
-          <form className="form-contact contact_form" method="post" id="contactForm"
-            onSubmit={validateEmployerRegister}>
+          <form
+            className="form-contact contact_form"
+            method="post"
+            id="contactForm"
+            onSubmit={validateEmployerRegister}
+          >
             <div className="col-12">
               <h1 className="contact-title">Employer Register</h1>
             </div>
@@ -255,20 +257,41 @@ const EmployerRegister = () => {
                 <div className="row">
                   <div className="col-sm-6  mt-4">
                     <label htmlFor="companyName">Company Name</label>
-                    <input className="form-control valid" name="companyName" id="companyName" type="text" placeholder="Company Name" value={companyName}
-                      onChange={(e) => setcompanyName(e.target.value)} />
+                    <input
+                      className="form-control valid"
+                      name="companyName"
+                      id="companyName"
+                      type="text"
+                      placeholder="Company Name"
+                      value={companyName}
+                      onChange={(e) => setcompanyName(e.target.value)}
+                    />
                     <span className="error-message text-danger">{companyNameError}</span>
                   </div>
                   <div className="col-sm-6 mt-4">
                     <label htmlFor="licenseNumber">License Number</label>
-                    <input className="form-control valid" name="licenseNumber" id="licenseNumber" type="text" placeholder="License Number" value={licenseNumber}
-                      onChange={(e) => setlicenseNumber(e.target.value)} />
+                    <input
+                      className="form-control valid"
+                      name="licenseNumber"
+                      id="licenseNumber"
+                      type="text"
+                      placeholder="License Number"
+                      value={licenseNumber}
+                      onChange={(e) => setlicenseNumber(e.target.value)}
+                    />
                     <span className="error-message text-danger">{licenseNumberError}</span>
                   </div>
                   <div className="col-sm-6  mt-4">
                     <label htmlFor="email">Email</label>
-                    <input className="form-control valid" name="email" id="email" type="text" placeholder="Email" value={email}
-                      onChange={(e) => setEmail(e.target.value)} />
+                    <input
+                      className="form-control valid"
+                      name="email"
+                      id="email"
+                      type="text"
+                      placeholder="Email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                    />
                     <span className="error-message text-danger">{emailError}</span>
                   </div>
                   <div className="col-sm-6 mt-4">
@@ -286,8 +309,15 @@ const EmployerRegister = () => {
                   </div>
                   <div className="col-sm-6 mt-4">
                     <label htmlFor="telephone">Telephone</label>
-                    <input className="form-control valid" name="telephone" id="telephone" type="text" placeholder="Telephone" value={telephone}
-                      onChange={(e) => settelephone(e.target.value)} />
+                    <input
+                      className="form-control valid"
+                      name="telephone"
+                      id="telephone"
+                      type="text"
+                      placeholder="Telephone"
+                      value={telephone}
+                      onChange={(e) => settelephone(e.target.value)}
+                    />
                     <span className="error-message text-danger">{telephoneError}</span>
                   </div>
                   <div className="col-sm-6  mt-4">
@@ -305,8 +335,15 @@ const EmployerRegister = () => {
                   </div>
                   <div className="col-sm-6  mt-4">
                     <label htmlFor="foundedDate">Founded Date</label>
-                    <input className="form-control" name="foundedDate" id="foundedDate" type="date" placeholder="Select Founded Date" value={foundedDate}
-                      onChange={(e) => setFoundedDate(e.target.value)} />
+                    <input
+                      className="form-control"
+                      name="foundedDate"
+                      id="foundedDate"
+                      type="date"
+                      placeholder="Select Founded Date"
+                      value={foundedDate}
+                      onChange={(e) => setFoundedDate(e.target.value)}
+                    />
                     <span className="error-message text-danger">{foundedDateError}</span>
                   </div>
 
@@ -322,44 +359,74 @@ const EmployerRegister = () => {
                     ></textarea>
                   </div>
 
-
                   <div className="col-12 mt-6 contact-info">
                     <h5>Contact Information</h5>
                   </div>
 
-
                   <div className="col-sm-6  mt-4">
                     <label htmlFor="address">Address</label>
-                    <input className="form-control valid" name="address" id="address" type="text" placeholder="Address" value={address}
+                    <input
+                      className="form-control valid"
+                      name="address"
+                      id="address"
+                      type="text"
+                      placeholder="Address"
+                      value={address}
                       onChange={(e) => setAddress(e.target.value)}
                     />
                     <span className="error-message text-danger">{addressError}</span>
                   </div>
 
-
                   <div className="col-sm-6  mt-4">
                     <label htmlFor="country">Country</label>
-                    <input className="form-control valid" name="country" id="country" type="text" placeholder="Country" value={country}
-                      onChange={(e) => setCountry(e.target.value)} />
+                    <input
+                      className="form-control valid"
+                      name="country"
+                      id="country"
+                      type="text"
+                      placeholder="Country"
+                      value={country}
+                      onChange={(e) => setCountry(e.target.value)}
+                    />
                   </div>
 
                   <div className="col-sm-6  mt-4">
                     <label htmlFor="city">City</label>
-                    <input className="form-control valid" name="city" id="city" type="text" placeholder="City" value={city}
-                      onChange={(e) => setCity(e.target.value)} />
+                    <input
+                      className="form-control valid"
+                      name="city"
+                      id="city"
+                      type="text"
+                      placeholder="City"
+                      value={city}
+                      onChange={(e) => setCity(e.target.value)}
+                    />
                   </div>
-
 
                   <div className="col-sm-6  mt-4">
                     <label htmlFor="province">Province</label>
-                    <input className="form-control valid" name="province" id="province" type="text" placeholder="Province" value={province}
-                      onChange={(e) => setProvince(e.target.value)} />
+                    <input
+                      className="form-control valid"
+                      name="province"
+                      id="province"
+                      type="text"
+                      placeholder="Province"
+                      value={province}
+                      onChange={(e) => setProvince(e.target.value)}
+                    />
                   </div>
 
                   <div className="col-sm-6  mt-4">
                     <label htmlFor="zipCode">Zip Code</label>
-                    <input className="form-control valid" name="zipCode" id="zipCode" type="text" placeholder="Zip Code" value={zipCode}
-                      onChange={(e) => setZipCode(e.target.value)} />
+                    <input
+                      className="form-control valid"
+                      name="zipCode"
+                      id="zipCode"
+                      type="text"
+                      placeholder="Zip Code"
+                      value={zipCode}
+                      onChange={(e) => setZipCode(e.target.value)}
+                    />
                   </div>
 
                   <div className="col-sm-6  mt-4">
@@ -376,21 +443,24 @@ const EmployerRegister = () => {
                   </div>
 
                   <div className="col-12 form-group mt-5">
-                    <button type="submit" className="button button-contactForm button-submit boxed-btn">Send</button>
+                    <button
+                      type="submit"
+                      className="button button-contactForm button-submit boxed-btn"
+                    >
+                      Send
+                    </button>
                   </div>
                 </div>
               </div>
             </div>
           </form>
         </div>
-      </div >
+      </div>
       {/* FOOTER */}
-      < FooterMenu />
-
-    </div >
+      <FooterMenu />
+    </div>
   );
   //   }
 };
 
 export default withRouter(EmployerRegister);
-
