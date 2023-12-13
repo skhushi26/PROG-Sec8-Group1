@@ -57,6 +57,7 @@ exports.findJobById = async (req, res) => {
       return responseBuilder(res, null, null, "Job post doesn't exist", 400);
     }
 
+    const employerData = await Employer.findById({ _id: jobPost.employerId });
     const jobTypeData = await JobType.findById({ _id: jobPost.jobTypeId });
     const jobExperienceLevelData = await JobExperienceLevel.findById({
       _id: jobPost.jobExperienceLevelId,
@@ -83,6 +84,7 @@ exports.findJobById = async (req, res) => {
       jobTypeId: jobPost.jobTypeId,
       jobExperienceLevel: jobExperienceLevelDetail.jobExperienceLevel || "",
       jobType: jobTypeDetail.jobType || "",
+      companyName: employerData.companyName || ""
     };
 
     return responseBuilder(res, null, mergedData, "Job post data found successfully", 200);
@@ -195,6 +197,14 @@ exports.getAllJobListUser = async (req, res) => {
       },
       {
         $lookup: {
+          from: 'employers', // Replace 'jobtypes' with the name of your JobType collection
+          localField: 'employerId',
+          foreignField: '_id',
+          as: 'companyName'
+        }
+      },
+      {
+        $lookup: {
           from: 'jobtypes', // Replace 'jobtypes' with the name of your JobType collection
           localField: 'jobTypeId',
           foreignField: '_id',
@@ -219,7 +229,9 @@ exports.getAllJobListUser = async (req, res) => {
           salary: 1,
           address: 1,
           jobType: { $arrayElemAt: ['$jobType', 0] }, // Get the first element of the array
-          jobExperienceLevel: { $arrayElemAt: ['$jobExperienceLevel', 0] } // Get the first element of the array
+          jobExperienceLevel: { $arrayElemAt: ['$jobExperienceLevel', 0] }, // Get the first element of the array
+          companyName: { $arrayElemAt: ['$companyName', 0] } // Get the first element of the array
+
         }
       }
     ]);

@@ -14,7 +14,9 @@ exports.login = async (req, res) => {
     if (details.role == "User") {
       // const userData = await User.findOne({ email });
       if (!details) {
-        res.send(responseBuilder(null, null, "User not found!", 404));
+        responseBuilder(res, null, null, "User not found!", 404);
+      } else if (!details.isActive) {
+        responseBuilder(res, null, null, "Email verification is pending, please check your email to activate your account!", 400);
       } else {
         const isPasswordMatch = await bcrypt.compare(password, details.password);
         if (isPasswordMatch) {
@@ -36,7 +38,9 @@ exports.login = async (req, res) => {
       // const employerData = await Employer.findOne({ email });
       if (!details) {
         responseBuilder(res, null, null, "Employer not found!", 404);
-      } else {
+      } else if (!details.isActive) {
+        responseBuilder(res, null, null, "Email verification is pending, please check your email to activate your account!", 400);
+      }  else {
         const isPasswordMatch = await bcrypt.compare(password, details.password);
         if (isPasswordMatch) {
           token = await jwt.sign(

@@ -177,9 +177,12 @@ const AllJobList = () => {
                             </div>
                             <div className="job-tittle job-tittle2">
                               <a href="#">
-                                <h4>{request.jobTitle}</h4>
-                              </a>
+                                <h4>{request.jobTitle}  </h4>                              </a>
                               <ul>
+                                <li>
+                                  <i class="fa-solid fa-building"></i>
+                                  {request.companyName.companyName}
+                                </li>
                                 <li>
                                   <i className="fas fa-map-marker-alt"></i>
                                   {request.address}
@@ -187,6 +190,7 @@ const AllJobList = () => {
                                 <li>{request.jobType.jobType}</li>
                                 <li>{request.jobExperienceLevel.jobExperienceLevel}</li>
                                 {/* <li>{request.salary} CAD yearly</li> */}
+
                               </ul>
                             </div>
                           </div>

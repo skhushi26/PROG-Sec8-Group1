@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Link, useParams } from "react-router-dom";
 import { DOMAIN_URI } from "../config";
+import moment from "moment";
 
 const JobDetails = () => {
   const [jobDetail, setJobDetail] = useState({});
@@ -65,6 +66,11 @@ const JobDetails = () => {
                       <i className="fas fa-map-marker-alt"></i>
                       {jobDetail.address}
                     </li>
+                    <li>
+                      {/* <i className="fas fa-map-marker-alt"></i> */}
+                      <i class="fa-solid fa-building"></i>
+                      {jobDetail.companyName}
+                    </li>
                   </ul>
                 </div>
               </div>
@@ -86,7 +92,7 @@ const JobDetails = () => {
               </div>
               <ul>
                 <li>
-                  Posted date: <span>12 Aug 2019</span>
+                  Posted date: <span>{moment(jobDetail.createdAt).format('LL')}</span>
                 </li>
                 <li>
                   Location: <span>{jobDetail.address}</span>
