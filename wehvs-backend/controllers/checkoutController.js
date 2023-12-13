@@ -5,8 +5,8 @@ const mongoose = require("mongoose");
 exports.createCheckoutSession = async (req, res) => {
   const { userId, userEmail } = req.body;
   if (userId != null) {
-    const successUrl = `http://localhost:3000/success-payment?session_id={CHECKOUT_SESSION_ID}`;
-    const cancelUrl = `http://localhost:3000/user/apply-certificate`;
+    const successUrl = `https://wehvs-frontend.onrender.com/success-payment?session_id={CHECKOUT_SESSION_ID}`;
+    const cancelUrl = `https://wehvs-frontend.onrender.com/user/apply-certificate`;
 
     const session = await stripe.checkout.sessions.create({
       ui_mode: 'hosted',

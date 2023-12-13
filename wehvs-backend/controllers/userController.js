@@ -89,7 +89,7 @@ exports.registerUser = async (req, res) => {
             expiresIn: 600,
           });
           // newHtml = html.replace("{{{link}}}}", `http://${req.get("host")}/shared/verify/${token}`);
-          newHtml = html.replace("{{{link}}}}", `http://localhost:3000/verify/${token}`);
+          newHtml = html.replace("{{{link}}}}", `https://wehvs-frontend.onrender.com/verify/${token}`);
           sendMailHandler(
             "wehvs2023@gmail.com",
             credentialsData.email,

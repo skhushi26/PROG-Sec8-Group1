@@ -212,11 +212,11 @@ button:disabled {
 }
 
 .how-to-apply-bg {
-  background-image: url("http://localhost:3000/images/how-applybg.png");
+  background-image: url("https://wehvs-frontend.onrender.com/images/how-applybg.png");
 }
 
 .dashboard-banner-bg {
-  background-image: url("http://localhost:3000/images/dashboard-banner.jpg");
+  background-image: url("https://wehvs-frontend.onrender.com/images/dashboard-banner.jpg");
   height:550px;
 }
 

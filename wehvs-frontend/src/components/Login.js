@@ -132,12 +132,12 @@ const Login = () => {
                     onChange={handleInputChange}
                     placeholder="Password"
                   />
-                  <p className="forgotpassword"><a href="/forgot-password">Forgot Password?</a></p>
                   {passwordError && (
                     <div className="invalid-feedback">
                       <span className="text-danger float-left">{passwordError}</span>
                     </div>
                   )}
+                  <p className="forgotpassword"><a href="/forgot-password">Forgot Password?</a></p>
                 </div>
               </div>
             </div>
